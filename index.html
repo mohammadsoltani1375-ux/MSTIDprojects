@@ -104,6 +104,10 @@
                         <span id="cloudStatusText">همگام‌سازی زنده ابری فعال است</span>
                     </div>
 
+                    <button onclick="openCloudConfigModal()" class="px-2.5 py-1.5 text-xs font-semibold bg-sky-950 hover:bg-sky-900 text-sky-300 rounded-lg transition border border-sky-800/80 flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">تنظیمات ابری</span>
+                    </button>
+
                     <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-rose-700 hover:bg-rose-600 text-white rounded-lg transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">گزارش PDF / پرینت</span>
                     </button>
@@ -559,6 +563,60 @@
         </div>
     </div>
 
+    <!-- MODAL 6: FIREBASE CLOUD CONFIG SETTINGS -->
+    <div id="cloudConfigModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-xl overflow-hidden my-8">
+            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-sky-400"></i> تنظیمات اتصال به دیتابیس ابری (Firebase Cloud Sync)
+                </h3>
+                <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4 text-xs text-slate-700">
+                <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-xl space-y-1.5">
+                    <p class="font-bold text-sky-900 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-sky-600"></i> اتصال زنده به دیتابیس روی GitHub Pages / سایت شخصی
+                    </p>
+                    <p class="text-sky-800 leading-relaxed text-[11px]">
+                        برای همگام‌سازی زنده بین چند کاربر روی گیتهاب، تنظیمات پروژه رایگان Firebase خود را کپی کرده و در کادر زیر قرار دهید.
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-800 mb-1">کد کانفیگ Firebase (فرمت JSON یا JS Object) <span class="text-rose-500">*</span></label>
+                    <textarea id="firebaseConfigInput" rows="7" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "your-app.firebaseapp.com",
+  "projectId": "your-app",
+  "storageBucket": "your-app.appspot.com",
+  "messagingSenderId": "123456...",
+  "appId": "1:123456..."
+}' class="bg-slate-50 border border-slate-300 font-mono text-[11px] text-slate-800 rounded-xl p-3 block w-full focus:ring-sky-500 focus:border-sky-500"></textarea>
+                </div>
+
+                <div class="border-t border-slate-100 pt-3 space-y-2 text-[11px] text-slate-500">
+                    <b class="text-slate-700 block">راهنمای ۱ دقیقه‌ای دریافت کلید رایگان:</b>
+                    <ol class="list-decimal list-inside space-y-1 pr-1">
+                        <li>وارد <a href="https://console.firebase.google.com" target="_blank" class="text-sky-600 underline font-bold">Firebase Console</a> شوید و یک پروژه رایگان بسازید.</li>
+                        <li>یک وب‌اپ (Web App) اضافه کرده و کد `firebaseConfig` آن را کپی کنید.</li>
+                        <li>در بخش Firestore Database، یک دیتابیس با قوانین Test Mode ایجاد کنید.</li>
+                    </ol>
+                </div>
+
+                <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+                    <button type="button" onclick="clearFirebaseConfig()" class="text-rose-600 hover:text-rose-800 font-semibold text-xs">حذف کلید فعلی</button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeCloudConfigModal()" class="px-4 py-2 font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                        <button type="button" onclick="saveCustomFirebaseConfig()" class="px-5 py-2 font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-floppy-disk"></i> <span>ذخیره و اتصال زنده</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-5 left-5 z-50 space-y-2 pointer-events-none"></div>
 
@@ -568,15 +626,88 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Environment variables
+        // Environment variables & Custom user config
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : { apiKey: "mock-key", authDomain: "mock.firebaseapp.com", projectId: "mock-project" };
+        
+        let firebaseConfig = null;
+        const savedCustomConfig = localStorage.getItem('mstid_custom_firebase_config');
+
+        if (savedCustomConfig) {
+            try {
+                firebaseConfig = JSON.parse(savedCustomConfig);
+            } catch(e) {
+                console.warn("Invalid saved custom Firebase config");
+            }
+        }
+
+        if (!firebaseConfig && typeof __firebase_config !== 'undefined') {
+            try {
+                firebaseConfig = JSON.parse(__firebase_config);
+            } catch(e) {}
+        }
 
         let db = null;
         let auth = null;
         let isSyncing = false;
+
+        window.openCloudConfigModal = function() {
+            const textarea = document.getElementById('firebaseConfigInput');
+            if (textarea) {
+                const current = localStorage.getItem('mstid_custom_firebase_config');
+                textarea.value = current ? current : '';
+            }
+            const modal = document.getElementById('cloudConfigModal');
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.closeCloudConfigModal = function() {
+            const modal = document.getElementById('cloudConfigModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.saveCustomFirebaseConfig = function() {
+            const textarea = document.getElementById('firebaseConfigInput');
+            if (!textarea || !textarea.value.trim()) {
+                if (typeof window.showToast === 'function') window.showToast("لطفا کد کانفیگ Firebase را وارد کنید.", "error");
+                return;
+            }
+
+            try {
+                let rawVal = textarea.value.trim();
+                // If user pasted `{ apiKey: "..." }` without quotes around keys, standard JSON.parse fails.
+                if (!rawVal.startsWith('{')) {
+                    throw new Error("Invalid JSON format");
+                }
+                // Sanitize common object notation to valid JSON if needed
+                let parsed = null;
+                try {
+                    parsed = JSON.parse(rawVal);
+                } catch(err) {
+                    // Try evaluating standard JS object if pasted directly
+                    parsed = Function('"use strict";return (' + rawVal + ')')();
+                }
+
+                if (!parsed || !parsed.apiKey || !parsed.projectId) {
+                    throw new Error("Missing apiKey or projectId");
+                }
+
+                localStorage.setItem('mstid_custom_firebase_config', JSON.stringify(parsed, null, 2));
+                if (typeof window.showToast === 'function') window.showToast("تنظیمات دیتابیس ابری ذخیره شد. در حال بازنشانی...", "success");
+                window.closeCloudConfigModal();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } catch(e) {
+                if (typeof window.showToast === 'function') window.showToast("قالب کانفیگ واردشده معتبر نیست!", "error");
+            }
+        };
+
+        window.clearFirebaseConfig = function() {
+            localStorage.removeItem('mstid_custom_firebase_config');
+            if (typeof window.showToast === 'function') window.showToast("تنظیمات اختصاصی پاک شد.", "info");
+            window.closeCloudConfigModal();
+            setTimeout(() => { window.location.reload(); }, 800);
+        };
 
         window.showToast = function(message, type = 'info') {
             const container = document.getElementById('toastContainer');
@@ -611,17 +742,21 @@
             } else {
                 badge.className = "bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-slate-400";
-                txt.innerText = text || "ذخیره‌سازی محلی (آفلاین)";
+                txt.innerText = text || "ذخیره‌سازی محلی (نیازمند تنظیم کلید Firebase در گیتهاب)";
             }
         };
 
         async function initCloudSync() {
+            if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === "mock-key") {
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند کلید Firebase)');
+                return;
+            }
+
             try {
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Authenticate before Firestore operations
                 const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
                 if (initialToken) {
                     await signInWithCustomToken(auth, initialToken);
@@ -633,16 +768,15 @@
                     if (user) {
                         setupRealtimeSnapshot();
                     } else {
-                        window.updateCloudBadge('offline', 'ذخیره‌سازی آفلاین');
+                        window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
                     }
                 });
             } catch (err) {
-                console.warn("Cloud sync initialized in offline fallback mode:", err);
-                window.updateCloudBadge('offline', 'ذخیره‌سازی آفلاین');
+                console.warn("Cloud sync fallback:", err);
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
             }
         }
 
-        // Strict Firestore Path: /artifacts/{appId}/public/data/mstidData/state
         function setupRealtimeSnapshot() {
             if (!db || !auth.currentUser) return;
 
@@ -661,7 +795,6 @@
                         }
                     }
                 } else {
-                    // Document doesn't exist yet, seed initial data to Cloud
                     window.pushStateToCloud();
                 }
                 window.updateCloudBadge('online', 'همگام‌سازی زنده ابری فعال است');
@@ -671,10 +804,9 @@
             });
         }
 
-        // Push state to Firestore public collection
         window.pushStateToCloud = async function() {
             if (!db || !auth || !auth.currentUser) {
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند کلید Firebase)');
                 return;
             }
 
@@ -696,7 +828,6 @@
             }
         };
 
-        // Initialize Cloud Sync on module load
         initCloudSync();
     </script>
 
