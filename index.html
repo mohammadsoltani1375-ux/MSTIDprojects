@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Vazirmatn -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         tailwind.config = {
@@ -99,12 +101,12 @@
                 <!-- Sync Status Badge & Action Controls -->
                 <div class="flex items-center space-x-2 sm:space-x-2.5 space-x-reverse flex-wrap gap-y-1">
                     <!-- Cloud Status Badge -->
-                    <div id="cloudStatusBadge" class="bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm">
-                        <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span id="cloudStatusText">همگام‌سازی زنده ابری فعال است</span>
+                    <div id="cloudStatusBadge" class="bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm">
+                        <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                        <span id="cloudStatusText">ذخیره‌سازی محلی (نیازمند تنظیم کلید Supabase)</span>
                     </div>
 
-                    <button onclick="openCloudConfigModal()" class="px-2.5 py-1.5 text-xs font-semibold bg-sky-950 hover:bg-sky-900 text-sky-300 rounded-lg transition border border-sky-800/80 flex items-center gap-1.5 shadow-sm">
+                    <button onclick="openCloudConfigModal()" class="px-2.5 py-1.5 text-xs font-semibold bg-sky-950 hover:bg-sky-900 text-sky-300 rounded-lg transition border border-sky-800/80 flex items-center gap-1.5 shadow-sm cursor-pointer">
                         <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">تنظیمات ابری</span>
                     </button>
 
@@ -169,7 +171,7 @@
                     <div>
                         <p class="text-xs font-medium text-slate-500">میانگین پیشرفت کل (واقعی)</p>
                         <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-avg-progress">0%</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای کل: <span id="kpi-avg-planned" class="font-bold text-slate-600">0%</span></p>
+                        <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای زمان‌بندی: <span id="kpi-avg-planned" class="font-bold text-sky-700">0%</span></p>
                         <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5">
                             <div id="kpi-avg-bar" class="bg-sky-600 h-1.5 rounded-full" style="width: 0%"></div>
                         </div>
@@ -206,11 +208,15 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Bar Chart: Progress Comparison -->
                 <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
                         <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-chart-column text-sky-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای کل ۵ پروژه
+                            <i class="fa-solid fa-chart-column text-sky-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای ۵ پروژه
                         </h3>
-                        <span class="text-xs text-slate-400">گزارش خرداد ۱۴۰۵</span>
+                        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                            <i class="fa-solid fa-calendar-day text-sky-600 text-xs"></i>
+                            <label for="currentEvaluationDate" class="text-xs font-bold text-slate-700 whitespace-nowrap">تاریخ پایش:</label>
+                            <input type="text" id="currentEvaluationDate" onchange="handleEvaluationDateChange()" value="1405/05/26" class="bg-white border border-slate-300 text-xs font-bold font-mono rounded-lg p-1 text-center w-24 text-sky-800 focus:ring-sky-500">
+                        </div>
                     </div>
                     <div class="relative h-64">
                         <canvas id="progressChart"></canvas>
@@ -223,6 +229,7 @@
                         <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
                             <i class="fa-solid fa-chart-pie text-indigo-600"></i> نمودار راداری پیشرفت پروژه‌ها
                         </h3>
+                        <span id="radarMonthBadge" class="text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">مرداد ۱۴۰۵</span>
                     </div>
                     <div class="relative h-64 flex items-center justify-center">
                         <canvas id="radarChart"></canvas>
@@ -337,8 +344,10 @@
                 <span class="w-2 h-2 rounded-full bg-sky-500"></span>
                 <span>سامانه پایش استراتژیک پروژه‌ها — <b>صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</b></span>
             </div>
-            <div class="font-mono text-slate-400">
-                MSTID Portfolio Management © 1405
+            <div class="font-mono text-slate-400 flex items-center gap-2.5">
+                <span class="text-sky-700 font-semibold dir-ltr">Powered by Mohammad Soltani</span>
+                <span class="text-slate-300">•</span>
+                <span>MSTID Portfolio Management © 1405</span>
             </div>
         </div>
     </footer>
@@ -555,20 +564,20 @@
                 </div>
                 <h3 class="font-bold text-sm text-slate-800">تایید حذف اقدام</h3>
             </div>
-            <p class="text-xs text-slate-600 leading-relaxed">آیا از حذف این اقدام انجام‌شده اطمینان دارید؟ این عمل تمام تغییرات آنلاین متناظر را همگام خواهد کرد.</p>
-            <div class="flex justify-end gap-2 pt-2">
+            <p class="text-xs text-slate-600 leading-relaxed">آیا از حذف این اقدام مطمئن هستید؟ این عملیات قابل بازگشت نیست.</p>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
                 <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                <button id="confirmDeleteBtn" class="px-4 py-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition shadow-md">بله، حذف شود</button>
+                <button id="confirmDeleteBtn" class="px-5 py-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">حذف اقدام</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 6: FIREBASE CLOUD CONFIG SETTINGS -->
+    <!-- MODAL 6: SUPABASE CLOUD CONFIG SETTINGS -->
     <div id="cloudConfigModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-xl overflow-hidden my-8">
             <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
                 <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up text-sky-400"></i> تنظیمات اتصال به دیتابیس ابری (Firebase Cloud Sync)
+                    <i class="fa-solid fa-cloud-arrow-up text-sky-400"></i> تنظیمات اتصال به دیتابیس ابری (Supabase Cloud Sync)
                 </h3>
                 <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -576,39 +585,45 @@
             <div class="p-6 space-y-4 text-xs text-slate-700">
                 <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-xl space-y-1.5">
                     <p class="font-bold text-sky-900 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-info text-sky-600"></i> اتصال زنده به دیتابیس روی GitHub Pages / سایت شخصی
+                        <i class="fa-solid fa-circle-info text-sky-600"></i> اتصال زنده به دیتابیس Supabase
                     </p>
                     <p class="text-sky-800 leading-relaxed text-[11px]">
-                        برای همگام‌سازی زنده بین چند کاربر روی گیتهاب، تنظیمات پروژه رایگان Firebase خود را کپی کرده و در کادر زیر قرار دهید.
+                        برای همگام‌سازی زنده و آنی بین چند کاربر، آدرس پروژه و کلید عمومی (Anon Key) خود در Supabase را وارد کنید.
                     </p>
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-800 mb-1">کد کانفیگ Firebase (فرمت JSON یا JS Object) <span class="text-rose-500">*</span></label>
-                    <textarea id="firebaseConfigInput" rows="7" placeholder='{
-  "apiKey": "AIzaSy...",
-  "authDomain": "your-app.firebaseapp.com",
-  "projectId": "your-app",
-  "storageBucket": "your-app.appspot.com",
-  "messagingSenderId": "123456...",
-  "appId": "1:123456..."
-}' class="bg-slate-50 border border-slate-300 font-mono text-[11px] text-slate-800 rounded-xl p-3 block w-full focus:ring-sky-500 focus:border-sky-500"></textarea>
+                    <label class="block font-bold text-slate-800 mb-1">آدرس پروژه (Supabase URL) <span class="text-rose-500">*</span></label>
+                    <input type="text" id="supabaseUrlInput" placeholder="https://your-project-id.supabase.co" class="bg-slate-50 border border-slate-300 font-mono text-xs text-slate-800 rounded-xl p-2.5 block w-full focus:ring-sky-500 focus:border-sky-500 mb-3">
+                    
+                    <label class="block font-bold text-slate-800 mb-1">کلید عمومی (Anon Key) <span class="text-rose-500">*</span></label>
+                    <textarea id="supabaseKeyInput" rows="3" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="bg-slate-50 border border-slate-300 font-mono text-[11px] text-slate-800 rounded-xl p-2.5 block w-full focus:ring-sky-500 focus:border-sky-500"></textarea>
                 </div>
 
                 <div class="border-t border-slate-100 pt-3 space-y-2 text-[11px] text-slate-500">
-                    <b class="text-slate-700 block">راهنمای ۱ دقیقه‌ای دریافت کلید رایگان:</b>
+                    <b class="text-slate-700 block">راهنمای ۱ دقیقه‌ای ساخت جدول در Supabase:</b>
                     <ol class="list-decimal list-inside space-y-1 pr-1">
-                        <li>وارد <a href="https://console.firebase.google.com" target="_blank" class="text-sky-600 underline font-bold">Firebase Console</a> شوید و یک پروژه رایگان بسازید.</li>
-                        <li>یک وب‌اپ (Web App) اضافه کرده و کد `firebaseConfig` آن را کپی کنید.</li>
-                        <li>در بخش Firestore Database، یک دیتابیس با قوانین Test Mode ایجاد کنید.</li>
+                        <li>در <a href="https://supabase.com" target="_blank" class="text-sky-600 underline font-bold">Supabase.com</a> پروژه رایگان بسازید و URL و Anon Key را کپی کنید.</li>
+                        <li>در بخش SQL Editor کد زیر را اجرا کنید تا جدول همگام‌سازی ساخته شود:
+                            <code class="block bg-slate-800 text-emerald-400 font-mono p-2 rounded mt-1 dir-ltr text-left text-[10px] select-all">
+create table if not exists mstid_state (
+  id text primary key,
+  projects jsonb,
+  activities jsonb,
+  updated_at timestamp with time zone default timezone('utc'::text, now())
+);
+alter table mstid_state enable row level security;
+create policy "Allow public all" on mstid_state for all using (true) with check (true);
+                            </code>
+                        </li>
                     </ol>
                 </div>
 
                 <div class="flex justify-between items-center pt-3 border-t border-slate-100">
-                    <button type="button" onclick="clearFirebaseConfig()" class="text-rose-600 hover:text-rose-800 font-semibold text-xs">حذف کلید فعلی</button>
+                    <button type="button" onclick="clearSupabaseConfig()" class="text-rose-600 hover:text-rose-800 font-semibold text-xs">حذف کلید فعلی</button>
                     <div class="flex gap-2">
                         <button type="button" onclick="closeCloudConfigModal()" class="px-4 py-2 font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                        <button type="button" onclick="saveCustomFirebaseConfig()" class="px-5 py-2 font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition flex items-center gap-1.5">
+                        <button type="button" onclick="saveCustomSupabaseConfig()" class="px-5 py-2 font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition flex items-center gap-1.5">
                             <i class="fa-solid fa-floppy-disk"></i> <span>ذخیره و اتصال زنده</span>
                         </button>
                     </div>
@@ -620,42 +635,49 @@
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-5 left-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- Firebase Cloud Sync Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Environment variables & Custom user config
+    <!-- Supabase Cloud Sync Script -->
+    <script>
+        // Environment variables & Custom user config for Supabase
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
         
-        let firebaseConfig = null;
-        const savedCustomConfig = localStorage.getItem('mstid_custom_firebase_config');
+        let supabaseUrl = null;
+        let supabaseKey = null;
+
+        const savedCustomConfig = localStorage.getItem('mstid_custom_supabase_config');
 
         if (savedCustomConfig) {
             try {
-                firebaseConfig = JSON.parse(savedCustomConfig);
+                const parsed = JSON.parse(savedCustomConfig);
+                supabaseUrl = parsed.url;
+                supabaseKey = parsed.key;
             } catch(e) {
-                console.warn("Invalid saved custom Firebase config");
+                console.warn("Invalid saved custom Supabase config");
             }
         }
 
-        if (!firebaseConfig && typeof __firebase_config !== 'undefined') {
-            try {
-                firebaseConfig = JSON.parse(__firebase_config);
-            } catch(e) {}
+        if (!supabaseUrl && typeof __supabase_url !== 'undefined') {
+            supabaseUrl = __supabase_url;
+        }
+        if (!supabaseKey && typeof __supabase_key !== 'undefined') {
+            supabaseKey = __supabase_key;
         }
 
-        let db = null;
-        let auth = null;
+        let supabaseClient = null;
         let isSyncing = false;
 
         window.openCloudConfigModal = function() {
-            const textarea = document.getElementById('firebaseConfigInput');
-            if (textarea) {
-                const current = localStorage.getItem('mstid_custom_firebase_config');
-                textarea.value = current ? current : '';
+            const urlInput = document.getElementById('supabaseUrlInput');
+            const keyInput = document.getElementById('supabaseKeyInput');
+            
+            const current = localStorage.getItem('mstid_custom_supabase_config');
+            if (current) {
+                try {
+                    const parsed = JSON.parse(current);
+                    if (urlInput) urlInput.value = parsed.url || '';
+                    if (keyInput) keyInput.value = parsed.key || '';
+                } catch(e){}
             }
+            
             const modal = document.getElementById('cloudConfigModal');
             if (modal) modal.classList.remove('hidden');
         };
@@ -665,46 +687,34 @@
             if (modal) modal.classList.add('hidden');
         };
 
-        window.saveCustomFirebaseConfig = function() {
-            const textarea = document.getElementById('firebaseConfigInput');
-            if (!textarea || !textarea.value.trim()) {
-                if (typeof window.showToast === 'function') window.showToast("لطفا کد کانفیگ Firebase را وارد کنید.", "error");
+        window.saveCustomSupabaseConfig = function() {
+            const urlInput = document.getElementById('supabaseUrlInput');
+            const keyInput = document.getElementById('supabaseKeyInput');
+
+            const url = urlInput ? urlInput.value.trim() : '';
+            const key = keyInput ? keyInput.value.trim() : '';
+
+            if (!url || !key) {
+                if (typeof window.showToast === 'function') window.showToast("لطفا آدرس پروژه و کلید Supabase را وارد کنید.", "error");
                 return;
             }
 
             try {
-                let rawVal = textarea.value.trim();
-                // If user pasted `{ apiKey: "..." }` without quotes around keys, standard JSON.parse fails.
-                if (!rawVal.startsWith('{')) {
-                    throw new Error("Invalid JSON format");
-                }
-                // Sanitize common object notation to valid JSON if needed
-                let parsed = null;
-                try {
-                    parsed = JSON.parse(rawVal);
-                } catch(err) {
-                    // Try evaluating standard JS object if pasted directly
-                    parsed = Function('"use strict";return (' + rawVal + ')')();
-                }
-
-                if (!parsed || !parsed.apiKey || !parsed.projectId) {
-                    throw new Error("Missing apiKey or projectId");
-                }
-
-                localStorage.setItem('mstid_custom_firebase_config', JSON.stringify(parsed, null, 2));
-                if (typeof window.showToast === 'function') window.showToast("تنظیمات دیتابیس ابری ذخیره شد. در حال بازنشانی...", "success");
+                const config = { url, key };
+                localStorage.setItem('mstid_custom_supabase_config', JSON.stringify(config));
+                if (typeof window.showToast === 'function') window.showToast("تنظیمات Supabase ذخیره شد. در حال بازنشانی...", "success");
                 window.closeCloudConfigModal();
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
             } catch(e) {
-                if (typeof window.showToast === 'function') window.showToast("قالب کانفیگ واردشده معتبر نیست!", "error");
+                if (typeof window.showToast === 'function') window.showToast("خطا در ذخیره‌سازی تنظیمات!", "error");
             }
         };
 
-        window.clearFirebaseConfig = function() {
-            localStorage.removeItem('mstid_custom_firebase_config');
-            if (typeof window.showToast === 'function') window.showToast("تنظیمات اختصاصی پاک شد.", "info");
+        window.clearSupabaseConfig = function() {
+            localStorage.removeItem('mstid_custom_supabase_config');
+            if (typeof window.showToast === 'function') window.showToast("تنظیمات Supabase پاک شد.", "info");
             window.closeCloudConfigModal();
             setTimeout(() => { window.location.reload(); }, 800);
         };
@@ -734,101 +744,108 @@
             if (status === 'online') {
                 badge.className = "bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-                txt.innerText = text || "همگام‌سازی زنده ابری فعال است";
+                txt.innerText = text || "همگام‌سازی زنده Supabase فعال است";
             } else if (status === 'syncing') {
                 badge.className = "bg-amber-950/90 border border-amber-500/50 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-spin";
-                txt.innerText = text || "در حال ارسال تغییرات به ابر...";
+                txt.innerText = text || "در حال ارسال تغییرات به Supabase...";
             } else {
                 badge.className = "bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-slate-400";
-                txt.innerText = text || "ذخیره‌سازی محلی (نیازمند تنظیم کلید Firebase در گیتهاب)";
+                txt.innerText = text || "ذخیره‌سازی محلی (نیازمند تنظیم کلید Supabase)";
             }
         };
 
         async function initCloudSync() {
-            if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === "mock-key") {
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند کلید Firebase)');
+            if (!supabaseUrl || !supabaseKey || typeof window.supabase === 'undefined') {
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند تنظیم Supabase)');
                 return;
             }
 
             try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-                const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
-                if (initialToken) {
-                    await signInWithCustomToken(auth, initialToken);
-                } else {
-                    await signInAnonymously(auth);
+                // Initial fetch
+                const { data, error } = await supabaseClient
+                    .from('mstid_state')
+                    .select('*')
+                    .eq('id', appId)
+                    .single();
+
+                if (data && data.projects && data.activities) {
+                    window.projects = data.projects;
+                    window.activities = data.activities;
+                    localStorage.setItem('mstid_tech_projects', JSON.stringify(data.projects));
+                    localStorage.setItem('mstid_tech_activities', JSON.stringify(data.activities));
+                    if (typeof window.renderAllViews === 'function') {
+                        window.renderAllViews();
+                    }
+                } else if (error && error.code === 'PGRST116') {
+                    // Record not found -> push initial state
+                    await window.pushStateToCloud();
                 }
 
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        setupRealtimeSnapshot();
-                    } else {
-                        window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
-                    }
-                });
+                // Subscribe to Realtime Postgres Changes
+                supabaseClient.channel('mstid_realtime_changes')
+                    .on(
+                        'postgres_changes',
+                        { event: '*', schema: 'public', table: 'mstid_state', filter: `id=eq.${appId}` },
+                        (payload) => {
+                            if (payload.new && payload.new.projects && payload.new.activities && !isSyncing) {
+                                window.projects = payload.new.projects;
+                                window.activities = payload.new.activities;
+                                localStorage.setItem('mstid_tech_projects', JSON.stringify(payload.new.projects));
+                                localStorage.setItem('mstid_tech_activities', JSON.stringify(payload.new.activities));
+                                if (typeof window.renderAllViews === 'function') {
+                                    window.renderAllViews();
+                                }
+                            }
+                        }
+                    )
+                    .subscribe((status) => {
+                        if (status === 'SUBSCRIBED') {
+                            window.updateCloudBadge('online', 'همگام‌سازی زنده Supabase فعال است');
+                        }
+                    });
+
             } catch (err) {
-                console.warn("Cloud sync fallback:", err);
+                console.warn("Supabase initialization error:", err);
                 window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
             }
         }
 
-        function setupRealtimeSnapshot() {
-            if (!db || !auth.currentUser) return;
-
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'mstidData', 'state');
-
-            onSnapshot(docRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.data();
-                    if (data && data.projects && data.activities && !isSyncing) {
-                        window.projects = data.projects;
-                        window.activities = data.activities;
-                        localStorage.setItem('mstid_tech_projects', JSON.stringify(data.projects));
-                        localStorage.setItem('mstid_tech_activities', JSON.stringify(data.activities));
-                        if (typeof window.renderAllViews === 'function') {
-                            window.renderAllViews();
-                        }
-                    }
-                } else {
-                    window.pushStateToCloud();
-                }
-                window.updateCloudBadge('online', 'همگام‌سازی زنده ابری فعال است');
-            }, (error) => {
-                console.warn("Firestore snapshot listener error:", error);
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
-            });
-        }
-
         window.pushStateToCloud = async function() {
-            if (!db || !auth || !auth.currentUser) {
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند کلید Firebase)');
+            if (!supabaseClient) {
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند تنظیم Supabase)');
                 return;
             }
 
             try {
                 isSyncing = true;
                 window.updateCloudBadge('syncing', 'در حال ذخیره‌سازی زنده...');
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'mstidData', 'state');
-                await setDoc(docRef, {
-                    projects: window.projects,
-                    activities: window.activities,
-                    lastUpdated: new Date().toISOString()
-                });
-                window.updateCloudBadge('online', 'همگام‌سازی زنده ابری فعال است');
+                
+                const { error } = await supabaseClient
+                    .from('mstid_state')
+                    .upsert({
+                        id: appId,
+                        projects: window.projects,
+                        activities: window.activities,
+                        updated_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+                window.updateCloudBadge('online', 'همگام‌سازی زنده Supabase فعال است');
             } catch (e) {
-                console.warn("Error pushing state to cloud:", e);
+                console.warn("Error pushing state to Supabase:", e);
                 window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
             } finally {
                 setTimeout(() => { isSyncing = false; }, 400);
             }
         };
 
-        initCloudSync();
+        window.addEventListener('DOMContentLoaded', () => {
+            initCloudSync();
+        });
     </script>
 
     <!-- Core Application Script -->
@@ -1199,11 +1216,92 @@
         let radarChartInstance = null;
         let deleteTargetId = null;
 
+        // Jalali Helper Functions for Time-Driven Planned Progress Calculation
+        function jalaliToDays(jy, jm, jd) {
+            jy = parseInt(jy, 10);
+            jm = parseInt(jm, 10);
+            jd = parseInt(jd, 10);
+            var jyBase = (jy <= 979) ? 0 : 979;
+            var jyNorm = jy - jyBase;
+            var days = (365 * jyNorm) + Math.floor(jyNorm / 33) * 8 + Math.floor(((jyNorm % 33) + 3) / 4) + 78 + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+            return days;
+        }
+
+        function parseJalaliDateStr(dateStr) {
+            if (!dateStr || typeof dateStr !== 'string') return null;
+            let cleanStr = dateStr.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).trim();
+            let parts = cleanStr.split('/');
+            if (parts.length !== 3) return null;
+            let y = parseInt(parts[0], 10);
+            let m = parseInt(parts[1], 10);
+            let d = parseInt(parts[2], 10);
+            if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+            return jalaliToDays(y, m, d);
+        }
+
+        function calculateTimePlannedProgress(item, evalDateDays) {
+            if (!item.startDate || !item.endDate) return item.plannedProgress || 0;
+            let startDays = parseJalaliDateStr(item.startDate);
+            let endDays = parseJalaliDateStr(item.endDate);
+            if (!startDays || !endDays || endDays <= startDays) return item.plannedProgress || 0;
+
+            if (evalDateDays <= startDays) return 0;
+            if (evalDateDays >= endDays) return 100;
+
+            let totalDuration = endDays - startDays;
+            let elapsed = evalDateDays - startDays;
+            let prog = Math.round((elapsed / totalDuration) * 100);
+            return Math.min(100, Math.max(0, prog));
+        }
+
+        function updateAllPlannedProgresses() {
+            const evalInput = document.getElementById('currentEvaluationDate');
+            const evalDateStr = evalInput ? evalInput.value.trim() : '1405/05/26';
+            const evalDateDays = parseJalaliDateStr(evalDateStr);
+
+            if (!evalDateDays) return;
+
+            window.projects.forEach(project => {
+                let totalWeightedPlanned = 0;
+                let totalWeight = 0;
+
+                project.wbs.forEach(phase => {
+                    let phaseWeightedPlanned = 0;
+                    let phaseWeight = 0;
+
+                    if (phase.children && phase.children.length > 0) {
+                        phase.children.forEach(child => {
+                            let w = child.weight || 1;
+                            child.plannedProgress = calculateTimePlannedProgress(child, evalDateDays);
+                            phaseWeightedPlanned += (child.plannedProgress * w);
+                            phaseWeight += w;
+                        });
+                        phase.plannedProgress = phaseWeight > 0 ? Math.round(phaseWeightedPlanned / phaseWeight) : 0;
+                    }
+                    totalWeightedPlanned += (phase.plannedProgress * (phaseWeight || 1));
+                    totalWeight += (phaseWeight || 1);
+                });
+
+                if (totalWeight > 0) {
+                    project.plannedProgress = parseFloat((totalWeightedPlanned / totalWeight).toFixed(2));
+                }
+            });
+        }
+
+        window.handleEvaluationDateChange = function() {
+            updateAllPlannedProgresses();
+            saveState(true);
+            renderAllViews();
+            if (typeof window.showToast === 'function') {
+                window.showToast("پیشرفت برنامه‌ای تمامی پروژه‌ها بر اساس تاریخ جدید به روز شد.", "info");
+            }
+        };
+
         window.onload = function() {
             loadState();
             renderAllViews();
             const dateInput = document.getElementById('modalDate');
-            if (dateInput) dateInput.value = "1405/05/20";
+            if (dateInput) dateInput.value = "1405/05/26";
         };
 
         function loadState() {
@@ -1273,6 +1371,7 @@
         }
 
         window.renderAllViews = function() {
+            updateAllPlannedProgresses();
             renderOverviewKPIs();
             renderOverviewProjectCards();
             renderCharts();
