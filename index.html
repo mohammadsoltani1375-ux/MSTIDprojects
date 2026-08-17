@@ -44,7 +44,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Toast animation */
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translateY(20px); }
             10% { opacity: 1; transform: translateY(0); }
@@ -55,9 +54,8 @@
             animation: fadeInOut 3.5s forwards;
         }
 
-        /* Print & Executive PDF Export Styles */
         @media print {
-            header, nav, #mainTabs, button, .no-print, input, select {
+            header, nav, #mainTabs, button, .no-print, input, select, #authSection {
                 display: none !important;
             }
             body {
@@ -82,275 +80,318 @@
 </head>
 <body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-wrap items-center justify-between py-2.5 gap-2">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <!-- Brand Text Badge -->
-                    <div class="bg-sky-950/90 px-3.5 py-2 rounded-xl border border-sky-800/60 flex items-center justify-center">
-                        <span class="text-xs font-black text-sky-300 tracking-wide">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</span>
-                    </div>
-
-                    <div>
-                        <h1 class="text-base sm:text-lg font-extrabold leading-tight tracking-tight">داشبورد استراتژیک جذب و تصاحب فناوری (MSTID)</h1>
-                        <p class="text-xs text-sky-300 font-medium mt-0.5">سامانه آنلاین پایش، کنترل و همگام‌سازی زنده ۵ پروژه کلیدی</p>
-                    </div>
+    <!-- LOGIN SCREEN OVERLAY -->
+    <div id="loginScreen" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden p-6 sm:p-8 space-y-6">
+            <div class="text-center space-y-2">
+                <div class="inline-flex bg-sky-950 px-4 py-2 rounded-xl border border-sky-800/80 mb-2">
+                    <span class="text-xs font-black text-sky-300">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</span>
                 </div>
-
-                <!-- Sync Status Badge & Action Controls -->
-                <div class="flex items-center space-x-2 sm:space-x-2.5 space-x-reverse flex-wrap gap-y-1">
-                    <!-- Cloud Status Badge -->
-                    <div id="cloudStatusBadge" class="bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm">
-                        <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
-                        <span id="cloudStatusText">ذخیره‌سازی محلی (نیازمند تنظیم کلید Supabase)</span>
-                    </div>
-
-                    <button onclick="openCloudConfigModal()" class="px-2.5 py-1.5 text-xs font-semibold bg-sky-950 hover:bg-sky-900 text-sky-300 rounded-lg transition border border-sky-800/80 flex items-center gap-1.5 shadow-sm cursor-pointer">
-                        <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">تنظیمات ابری</span>
-                    </button>
-
-                    <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-rose-700 hover:bg-rose-600 text-white rounded-lg transition flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">گزارش PDF / پرینت</span>
-                    </button>
-                    <button onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
-                        <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">دانلود پشتیبان</span>
-                    </button>
-                    <button onclick="document.getElementById('importFileInput').click()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
-                        <i class="fa-solid fa-upload"></i> <span class="hidden sm:inline">بازیابی</span>
-                    </button>
-                    <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
-                    <button onclick="openLogModal()" class="px-3.5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition shadow-sm flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> <span>ثبت اقدام جدید</span>
-                    </button>
-                </div>
+                <h2 class="text-lg sm:text-xl font-black text-slate-900">سامانه پایش استراتژیک فناوری (MSTID)</h2>
+                <p class="text-xs text-slate-500">برای ورود به سامانه اطلاعات حساب سازمانی خود را وارد کنید</p>
             </div>
-        </div>
-    </header>
 
-    <!-- Navigation Tabs -->
-    <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[68px] z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav class="flex space-x-8 space-x-reverse overflow-x-auto custom-scrollbar" id="mainTabs">
-                <button onclick="switchTab('overview')" id="tab-overview" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-sky-600 text-sky-600">
-                    <i class="fa-solid fa-chart-pie"></i> نمای کلی و داشبورد
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">پست الکترونیک سازمانی</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-xs">
+                            <i class="fa-solid fa-envelope"></i>
+                        </span>
+                        <input type="email" id="loginEmail" required placeholder="user@domain.ir" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 pr-8 block w-full focus:ring-sky-500 focus:border-sky-500 font-mono text-left dir-ltr">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رمز عبور</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-xs">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 pr-8 block w-full focus:ring-sky-500 focus:border-sky-500 font-mono text-left dir-ltr">
+                    </div>
+                </div>
+
+                <div id="loginErrorMsg" class="hidden p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-medium"></div>
+
+                <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-600/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>ورود به داشبورد</span>
                 </button>
-                <button onclick="switchTab('projects')" id="tab-projects" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                    <i class="fa-solid fa-sitemap"></i> ساختار شکست (WBS) و پیشرفت
+            </form>
+
+            <div class="border-t border-slate-100 pt-4 text-center">
+                <button onclick="openCloudConfigModal()" class="text-xs text-sky-600 hover:text-sky-800 font-semibold inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-gear"></i> <span>تنظیم آدرس و کلید دیتابیس</span>
                 </button>
-                <button onclick="switchTab('gantt')" id="tab-gantt" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                    <i class="fa-solid fa-timeline"></i> گانت‌چارت و زمان‌بندی
-                </button>
-                <button onclick="switchTab('activities')" id="tab-activities" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                    <i class="fa-solid fa-list-check"></i> گزارش اقدامات ثبت‌شده
-                </button>
-            </nav>
+            </div>
         </div>
     </div>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-        <!-- TAB 1: OVERVIEW DASHBOARD -->
-        <div id="view-overview" class="space-y-6">
-            
-            <!-- Summary KPI Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-medium text-slate-500">تعداد کل پروژه‌ها</p>
-                        <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total-projects">۵ پروژه</h3>
-                        <p class="text-xs text-sky-600 font-medium mt-1"><i class="fa-solid fa-coins"></i> سرمایه کل: ۴۰ هزار میلیارد ریال</p>
-                    </div>
-                    <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-diagram-project"></i>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-medium text-slate-500">میانگین پیشرفت کل (واقعی)</p>
-                        <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-avg-progress">0%</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای زمان‌بندی: <span id="kpi-avg-planned" class="font-bold text-sky-700">0%</span></p>
-                        <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5">
-                            <div id="kpi-avg-bar" class="bg-sky-600 h-1.5 rounded-full" style="width: 0%"></div>
+    <!-- MAIN APP CONTENT (Hidden Until Authenticated) -->
+    <div id="appContainer" class="flex-1 flex flex-col hidden">
+        <!-- Header -->
+        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap items-center justify-between py-2.5 gap-2">
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <div class="bg-sky-950/90 px-3.5 py-2 rounded-xl border border-sky-800/60 flex items-center justify-center">
+                            <span class="text-xs font-black text-sky-300 tracking-wide">فولاد مبارکه</span>
+                        </div>
+                        <div>
+                            <h1 class="text-base sm:text-lg font-extrabold leading-tight tracking-tight">داشبورد استراتژیک جذب فناوری (MSTID)</h1>
+                            <p class="text-xs text-sky-300 font-medium mt-0.5">سامانه آنلاین پایش، کنترل و همگام‌سازی زنده</p>
                         </div>
                     </div>
-                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                </div>
 
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-medium text-slate-500">اقدامات ثبت‌شده</p>
-                        <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total-activities">۰</h3>
-                        <p class="text-xs text-slate-400 font-medium mt-1">توسط مسئولین پروژه‌ها</p>
-                    </div>
-                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-medium text-slate-500">وضعیت تحقق دوره (۱ ماه هجری شمسی)</p>
-                        <h3 class="text-lg font-bold text-emerald-600 mt-1" id="kpi-health">تحقق میانگین: ۸۴٪</h3>
-                        <p class="text-xs text-slate-400 font-medium mt-1">پیشرفت برنامه‌ای در برابر واقعی دوره</p>
-                    </div>
-                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Bar Chart: Progress Comparison -->
-                <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
-                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-chart-column text-sky-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای ۵ پروژه
-                        </h3>
-                        <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                            <i class="fa-solid fa-calendar-day text-sky-600 text-xs"></i>
-                            <label for="currentEvaluationDate" class="text-xs font-bold text-slate-700 whitespace-nowrap">تاریخ پایش:</label>
-                            <input type="text" id="currentEvaluationDate" onchange="handleEvaluationDateChange()" value="1405/05/26" class="bg-white border border-slate-300 text-xs font-bold font-mono rounded-lg p-1 text-center w-24 text-sky-800 focus:ring-sky-500">
+                    <!-- User Pill & Action Controls -->
+                    <div class="flex items-center space-x-2 sm:space-x-2.5 space-x-reverse flex-wrap gap-y-1">
+                        <!-- Cloud Status Badge -->
+                        <div id="cloudStatusBadge" class="bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm">
+                            <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                            <span id="cloudStatusText">اتصال ابری</span>
                         </div>
-                    </div>
-                    <div class="relative h-64">
-                        <canvas id="progressChart"></canvas>
-                    </div>
-                </div>
 
-                <!-- Radar Chart: Multi-dimensional project progress comparison -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-chart-pie text-indigo-600"></i> نمودار راداری پیشرفت پروژه‌ها
-                        </h3>
-                        <span id="radarMonthBadge" class="text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">مرداد ۱۴۰۵</span>
-                    </div>
-                    <div class="relative h-64 flex items-center justify-center">
-                        <canvas id="radarChart"></canvas>
-                    </div>
-                </div>
-            </div>
+                        <!-- Active User Pill -->
+                        <div class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs flex items-center gap-2">
+                            <div class="text-right">
+                                <b id="userFullNameBadge" class="text-white block text-[11px]">کاربر سیستم</b>
+                                <span id="userRoleBadge" class="text-[10px] text-sky-400">دسترسی سازمانی</span>
+                            </div>
+                            <button onclick="handleLogout()" title="خروج از حساب کاربری" class="text-slate-400 hover:text-rose-400 p-1 transition mr-1">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
+                        </div>
 
-            <!-- Project Quick Summary Cards -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-cubes text-slate-600"></i> خلاصه اطلاعات و وضعیت ۵ پروژه استراتژیک
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="project-overview-cards">
-                    <!-- Dynamic cards populated by JS -->
-                </div>
-            </div>
+                        <button onclick="openCloudConfigModal()" class="px-2.5 py-1.5 text-xs font-semibold bg-sky-950 hover:bg-sky-900 text-sky-300 rounded-lg transition border border-sky-800/80 flex items-center gap-1.5 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">تنظیمات</span>
+                        </button>
 
-        </div>
-
-        <!-- TAB 2: PROJECTS & WBS MANAGEMENT -->
-        <div id="view-projects" class="hidden space-y-6">
-            
-            <!-- Project Selection Header -->
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3 w-full md:w-auto">
-                    <label for="projectSelector" class="text-xs font-bold text-slate-600 whitespace-nowrap">انتخاب پروژه:</label>
-                    <select id="projectSelector" onchange="renderSelectedProjectWBS()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
-                        <!-- Populated dynamically -->
-                    </select>
-                </div>
-                <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-xl border border-slate-200 w-full md:w-auto justify-center">
-                    <i class="fa-solid fa-pen-to-square text-sky-500"></i>
-                    <span>ساختار شکست، زمان‌بندی، اوزان و پیشرفت کاملاً قابل ویرایش می‌باشند.</span>
-                </div>
-            </div>
-
-            <!-- Detailed Project Header & WBS Accordion -->
-            <div id="wbsContainer" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <!-- Dynamic WBS structure rendering -->
-            </div>
-
-        </div>
-
-        <!-- TAB 3: GANTT CHART & TIMELINE -->
-        <div id="view-gantt" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-timeline text-sky-600"></i> زمان‌بندی و گانت‌چارت پروژه‌های استراتژیک
-                    </h3>
-                    <select id="ganttProjectSelector" onchange="renderGanttChart()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-sky-500 focus:border-sky-500">
-                        <option value="ALL">نمایش تمام پروژه‌ها</option>
-                        <!-- Populated dynamically -->
-                    </select>
-                </div>
-
-                <div class="overflow-x-auto custom-scrollbar">
-                    <div id="ganttViewContainer" class="min-w-[750px] space-y-6">
-                        <!-- Gantt rendering via JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 4: ACTIVITIES LOG HISTORY -->
-        <div id="view-activities" class="hidden space-y-6">
-            
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-sky-600"></i> تاریخچه کامل اقدامات انجام شده
-                    </h3>
-                    
-                    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                        <input type="text" id="searchActivity" onkeyup="filterActivitiesTable()" placeholder="جستجو در اقدامات..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 w-full sm:w-48 focus:ring-sky-500 focus:border-sky-500">
+                        <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-rose-700 hover:bg-rose-600 text-white rounded-lg transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">گزارش PDF</span>
+                        </button>
                         
-                        <select id="filterProjectActivity" onchange="filterActivitiesTable()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-sky-500 focus:border-sky-500">
-                            <option value="ALL">همه پروژه‌ها</option>
-                            <!-- Populated dynamically -->
+                        <!-- Backup/Restore (Only for PMO/Admin) -->
+                        <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
+                            <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">پشتیبان</span>
+                        </button>
+                        <button id="btnRestore" onclick="document.getElementById('importFileInput').click()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
+                            <i class="fa-solid fa-upload"></i> <span class="hidden sm:inline">بازیابی</span>
+                        </button>
+                        <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
+
+                        <!-- Add Activity Action -->
+                        <button id="btnAddActivityTop" onclick="openLogModal()" class="px-3.5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> <span>ثبت اقدام جدید</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[68px] z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav class="flex space-x-8 space-x-reverse overflow-x-auto custom-scrollbar" id="mainTabs">
+                    <button onclick="switchTab('overview')" id="tab-overview" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-sky-600 text-sky-600">
+                        <i class="fa-solid fa-chart-pie"></i> نمای کلی و داشبورد
+                    </button>
+                    <button onclick="switchTab('projects')" id="tab-projects" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        <i class="fa-solid fa-sitemap"></i> ساختار شکست (WBS) و پیشرفت
+                    </button>
+                    <button onclick="switchTab('gantt')" id="tab-gantt" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        <i class="fa-solid fa-timeline"></i> گانت‌چارت و زمان‌بندی
+                    </button>
+                    <button onclick="switchTab('activities')" id="tab-activities" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        <i class="fa-solid fa-list-check"></i> گزارش اقدامات ثبت‌شده
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+            <!-- TAB 1: OVERVIEW DASHBOARD -->
+            <div id="view-overview" class="space-y-6">
+                <!-- Summary KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-slate-500">تعداد کل پروژه‌ها</p>
+                            <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total-projects">۵ پروژه</h3>
+                            <p class="text-xs text-sky-600 font-medium mt-1"><i class="fa-solid fa-coins"></i> سرمایه کل: ۴۰ هزار میلیارد ریال</p>
+                        </div>
+                        <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-diagram-project"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-slate-500">میانگین پیشرفت کل (واقعی)</p>
+                            <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-avg-progress">0%</h3>
+                            <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای زمان‌بندی: <span id="kpi-avg-planned" class="font-bold text-sky-700">0%</span></p>
+                            <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5">
+                                <div id="kpi-avg-bar" class="bg-sky-600 h-1.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-slate-500">اقدامات ثبت‌شده</p>
+                            <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total-activities">۰</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-1">توسط مسئولین پروژه‌ها</p>
+                        </div>
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-slate-500">وضعیت تحقق دوره</p>
+                            <h3 class="text-lg font-bold text-emerald-600 mt-1" id="kpi-health">تحقق میانگین: ۸۴٪</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-1">پیشرفت برنامه‌ای در برابر واقعی</p>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-sky-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای ۵ پروژه
+                            </h3>
+                            <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                                <i class="fa-solid fa-calendar-day text-sky-600 text-xs"></i>
+                                <label for="currentEvaluationDate" class="text-xs font-bold text-slate-700 whitespace-nowrap">تاریخ پایش:</label>
+                                <input type="text" id="currentEvaluationDate" onchange="handleEvaluationDateChange()" value="1405/05/26" class="bg-white border border-slate-300 text-xs font-bold font-mono rounded-lg p-1 text-center w-24 text-sky-800 focus:ring-sky-500">
+                            </div>
+                        </div>
+                        <div class="relative h-64">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-indigo-600"></i> نمودار راداری پیشرفت
+                            </h3>
+                            <span id="radarMonthBadge" class="text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">مرداد ۱۴۰۵</span>
+                        </div>
+                        <div class="relative h-64 flex items-center justify-center">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Quick Summary Cards -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-slate-600"></i> خلاصه اطلاعات و وضعیت ۵ پروژه استراتژیک
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="project-overview-cards">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: PROJECTS & WBS MANAGEMENT -->
+            <div id="view-projects" class="hidden space-y-6">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <label for="projectSelector" class="text-xs font-bold text-slate-600 whitespace-nowrap">انتخاب پروژه:</label>
+                        <select id="projectSelector" onchange="renderSelectedProjectWBS()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
                         </select>
                     </div>
+                    <div id="wbsRoleNotice" class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-xl border border-slate-200 w-full md:w-auto justify-center">
+                        <i class="fa-solid fa-shield-halved text-sky-500"></i>
+                        <span id="wbsRoleNoticeText">سطح دسترسی شما بر روی این پروژه اعمال شده است.</span>
+                    </div>
                 </div>
 
-                <!-- Activity Table -->
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-xs text-right text-slate-600">
-                        <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 rounded-tr-xl">تاریخ ثبت</th>
-                                <th scope="col" class="px-4 py-3">پروژه</th>
-                                <th scope="col" class="px-4 py-3">بخش / WBS</th>
-                                <th scope="col" class="px-4 py-3">شرح اقدام انجام‌شده</th>
-                                <th scope="col" class="px-4 py-3">مسئول / انجام‌دهنده</th>
-                                <th scope="col" class="px-4 py-3">زمان (ساعت)</th>
-                                <th scope="col" class="px-4 py-3 rounded-tl-xl text-center">عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="activitiesTableBody">
-                            <!-- Populated dynamically via JS -->
-                        </tbody>
-                    </table>
+                <div id="wbsContainer" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 </div>
             </div>
-        </div>
 
-    </main>
+            <!-- TAB 3: GANTT CHART & TIMELINE -->
+            <div id="view-gantt" class="hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-timeline text-sky-600"></i> زمان‌بندی و گانت‌چارت پروژه‌های استراتژیک
+                        </h3>
+                        <select id="ganttProjectSelector" onchange="renderGanttChart()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-sky-500 focus:border-sky-500">
+                            <option value="ALL">نمایش تمام پروژه‌ها</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <div id="ganttViewContainer" class="min-w-[750px] space-y-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Footer Branding Watermark -->
-    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-                <span>سامانه پایش استراتژیک پروژه‌ها — <b>صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</b></span>
+            <!-- TAB 4: ACTIVITIES LOG HISTORY -->
+            <div id="view-activities" class="hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-sky-600"></i> تاریخچه کامل اقدامات انجام شده
+                        </h3>
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <input type="text" id="searchActivity" onkeyup="filterActivitiesTable()" placeholder="جستجو در اقدامات..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 w-full sm:w-48 focus:ring-sky-500 focus:border-sky-500">
+                            <select id="filterProjectActivity" onchange="filterActivitiesTable()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-sky-500 focus:border-sky-500">
+                                <option value="ALL">همه پروژه‌ها</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-xs text-right text-slate-600">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 rounded-tr-xl">تاریخ ثبت</th>
+                                    <th scope="col" class="px-4 py-3">پروژه</th>
+                                    <th scope="col" class="px-4 py-3">بخش / WBS</th>
+                                    <th scope="col" class="px-4 py-3">شرح اقدام انجام‌شده</th>
+                                    <th scope="col" class="px-4 py-3">مسئول / انجام‌دهنده</th>
+                                    <th scope="col" class="px-4 py-3">زمان (ساعت)</th>
+                                    <th scope="col" class="px-4 py-3 rounded-tl-xl text-center">عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activitiesTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="font-mono text-slate-400 flex items-center gap-2.5">
-                <span class="text-sky-700 font-semibold dir-ltr">Powered by Mohammad Soltani</span>
-                <span class="text-slate-300">•</span>
-                <span>MSTID Portfolio Management © 1405</span>
+
+        </main>
+
+        <!-- Footer Branding Watermark -->
+        <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                    <span>سامانه پایش استراتژیک پروژه‌ها — <b>صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</b></span>
+                </div>
+                <div class="font-mono text-slate-400 flex items-center gap-2.5">
+                    <span class="text-sky-700 font-semibold dir-ltr">MSTID Protected Architecture</span>
+                    <span class="text-slate-300">•</span>
+                    <span>MSTID Portfolio Management © 1405</span>
+                </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <!-- MODAL 1: ADD NEW ACTIVITY LOG -->
     <div id="addLogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
@@ -366,14 +407,12 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">پروژه مربوطه <span class="text-rose-500">*</span></label>
                     <select id="modalProjectSelect" onchange="updateModalWBSOptions()" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
-                        <!-- Populated via JS -->
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">بخش شکست کار (WBS) <span class="text-rose-500">*</span></label>
                     <select id="modalWbsSelect" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
-                        <!-- Populated based on selected project -->
                     </select>
                 </div>
 
@@ -550,12 +589,11 @@
             </div>
 
             <div class="p-6 overflow-y-auto flex-1 space-y-6 text-slate-800" id="pdfReportContent">
-                <!-- Dynamic Executive Printable Content -->
             </div>
         </div>
     </div>
 
-    <!-- MODAL 5: CUSTOM DELETE CONFIRM MODAL (NO BROWSER CONFIRM) -->
+    <!-- MODAL 5: CUSTOM DELETE CONFIRM MODAL -->
     <div id="deleteConfirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4">
             <div class="flex items-center gap-3 text-rose-600">
@@ -583,15 +621,6 @@
             </div>
             
             <div class="p-6 space-y-4 text-xs text-slate-700">
-                <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-xl space-y-1.5">
-                    <p class="font-bold text-sky-900 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-info text-sky-600"></i> اتصال زنده به دیتابیس Supabase
-                    </p>
-                    <p class="text-sky-800 leading-relaxed text-[11px]">
-                        برای همگام‌سازی زنده و آنی بین چند کاربر، آدرس پروژه و کلید عمومی (Anon Key) خود در Supabase را وارد کنید.
-                    </p>
-                </div>
-
                 <div>
                     <label class="block font-bold text-slate-800 mb-1">آدرس پروژه (Supabase URL) <span class="text-rose-500">*</span></label>
                     <input type="text" id="supabaseUrlInput" placeholder="https://your-project-id.supabase.co" class="bg-slate-50 border border-slate-300 font-mono text-xs text-slate-800 rounded-xl p-2.5 block w-full focus:ring-sky-500 focus:border-sky-500 mb-3">
@@ -600,31 +629,12 @@
                     <textarea id="supabaseKeyInput" rows="3" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="bg-slate-50 border border-slate-300 font-mono text-[11px] text-slate-800 rounded-xl p-2.5 block w-full focus:ring-sky-500 focus:border-sky-500"></textarea>
                 </div>
 
-                <div class="border-t border-slate-100 pt-3 space-y-2 text-[11px] text-slate-500">
-                    <b class="text-slate-700 block">راهنمای ۱ دقیقه‌ای ساخت جدول در Supabase:</b>
-                    <ol class="list-decimal list-inside space-y-1 pr-1">
-                        <li>در <a href="https://supabase.com" target="_blank" class="text-sky-600 underline font-bold">Supabase.com</a> پروژه رایگان بسازید و URL و Anon Key را کپی کنید.</li>
-                        <li>در بخش SQL Editor کد زیر را اجرا کنید تا جدول همگام‌سازی ساخته شود:
-                            <code class="block bg-slate-800 text-emerald-400 font-mono p-2 rounded mt-1 dir-ltr text-left text-[10px] select-all">
-create table if not exists mstid_state (
-  id text primary key,
-  projects jsonb,
-  activities jsonb,
-  updated_at timestamp with time zone default timezone('utc'::text, now())
-);
-alter table mstid_state enable row level security;
-create policy "Allow public all" on mstid_state for all using (true) with check (true);
-                            </code>
-                        </li>
-                    </ol>
-                </div>
-
                 <div class="flex justify-between items-center pt-3 border-t border-slate-100">
-                    <button type="button" onclick="clearSupabaseConfig()" class="text-rose-600 hover:text-rose-800 font-semibold text-xs">حذف کلید فعلی</button>
+                    <button type="button" onclick="clearSupabaseConfig()" class="text-rose-600 hover:text-rose-800 font-semibold text-xs">حذف کلید ذخیره‌شده</button>
                     <div class="flex gap-2">
                         <button type="button" onclick="closeCloudConfigModal()" class="px-4 py-2 font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
                         <button type="button" onclick="saveCustomSupabaseConfig()" class="px-5 py-2 font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-floppy-disk"></i> <span>ذخیره و اتصال زنده</span>
+                            <i class="fa-solid fa-floppy-disk"></i> <span>ذخیره و اتصال</span>
                         </button>
                     </div>
                 </div>
@@ -635,88 +645,236 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-5 left-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- Supabase Cloud Sync Script -->
+    <!-- Supabase Auth, RBAC & Cloud Sync Script -->
     <script>
-        // Environment variables & Custom user config for Supabase
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
         
-        let supabaseUrl = null;
+        // Default Supabase Connection Parameters
+        let supabaseUrl = 'https://juebikpjazsqbfeallqu.supabase.co';
         let supabaseKey = null;
 
         const savedCustomConfig = localStorage.getItem('mstid_custom_supabase_config');
-
         if (savedCustomConfig) {
             try {
                 const parsed = JSON.parse(savedCustomConfig);
-                supabaseUrl = parsed.url;
-                supabaseKey = parsed.key;
-            } catch(e) {
-                console.warn("Invalid saved custom Supabase config");
-            }
-        }
-
-        if (!supabaseUrl && typeof __supabase_url !== 'undefined') {
-            supabaseUrl = __supabase_url;
-        }
-        if (!supabaseKey && typeof __supabase_key !== 'undefined') {
-            supabaseKey = __supabase_key;
+                if (parsed.url) supabaseUrl = parsed.url;
+                if (parsed.key) supabaseKey = parsed.key;
+            } catch(e) {}
         }
 
         let supabaseClient = null;
         let isSyncing = false;
+        let currentUser = null;
+        let currentUserProfile = null;
 
-        window.openCloudConfigModal = function() {
-            const urlInput = document.getElementById('supabaseUrlInput');
-            const keyInput = document.getElementById('supabaseKeyInput');
-            
-            const current = localStorage.getItem('mstid_custom_supabase_config');
-            if (current) {
-                try {
-                    const parsed = JSON.parse(current);
-                    if (urlInput) urlInput.value = parsed.url || '';
-                    if (keyInput) keyInput.value = parsed.key || '';
-                } catch(e){}
+        // Initialize Supabase Client
+        function getSupabaseClient() {
+            if (!supabaseClient && supabaseUrl && supabaseKey && typeof window.supabase !== 'undefined') {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
             }
-            
-            const modal = document.getElementById('cloudConfigModal');
-            if (modal) modal.classList.remove('hidden');
-        };
+            return supabaseClient;
+        }
 
-        window.closeCloudConfigModal = function() {
-            const modal = document.getElementById('cloudConfigModal');
-            if (modal) modal.classList.add('hidden');
-        };
-
-        window.saveCustomSupabaseConfig = function() {
-            const urlInput = document.getElementById('supabaseUrlInput');
-            const keyInput = document.getElementById('supabaseKeyInput');
-
-            const url = urlInput ? urlInput.value.trim() : '';
-            const key = keyInput ? keyInput.value.trim() : '';
-
-            if (!url || !key) {
-                if (typeof window.showToast === 'function') window.showToast("لطفا آدرس پروژه و کلید Supabase را وارد کنید.", "error");
+        // Authentication State Listener
+        async function checkAuthState() {
+            const client = getSupabaseClient();
+            if (!client) {
+                showLoginScreen(true);
                 return;
             }
 
             try {
-                const config = { url, key };
-                localStorage.setItem('mstid_custom_supabase_config', JSON.stringify(config));
-                if (typeof window.showToast === 'function') window.showToast("تنظیمات Supabase ذخیره شد. در حال بازنشانی...", "success");
-                window.closeCloudConfigModal();
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-            } catch(e) {
-                if (typeof window.showToast === 'function') window.showToast("خطا در ذخیره‌سازی تنظیمات!", "error");
+                const { data: { session }, error } = await client.auth.getSession();
+                if (error || !session) {
+                    showLoginScreen(true);
+                    return;
+                }
+
+                currentUser = session.user;
+                
+                // Fetch User Profile with Role
+                const { data: profile, error: profileErr } = await client
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (profile) {
+                    currentUserProfile = profile;
+                } else {
+                    currentUserProfile = {
+                        full_name: currentUser.email.split('@')[0],
+                        role: 'executive',
+                        assigned_project: 'ALL'
+                    };
+                }
+
+                showLoginScreen(false);
+                updateUserBadgeUI();
+                applyRBACUI();
+                await initCloudSync();
+
+            } catch (err) {
+                console.error("Auth check error:", err);
+                showLoginScreen(true);
             }
+        }
+
+        function showLoginScreen(show) {
+            const loginEl = document.getElementById('loginScreen');
+            const appEl = document.getElementById('appContainer');
+            if (show) {
+                loginEl.classList.remove('hidden');
+                appEl.classList.add('hidden');
+            } else {
+                loginEl.classList.add('hidden');
+                appEl.classList.remove('hidden');
+            }
+        }
+
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorBox = document.getElementById('loginErrorMsg');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+
+            errorBox.classList.add('hidden');
+            const client = getSupabaseClient();
+
+            if (!client) {
+                openCloudConfigModal();
+                errorBox.innerText = "لطفاً ابتدا کلید عمومی (Anon Key) را در بخش تنظیمات وارد کنید.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>در حال بررسی...</span>`;
+
+                const { data, error } = await client.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                showToast("ورود با موفقیت انجام شد.", "success");
+                await checkAuthState();
+
+            } catch (err) {
+                errorBox.innerText = err.message === 'Invalid login credentials' 
+                    ? "ایمیل یا رمز عبور اشتباه است." 
+                    : ("خطا در ورود: " + (err.message || 'مشکلی رخ داد'));
+                errorBox.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> <span>ورود به داشبورد</span>`;
+            }
+        };
+
+        window.handleLogout = async function() {
+            const client = getSupabaseClient();
+            if (client) {
+                await client.auth.signOut();
+            }
+            currentUser = null;
+            currentUserProfile = null;
+            showToast("از حساب کاربری خارج شدید.", "info");
+            showLoginScreen(true);
+        };
+
+        function updateUserBadgeUI() {
+            if (!currentUserProfile) return;
+            const nameBadge = document.getElementById('userFullNameBadge');
+            const roleBadge = document.getElementById('userRoleBadge');
+            if (nameBadge) nameBadge.innerText = currentUserProfile.full_name || currentUser.email;
+
+            if (roleBadge) {
+                let roleTitle = 'ناظر ارشد (فقط خواندنی)';
+                if (currentUserProfile.role === 'pmo') roleTitle = 'مدیر ارشد / راهبر PMO';
+                if (currentUserProfile.role === 'lead') roleTitle = `مسئول پروژه (${currentUserProfile.assigned_project})`;
+                roleBadge.innerText = roleTitle;
+            }
+        }
+
+        // Permission Helpers
+        window.hasPermission = function(action, targetProjectId) {
+            if (!currentUserProfile) return false;
+            if (currentUserProfile.role === 'pmo') return true;
+            if (currentUserProfile.role === 'executive') return false; // Read-only
+            if (currentUserProfile.role === 'lead') {
+                if (action === 'edit_wbs' || action === 'add_activity' || action === 'add_wbs') {
+                    return currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
+                }
+            }
+            return false;
+        };
+
+        function applyRBACUI() {
+            if (!currentUserProfile) return;
+            const role = currentUserProfile.role;
+
+            const btnBackup = document.getElementById('btnBackup');
+            const btnRestore = document.getElementById('btnRestore');
+            const btnAddActTop = document.getElementById('btnAddActivityTop');
+            const noticeText = document.getElementById('wbsRoleNoticeText');
+
+            if (role === 'executive') {
+                if (btnBackup) btnBackup.classList.add('hidden');
+                if (btnRestore) btnRestore.classList.add('hidden');
+                if (btnAddActTop) btnAddActTop.classList.add('hidden');
+                if (noticeText) noticeText.innerText = "دسترسی شما: مشاهده و گزارش‌گیری کلان (فقط خواندنی)";
+            } else if (role === 'lead') {
+                if (btnRestore) btnRestore.classList.add('hidden');
+                if (noticeText) noticeText.innerText = `دسترسی شما: ویرایش و ثبت اقدام برای پروژه تخصیص‌یافته (${currentUserProfile.assigned_project})`;
+            } else {
+                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان و مدیریت تمام پروژه‌ها (PMO)";
+            }
+
+            renderSelectedProjectWBS();
+            populateProjectDropdowns();
+        }
+
+        window.openCloudConfigModal = function() {
+            const urlInput = document.getElementById('supabaseUrlInput');
+            const keyInput = document.getElementById('supabaseKeyInput');
+            if (urlInput) urlInput.value = supabaseUrl || '';
+            if (keyInput) keyInput.value = supabaseKey || '';
+            document.getElementById('cloudConfigModal').classList.remove('hidden');
+        };
+
+        window.closeCloudConfigModal = function() {
+            document.getElementById('cloudConfigModal').classList.add('hidden');
+        };
+
+        window.saveCustomSupabaseConfig = function() {
+            const url = document.getElementById('supabaseUrlInput').value.trim();
+            const key = document.getElementById('supabaseKeyInput').value.trim();
+
+            if (!url || !key) {
+                showToast("لطفاً آدرس پروژه و کلید را وارد کنید.", "error");
+                return;
+            }
+
+            localStorage.setItem('mstid_custom_supabase_config', JSON.stringify({ url, key }));
+            supabaseUrl = url;
+            supabaseKey = key;
+            supabaseClient = null;
+            showToast("تنظیمات ذخیره شد. در حال اعتبارسنجی...", "success");
+            closeCloudConfigModal();
+            setTimeout(() => { checkAuthState(); }, 500);
         };
 
         window.clearSupabaseConfig = function() {
             localStorage.removeItem('mstid_custom_supabase_config');
-            if (typeof window.showToast === 'function') window.showToast("تنظیمات Supabase پاک شد.", "info");
-            window.closeCloudConfigModal();
-            setTimeout(() => { window.location.reload(); }, 800);
+            supabaseKey = null;
+            showToast("تنظیمات پاک شد.", "info");
+            closeCloudConfigModal();
+            setTimeout(() => { window.location.reload(); }, 500);
         };
 
         window.showToast = function(message, type = 'info') {
@@ -730,9 +888,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             toast.innerHTML = `<i class="fa-solid fa-circle-check text-sky-400"></i> <span>${message}</span>`;
             container.appendChild(toast);
 
-            setTimeout(() => {
-                toast.remove();
-            }, 3600);
+            setTimeout(() => { toast.remove(); }, 3600);
         };
 
         window.updateCloudBadge = function(status, text) {
@@ -744,29 +900,24 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             if (status === 'online') {
                 badge.className = "bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-                txt.innerText = text || "همگام‌سازی زنده Supabase فعال است";
+                txt.innerText = text || "اتصال زنده دیتابیس";
             } else if (status === 'syncing') {
                 badge.className = "bg-amber-950/90 border border-amber-500/50 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-spin";
-                txt.innerText = text || "در حال ارسال تغییرات به Supabase...";
+                txt.innerText = text || "در حال ذخیره‌سازی...";
             } else {
                 badge.className = "bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
                 dot.className = "w-2.5 h-2.5 rounded-full bg-slate-400";
-                txt.innerText = text || "ذخیره‌سازی محلی (نیازمند تنظیم کلید Supabase)";
+                txt.innerText = text || "ذخیره‌سازی محلی";
             }
         };
 
         async function initCloudSync() {
-            if (!supabaseUrl || !supabaseKey || typeof window.supabase === 'undefined') {
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند تنظیم Supabase)');
-                return;
-            }
+            const client = getSupabaseClient();
+            if (!client) return;
 
             try {
-                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-                // Initial fetch
-                const { data, error } = await supabaseClient
+                const { data, error } = await client
                     .from('mstid_state')
                     .select('*')
                     .eq('id', appId)
@@ -777,80 +928,69 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     window.activities = data.activities;
                     localStorage.setItem('mstid_tech_projects', JSON.stringify(data.projects));
                     localStorage.setItem('mstid_tech_activities', JSON.stringify(data.activities));
-                    if (typeof window.renderAllViews === 'function') {
-                        window.renderAllViews();
-                    }
+                    if (typeof window.renderAllViews === 'function') window.renderAllViews();
                 } else if (error && error.code === 'PGRST116') {
-                    // Record not found -> push initial state
                     await window.pushStateToCloud();
                 }
 
-                // Subscribe to Realtime Postgres Changes
-                supabaseClient.channel('mstid_realtime_changes')
-                    .on(
-                        'postgres_changes',
-                        { event: '*', schema: 'public', table: 'mstid_state', filter: `id=eq.${appId}` },
-                        (payload) => {
-                            if (payload.new && payload.new.projects && payload.new.activities && !isSyncing) {
-                                window.projects = payload.new.projects;
-                                window.activities = payload.new.activities;
-                                localStorage.setItem('mstid_tech_projects', JSON.stringify(payload.new.projects));
-                                localStorage.setItem('mstid_tech_activities', JSON.stringify(payload.new.activities));
-                                if (typeof window.renderAllViews === 'function') {
-                                    window.renderAllViews();
-                                }
-                            }
+                client.channel('mstid_realtime_changes')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'mstid_state', filter: `id=eq.${appId}` }, (payload) => {
+                        if (payload.new && payload.new.projects && payload.new.activities && !isSyncing) {
+                            window.projects = payload.new.projects;
+                            window.activities = payload.new.activities;
+                            localStorage.setItem('mstid_tech_projects', JSON.stringify(payload.new.projects));
+                            localStorage.setItem('mstid_tech_activities', JSON.stringify(payload.new.activities));
+                            if (typeof window.renderAllViews === 'function') window.renderAllViews();
                         }
-                    )
+                    })
                     .subscribe((status) => {
                         if (status === 'SUBSCRIBED') {
-                            window.updateCloudBadge('online', 'همگام‌سازی زنده Supabase فعال است');
+                            window.updateCloudBadge('online', 'اتصال زنده به ابر');
                         }
                     });
 
             } catch (err) {
-                console.warn("Supabase initialization error:", err);
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
+                console.warn("Sync error:", err);
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی');
             }
         }
 
         window.pushStateToCloud = async function() {
-            if (!supabaseClient) {
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (نیازمند تنظیم Supabase)');
-                return;
-            }
+            const client = getSupabaseClient();
+            if (!client || !currentUser) return;
 
             try {
                 isSyncing = true;
-                window.updateCloudBadge('syncing', 'در حال ذخیره‌سازی زنده...');
+                window.updateCloudBadge('syncing', 'ارسال تغییرات...');
                 
-                const { error } = await supabaseClient
+                const { error } = await client
                     .from('mstid_state')
                     .upsert({
                         id: appId,
                         projects: window.projects,
                         activities: window.activities,
+                        last_modified_by: currentUser.id,
                         updated_at: new Date().toISOString()
                     });
 
                 if (error) throw error;
-                window.updateCloudBadge('online', 'همگام‌سازی زنده Supabase فعال است');
+                window.updateCloudBadge('online', 'اتصال زنده به ابر');
             } catch (e) {
-                console.warn("Error pushing state to Supabase:", e);
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی (آفلاین)');
+                console.warn("Cloud push error:", e);
+                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی');
             } finally {
                 setTimeout(() => { isSyncing = false; }, 400);
             }
         };
 
         window.addEventListener('DOMContentLoaded', () => {
-            initCloudSync();
+            getSupabaseClient();
+            checkAuthState();
         });
     </script>
 
-    <!-- Core Application Script -->
+    <!-- Core Strategic Portfolio Logic -->
     <script>
-        // Default Strategic Technology Acquisition Projects Data extracted from PDF report
         const DEFAULT_PROJECTS = [
             {
                 id: "PRJ-01",
@@ -1209,14 +1349,12 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             { id: "ACT-10", projectId: "PRJ-05", wbsId: "1.1.1.2", date: "1405/05/28", hours: 14, author: "دکتر شیبانی‌فر", description: "شناسایی پتانسیل‌های داخلی و بررسی ارائه‌دهندگان خارجی فناوری EMAT" }
         ];
 
-        // Global State variables
         window.projects = [];
         window.activities = [];
         let chartInstance = null;
         let radarChartInstance = null;
         let deleteTargetId = null;
 
-        // Jalali Helper Functions for Time-Driven Planned Progress Calculation
         function jalaliToDays(jy, jm, jd) {
             jy = parseInt(jy, 10);
             jm = parseInt(jm, 10);
@@ -1292,9 +1430,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             updateAllPlannedProgresses();
             saveState(true);
             renderAllViews();
-            if (typeof window.showToast === 'function') {
-                window.showToast("پیشرفت برنامه‌ای تمامی پروژه‌ها بر اساس تاریخ جدید به روز شد.", "info");
-            }
+            showToast("پیشرفت برنامه‌ای پروژه‌ها بر اساس تاریخ جدید محاسبه شد.", "info");
         };
 
         window.onload = function() {
@@ -1308,20 +1444,9 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             const savedProjects = localStorage.getItem('mstid_tech_projects');
             const savedActivities = localStorage.getItem('mstid_tech_activities');
 
-            const leadsMap = {
-                "PRJ-01": "دکتر صفری",
-                "PRJ-02": "مهندس سلطانی",
-                "PRJ-03": "مهندس روشان",
-                "PRJ-04": "دکتر پریان",
-                "PRJ-05": "دکتر شیبانی‌فر"
-            };
-
             if (savedProjects) {
                 try {
                     window.projects = JSON.parse(savedProjects);
-                    window.projects.forEach(p => {
-                        if (leadsMap[p.id]) p.lead = leadsMap[p.id];
-                    });
                 } catch(e) {
                     window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
                 }
@@ -1351,7 +1476,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             }
         }
 
-        // Calculate Weighted Progress for a Project based on WBS children
         function calculateProjectProgress(project) {
             let totalWeightedProgress = 0;
             let totalWeight = 0;
@@ -1459,7 +1583,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             const actualData = window.projects.map(p => calculateProjectProgress(p));
             const plannedData = window.projects.map(p => p.plannedProgress);
 
-            // Bar Chart: Overall Progress
             const ctxBar = chartCanvas.getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
@@ -1487,21 +1610,14 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { family: 'Vazirmatn', size: 11 } } }
-                    },
+                    plugins: { legend: { position: 'top', labels: { font: { family: 'Vazirmatn', size: 11 } } } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 15,
-                            ticks: { callback: function(v) { return v + '%'; } }
-                        },
+                        y: { beginAtZero: true, max: 15, ticks: { callback: function(v) { return v + '%'; } } },
                         x: { ticks: { font: { family: 'Vazirmatn', size: 10 } } }
                     }
                 }
             });
 
-            // Radar Chart
             const ctxRadar = radarCanvas.getContext('2d');
             if (radarChartInstance) radarChartInstance.destroy();
 
@@ -1516,9 +1632,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                             backgroundColor: 'rgba(2, 132, 199, 0.25)',
                             borderColor: '#0284c7',
                             pointBackgroundColor: '#0284c7',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#0284c7',
                             borderWidth: 2
                         },
                         {
@@ -1527,9 +1640,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                             backgroundColor: 'rgba(148, 163, 184, 0.25)',
                             borderColor: '#64748b',
                             pointBackgroundColor: '#64748b',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#64748b',
                             borderWidth: 2
                         }
                     ]
@@ -1537,9 +1647,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Vazirmatn', size: 10 } } }
-                    },
+                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Vazirmatn', size: 10 } } } },
                     scales: {
                         r: {
                             angleLines: { color: '#e2e8f0' },
@@ -1566,6 +1674,9 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             modalSelect.innerHTML = '';
             filterSelect.innerHTML = '<option value="ALL">همه پروژه‌ها</option>';
 
+            const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+            const userAssigned = currentUserProfile ? currentUserProfile.assigned_project : 'ALL';
+
             window.projects.forEach(p => {
                 const opt1 = document.createElement('option');
                 opt1.value = p.id;
@@ -1577,10 +1688,13 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 optGantt.innerText = `${p.code} - ${p.name}`;
                 ganttSelector.appendChild(optGantt);
 
-                const opt2 = document.createElement('option');
-                opt2.value = p.id;
-                opt2.innerText = `${p.code} - ${p.name}`;
-                modalSelect.appendChild(opt2);
+                // Filter Add Activity Select based on Role
+                if (userRole === 'pmo' || userAssigned === 'ALL' || userAssigned === p.id) {
+                    const opt2 = document.createElement('option');
+                    opt2.value = p.id;
+                    opt2.innerText = `${p.code} - ${p.name}`;
+                    modalSelect.appendChild(opt2);
+                }
 
                 const opt3 = document.createElement('option');
                 opt3.value = p.id;
@@ -1588,7 +1702,9 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 filterSelect.appendChild(opt3);
             });
 
-            if (currentSelected && window.projects.some(p => p.id === currentSelected)) {
+            if (userRole === 'lead' && userAssigned !== 'ALL') {
+                selector.value = userAssigned;
+            } else if (currentSelected && window.projects.some(p => p.id === currentSelected)) {
                 selector.value = currentSelected;
             }
 
@@ -1605,9 +1721,9 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             if (!project) return;
 
             const totalProg = calculateProjectProgress(project);
+            const canEdit = window.hasPermission('edit_wbs', project.id);
 
             container.innerHTML = `
-                <!-- Project Top Banner -->
                 <div class="bg-slate-900 text-white p-6">
                     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <div>
@@ -1638,7 +1754,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     </div>
                 </div>
 
-                <!-- Risks & Challenges Banner -->
                 <div class="bg-amber-50/60 p-4 border-b border-amber-200/60 flex flex-wrap items-center justify-between gap-3 text-xs">
                     <span class="font-bold text-amber-800 flex items-center gap-1.5">
                         <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> چالش‌ها و ریسک‌های بحرانی پروژه:
@@ -1652,14 +1767,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     </div>
                 </div>
 
-                <!-- WBS Hierarchical List -->
                 <div class="p-6 space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                            <i class="fa-solid fa-sitemap text-sky-600"></i> ساختار شکست کار (WBS) و جزئیات فعالیت‌ها (قابل ویرایش)
-                        </h3>
-                    </div>
-
                     <div class="space-y-4">
                         ${project.wbs.map(phase => `
                             <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50">
@@ -1671,9 +1779,11 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                                     </div>
                                     <div class="flex items-center gap-3 text-xs">
                                         <span class="text-slate-600 font-medium">پیشرفت فاز: <b class="text-sky-700">${phase.actualProgress}%</b></span>
-                                        <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
-                                            <i class="fa-solid fa-plus text-[10px]"></i> افزودن فعالیت
-                                        </button>
+                                        ${canEdit ? `
+                                            <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
+                                                <i class="fa-solid fa-plus text-[10px]"></i> افزودن فعالیت
+                                            </button>
+                                        ` : ''}
                                     </div>
                                 </div>
 
@@ -1701,9 +1811,11 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                                                         <div class="bg-sky-600 h-2 rounded-full" style="width: ${Math.min(item.actualProgress, 100)}%"></div>
                                                     </div>
                                                 </div>
-                                                <button onclick="openEditWbsModal('${project.id}', '${item.id}')" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-medium transition shadow-sm whitespace-nowrap flex items-center gap-1">
-                                                    <i class="fa-solid fa-pen-to-square text-sky-600"></i> ویرایش
-                                                </button>
+                                                ${canEdit ? `
+                                                    <button onclick="openEditWbsModal('${project.id}', '${item.id}')" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-medium transition shadow-sm whitespace-nowrap flex items-center gap-1">
+                                                        <i class="fa-solid fa-pen-to-square text-sky-600"></i> ویرایش
+                                                    </button>
+                                                ` : ''}
                                             </div>
                                         </div>
                                     `).join('')}
@@ -1716,6 +1828,10 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
         }
 
         window.openEditWbsModal = function(projectId, wbsItemId) {
+            if (!window.hasPermission('edit_wbs', projectId)) {
+                showToast("شما مجوز ویرایش ساختار این پروژه را ندارید.", "error");
+                return;
+            }
             const prj = window.projects.find(p => p.id === projectId);
             if (!prj) return;
 
@@ -1746,9 +1862,13 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
 
         window.handleSaveWbsEdit = function(e) {
             e.preventDefault();
-
             const projectId = document.getElementById('editWbsProjectId').value;
             const itemId = document.getElementById('editWbsItemId').value;
+
+            if (!window.hasPermission('edit_wbs', projectId)) {
+                showToast("خطای دسترسی: ویرایش مجاز نیست.", "error");
+                return;
+            }
 
             const prj = window.projects.find(p => p.id === projectId);
             if (!prj) return;
@@ -1763,7 +1883,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     item.endDate = document.getElementById('editWbsEndDate').value;
                     item.actualProgress = parseFloat(document.getElementById('editWbsActual').value);
 
-                    // Recalculate phase progress
                     const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
                     const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
                     phase.actualProgress = Math.round(childSum / weightSum);
@@ -1774,10 +1893,14 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             saveState(true);
             renderAllViews();
             closeEditWbsModal();
-            if (typeof window.showToast === 'function') window.showToast("تغییرات WBS با موفقیت همگام‌سازی شد.", "success");
+            showToast("تغییرات WBS با موفقیت ثبت و همگام شد.", "success");
         };
 
         window.openAddWbsModal = function(projectId, phaseId) {
+            if (!window.hasPermission('add_wbs', projectId)) {
+                showToast("شما مجوز افزودن فعالیت به این پروژه را ندارید.", "error");
+                return;
+            }
             document.getElementById('addWbsProjectId').value = projectId;
             document.getElementById('addWbsPhaseId').value = phaseId;
             document.getElementById('addWbsCode').value = phaseId + "." + Math.floor(Math.random() * 90 + 10);
@@ -1790,9 +1913,13 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
 
         window.handleSaveNewWbs = function(e) {
             e.preventDefault();
-
             const projectId = document.getElementById('addWbsProjectId').value;
             const phaseId = document.getElementById('addWbsPhaseId').value;
+
+            if (!window.hasPermission('add_wbs', projectId)) {
+                showToast("خطای دسترسی: عملیات مجاز نیست.", "error");
+                return;
+            }
 
             const newCode = document.getElementById('addWbsCode').value;
             const newTitle = document.getElementById('addWbsTitle').value;
@@ -1816,7 +1943,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                         endDate: newEnd
                     });
 
-                    // Recalculate phase progress
                     const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
                     const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
                     phase.actualProgress = Math.round(childSum / weightSum);
@@ -1825,9 +1951,8 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 prj.actualProgress = calculateProjectProgress(prj);
                 saveState(true);
                 renderAllViews();
-                if (typeof window.showToast === 'function') window.showToast("فعالیت جدید به WBS اضافه و آنلاین شد.", "success");
+                showToast("فعالیت جدید به WBS افزوده شد.", "success");
             }
-
             closeAddWbsModal();
         };
 
@@ -1856,7 +1981,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                             <span class="text-xs text-slate-500 font-medium">مدت: ${p.duration} | شروع: ${p.startDate} | پایان: ${p.endDatePlanned}</span>
                         </div>
 
-                        <!-- Overall Project Gantt Bar -->
                         <div class="bg-white p-3 rounded-xl border border-sky-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
                             <div class="text-xs font-bold text-slate-700 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-line text-sky-600"></i>
@@ -1913,6 +2037,11 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
         }
 
         window.openLogModal = function() {
+            if (currentUserProfile && currentUserProfile.role === 'executive') {
+                showToast("ناظرین ارشد امکان ثبت اقدام ندارند.", "error");
+                return;
+            }
+            populateProjectDropdowns();
             document.getElementById('addLogModal').classList.remove('hidden');
         };
 
@@ -1930,9 +2059,9 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
 
             const prj = window.projects.find(p => p.id === selectedPrjId);
             if (prj) {
-                if (prj.lead) {
-                    const authorInput = document.getElementById('modalAuthor');
-                    if (authorInput) authorInput.value = prj.lead;
+                const authorInput = document.getElementById('modalAuthor');
+                if (authorInput) {
+                    authorInput.value = currentUserProfile ? (currentUserProfile.full_name || prj.lead) : prj.lead;
                 }
                 prj.wbs.forEach(phase => {
                     phase.children.forEach(c => {
@@ -1959,13 +2088,17 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
 
         window.handleSaveActivity = function(e) {
             e.preventDefault();
-
             const prjId = document.getElementById('modalProjectSelect').value;
             const wbsId = document.getElementById('modalWbsSelect').value;
             const date = document.getElementById('modalDate').value;
             const hours = document.getElementById('modalHours').value || 0;
             const author = document.getElementById('modalAuthor').value;
             const description = document.getElementById('modalDescription').value;
+
+            if (!window.hasPermission('add_activity', prjId)) {
+                showToast("شما دسترسی ثبت اقدام برای این پروژه را ندارید.", "error");
+                return;
+            }
 
             const newAct = {
                 id: "ACT-" + Date.now().toString().slice(-4),
@@ -2001,7 +2134,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
             closeLogModal();
             document.getElementById('activityForm').reset();
             toggleProgressInput();
-            if (typeof window.showToast === 'function') window.showToast("اقدام جدید ثبت و همگام آنلاین شد.", "success");
+            showToast("اقدام با موفقیت ثبت شد.", "success");
         };
 
         function renderActivitiesTable() {
@@ -2014,9 +2147,12 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 return;
             }
 
+            const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+
             window.activities.forEach(act => {
                 const prj = window.projects.find(p => p.id === act.projectId);
                 const prjCode = prj ? prj.code : act.projectId;
+                const canDelete = userRole === 'pmo';
 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
@@ -2028,9 +2164,11 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     <td class="px-4 py-3 text-slate-600 font-medium">${act.author}</td>
                     <td class="px-4 py-3 font-mono font-bold text-sky-700">${act.hours} ساعت</td>
                     <td class="px-4 py-3 text-center">
-                        <button onclick="confirmDeleteActivity('${act.id}')" title="حذف اقدام" class="text-rose-500 hover:text-rose-700 p-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                        ${canDelete ? `
+                            <button onclick="confirmDeleteActivity('${act.id}')" title="حذف اقدام" class="text-rose-500 hover:text-rose-700 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : `<span class="text-slate-300">—</span>`}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2065,6 +2203,10 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
         };
 
         window.confirmDeleteActivity = function(id) {
+            if (currentUserProfile && currentUserProfile.role !== 'pmo') {
+                showToast("فقط مدیر ارشد PMO امکان حذف اقدامات را دارد.", "error");
+                return;
+            }
             deleteTargetId = id;
             const modal = document.getElementById('deleteConfirmModal');
             if (modal) modal.classList.remove('hidden');
@@ -2077,7 +2219,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                         saveState(true);
                         renderAllViews();
                         closeDeleteConfirmModal();
-                        if (typeof window.showToast === 'function') window.showToast("اقدام با موفقیت حذف شد.", "success");
+                        showToast("اقدام با موفقیت حذف شد.", "success");
                     }
                 };
             }
@@ -2153,7 +2295,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     </div>
                 </div>
 
-                <!-- Executive Summary Cards -->
                 <div class="grid grid-cols-4 gap-4 text-center">
                     <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                         <span class="text-[11px] text-slate-500 block">تعداد پروژه‌ها</span>
@@ -2173,7 +2314,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     </div>
                 </div>
 
-                <!-- Projects Table Overview -->
                 <div class="space-y-3">
                     <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">جدول خلاصه آخرین وضعیت ۵ پروژه استراتژیک</h3>
                     <table class="w-full text-xs text-right border-collapse border border-slate-300">
@@ -2213,7 +2353,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                     </table>
                 </div>
 
-                <!-- Detailed Project Breakdowns -->
                 <div class="space-y-6 pt-4">
                     <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-300 pb-2">جزئیات شکست WBS و اقدامات هر پروژه</h3>
             `;
@@ -2232,7 +2371,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                             <span class="text-xs text-slate-600">مسئول: <b>${p.lead}</b> | پیشرفت واقعی: <b class="text-sky-700">${actProg}%</b></span>
                         </div>
 
-                        <!-- WBS Summary -->
                         <div class="text-xs space-y-1.5">
                             <b class="text-slate-700 block text-[11px]">فازها و فعالیت‌های WBS:</b>
                             <div class="grid grid-cols-2 gap-2 text-[11px]">
@@ -2256,7 +2394,6 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                             </div>
                         </div>
 
-                        <!-- Registered Activities -->
                         <div class="text-xs space-y-1 pt-1">
                             <b class="text-slate-700 block text-[11px]">آخرین اقدامات ثبت‌شده (${projectActs.length} مورد):</b>
                             ${projectActs.length > 0 ? `
@@ -2269,10 +2406,7 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                 `;
             });
 
-            html += `
-                </div>
-            `;
-
+            html += `</div>`;
             container.innerHTML = html;
             document.getElementById('pdfReportModal').classList.remove('hidden');
         };
@@ -2295,10 +2429,10 @@ create policy "Allow public all" on mstid_state for all using (true) with check 
                         window.activities = parsed.activities;
                         saveState(true);
                         renderAllViews();
-                        if (typeof window.showToast === 'function') window.showToast("اطلاعات با موفقیت بازیابی و آنلاین شد.", "success");
+                        showToast("اطلاعات بازیابی و همگام شد.", "success");
                     }
                 } catch (err) {
-                    if (typeof window.showToast === 'function') window.showToast("خطا در خواندن فایل پشتیبان!", "error");
+                    showToast("خطا در خواندن فایل پشتیبان!", "error");
                 }
             };
             reader.readAsText(event.target.files[0]);
