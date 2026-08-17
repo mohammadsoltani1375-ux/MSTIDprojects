@@ -128,7 +128,7 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTENT (Hidden Until Authenticated) -->
+    <!-- MAIN APP CONTAINER -->
     <div id="appContainer" class="flex-1 flex flex-col hidden">
         <!-- Header -->
         <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
@@ -144,21 +144,19 @@
                         </div>
                     </div>
 
-                    <!-- User Pill & Action Controls -->
+                    <!-- User Status Badge & Actions -->
                     <div class="flex items-center space-x-2 sm:space-x-2.5 space-x-reverse flex-wrap gap-y-1">
-                        <!-- Cloud Status Badge -->
                         <div id="cloudStatusBadge" class="bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm">
                             <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
                             <span id="cloudStatusText">اتصال ابری</span>
                         </div>
 
-                        <!-- Active User Pill -->
                         <div class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs flex items-center gap-2">
                             <div class="text-right">
                                 <b id="userFullNameBadge" class="text-white block text-[11px]">کاربر سیستم</b>
                                 <span id="userRoleBadge" class="text-[10px] text-sky-400">دسترسی سازمانی</span>
                             </div>
-                            <button onclick="handleLogout()" title="خروج از حساب کاربری" class="text-slate-400 hover:text-rose-400 p-1 transition mr-1">
+                            <button onclick="handleLogout()" title="خروج از حساب" class="text-slate-400 hover:text-rose-400 p-1 transition mr-1">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             </button>
                         </div>
@@ -171,7 +169,6 @@
                             <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">گزارش PDF</span>
                         </button>
                         
-                        <!-- Backup/Restore (Only for PMO/Admin) -->
                         <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
                             <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">پشتیبان</span>
                         </button>
@@ -180,7 +177,6 @@
                         </button>
                         <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
 
-                        <!-- Add Activity Action -->
                         <button id="btnAddActivityTop" onclick="openLogModal()" class="px-3.5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> <span>ثبت اقدام جدید</span>
                         </button>
@@ -189,7 +185,7 @@
             </div>
         </header>
 
-        <!-- Navigation Tabs -->
+        <!-- Navigation Tabs (With Approval Inbox Tab) -->
         <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[68px] z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <nav class="flex space-x-8 space-x-reverse overflow-x-auto custom-scrollbar" id="mainTabs">
@@ -205,11 +201,17 @@
                     <button onclick="switchTab('activities')" id="tab-activities" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
                         <i class="fa-solid fa-list-check"></i> گزارش اقدامات ثبت‌شده
                     </button>
+                    <!-- PMO Approval Inbox Tab -->
+                    <button onclick="switchTab('approvals')" id="tab-approvals" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        <i class="fa-solid fa-inbox"></i> 
+                        <span>کارتابل تاییدات PMO</span>
+                        <span id="pendingBadge" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
+                    </button>
                 </nav>
             </div>
         </div>
 
-        <!-- Main Content Container -->
+        <!-- Main Content Views -->
         <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
             <!-- TAB 1: OVERVIEW DASHBOARD -->
@@ -229,7 +231,7 @@
 
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-medium text-slate-500">میانگین پیشرفت کل (واقعی)</p>
+                            <p class="text-xs font-medium text-slate-500">میانگین پیشرفت کل (تاییدشده)</p>
                             <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-avg-progress">0%</h3>
                             <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای زمان‌بندی: <span id="kpi-avg-planned" class="font-bold text-sky-700">0%</span></p>
                             <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5">
@@ -254,12 +256,12 @@
 
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-medium text-slate-500">وضعیت تحقق دوره</p>
-                            <h3 class="text-lg font-bold text-emerald-600 mt-1" id="kpi-health">تحقق میانگین: ۸۴٪</h3>
-                            <p class="text-xs text-slate-400 font-medium mt-1">پیشرفت برنامه‌ای در برابر واقعی</p>
+                            <p class="text-xs font-medium text-slate-500">وضعیت کارتابل بررسی</p>
+                            <h3 class="text-lg font-bold text-amber-600 mt-1" id="kpi-pending-count">۰ مورد در انتظار</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-1">نیازمند بررسی و تایید PMO</p>
                         </div>
                         <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-shield-halved"></i>
+                            <i class="fa-solid fa-hourglass-half"></i>
                         </div>
                     </div>
                 </div>
@@ -285,7 +287,7 @@
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-chart-pie text-indigo-600"></i> نمودار راداری پیشرفت
+                                <i class="fa-solid fa-chart-pie text-indigo-600"></i> نمودار راداری پیشرفت پروژه‌ها
                             </h3>
                             <span id="radarMonthBadge" class="text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">مرداد ۱۴۰۵</span>
                         </div>
@@ -315,7 +317,7 @@
                     </div>
                     <div id="wbsRoleNotice" class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-xl border border-slate-200 w-full md:w-auto justify-center">
                         <i class="fa-solid fa-shield-halved text-sky-500"></i>
-                        <span id="wbsRoleNoticeText">سطح دسترسی شما بر روی این پروژه اعمال شده است.</span>
+                        <span id="wbsRoleNoticeText">سطح دسترسی شما اعمال شده است.</span>
                     </div>
                 </div>
 
@@ -363,8 +365,9 @@
                                     <th scope="col" class="px-4 py-3">پروژه</th>
                                     <th scope="col" class="px-4 py-3">بخش / WBS</th>
                                     <th scope="col" class="px-4 py-3">شرح اقدام انجام‌شده</th>
-                                    <th scope="col" class="px-4 py-3">مسئول / انجام‌دهنده</th>
-                                    <th scope="col" class="px-4 py-3">زمان (ساعت)</th>
+                                    <th scope="col" class="px-4 py-3">مسئول</th>
+                                    <th scope="col" class="px-4 py-3">زمان</th>
+                                    <th scope="col" class="px-4 py-3 text-center">وضعیت تایید</th>
                                     <th scope="col" class="px-4 py-3 rounded-tl-xl text-center">عملیات</th>
                                 </tr>
                             </thead>
@@ -375,9 +378,33 @@
                 </div>
             </div>
 
+            <!-- TAB 5: PMO APPROVAL INBOX (STAGE-GATE WORKFLOW) -->
+            <div id="view-approvals" class="hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-inbox text-amber-500"></i> کارتابل تاییدات و بررسی دروازه‌ای (Stage-Gate)
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-1">اقدامات و تغییرات درصد پیشرفت ثبت‌شده توسط مسئولین پروژه‌ها پس از بررسی PMO اعمال خواهند شد.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-amber-50 text-amber-800 font-bold px-3 py-1.5 rounded-xl border border-amber-200" id="inboxPendingCountBadge">
+                                ۰ اقدام در صف بررسی
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Pending Cards List -->
+                    <div id="pendingApprovalsList" class="space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
         </main>
 
-        <!-- Footer Branding Watermark -->
+        <!-- Footer -->
         <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
                 <div class="flex items-center gap-2">
@@ -385,7 +412,7 @@
                     <span>سامانه پایش استراتژیک پروژه‌ها — <b>صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</b></span>
                 </div>
                 <div class="font-mono text-slate-400 flex items-center gap-2.5">
-                    <span class="text-sky-700 font-semibold dir-ltr">MSTID Protected Architecture</span>
+                    <span class="text-sky-700 font-semibold dir-ltr">MSTID Stage-Gate Workflow</span>
                     <span class="text-slate-300">•</span>
                     <span>MSTID Portfolio Management © 1405</span>
                 </div>
@@ -438,18 +465,19 @@
                 </div>
 
                 <div class="bg-sky-50 p-3 rounded-xl border border-sky-100 flex items-center justify-between">
-                    <span class="text-xs text-sky-800 font-medium">آیا درصد پیشرفت این بخش به‌روز شود؟</span>
+                    <span class="text-xs text-sky-800 font-medium">پیشنهاد درصد پیشرفت واقعی جدید برای این بخش:</span>
                     <input type="checkbox" id="modalUpdateProgressCheck" onchange="toggleProgressInput()" class="w-4 h-4 text-sky-600 rounded focus:ring-sky-500">
                 </div>
 
                 <div id="progressInputContainer" class="hidden">
-                    <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت جدید واقعی (%)</label>
-                    <input type="number" id="modalNewProgress" min="0" max="100" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت پیشنهادی واقعی (%)</label>
+                    <input type="number" id="modalNewProgress" min="0" max="100" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold text-sky-700">
+                    <p class="text-[10px] text-amber-600 mt-1">* در صورت تایید مدیر PMO، درصد پیشرفت پروژه بر این مبنا به‌روزرسانی خواهد شد.</p>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
                     <button type="button" onclick="closeLogModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition">ثبت اقدام</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition">ارسال جهت تایید</button>
                 </div>
             </form>
         </div>
@@ -460,7 +488,7 @@
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden my-8">
             <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
                 <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-sky-400"></i> ویرایش اطلاعات و زمان‌بندی آیتم WBS
+                    <i class="fa-solid fa-sliders text-sky-400"></i> ویرایش مستقیم اطلاعات و پیشرفت آیتم WBS
                 </h3>
                 <button onclick="closeEditWbsModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -502,7 +530,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت واقعی (%) <span class="text-rose-500">*</span></label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت واقعی قطعی (%) <span class="text-rose-500">*</span></label>
                     <input type="number" id="editWbsActual" min="0" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold text-sky-700">
                 </div>
 
@@ -573,7 +601,31 @@
         </div>
     </div>
 
-    <!-- MODAL 4: EXECUTIVE PDF / PRINT REPORT PREVIEW -->
+    <!-- MODAL 4: REJECT ACTIVITY MODAL WITH REASON -->
+    <div id="rejectActivityModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4">
+            <div class="flex items-center gap-3 text-rose-600">
+                <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm text-slate-800">بازنگری / رد اقدام ثبت‌شده</h3>
+                    <p class="text-[11px] text-slate-500">علت عدم تایید یا نقص مستندات را وارد کنید</p>
+                </div>
+            </div>
+            <input type="hidden" id="rejectTargetActivityId">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">علت رد / توضیحات بازنگری <span class="text-rose-500">*</span></label>
+                <textarea id="rejectionReasonText" rows="3" required placeholder="مثال: گزارش امکان‌سنجی پیوست نشده است یا درصد پیشرفت نیازمند تایید مشاور است..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button onclick="closeRejectModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                <button onclick="submitRejectActivity()" class="px-5 py-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">ثبت رد اقدام</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: EXECUTIVE PDF / PRINT REPORT PREVIEW -->
     <div id="pdfReportModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-2 sm:p-6 overflow-y-auto no-print">
         <div class="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden my-auto max-h-[92vh] flex flex-col">
             <div class="bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-10">
@@ -593,7 +645,7 @@
         </div>
     </div>
 
-    <!-- MODAL 5: CUSTOM DELETE CONFIRM MODAL -->
+    <!-- MODAL 6: CUSTOM DELETE CONFIRM MODAL -->
     <div id="deleteConfirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4">
             <div class="flex items-center gap-3 text-rose-600">
@@ -610,7 +662,7 @@
         </div>
     </div>
 
-    <!-- MODAL 6: SUPABASE CLOUD CONFIG SETTINGS -->
+    <!-- MODAL 7: SUPABASE CLOUD CONFIG SETTINGS -->
     <div id="cloudConfigModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-xl overflow-hidden my-8">
             <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
@@ -649,7 +701,6 @@
     <script>
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
         
-        // Default Supabase Connection Parameters
         let supabaseUrl = 'https://juebikpjazsqbfeallqu.supabase.co';
         let supabaseKey = null;
 
@@ -667,7 +718,6 @@
         let currentUser = null;
         let currentUserProfile = null;
 
-        // Initialize Supabase Client
         function getSupabaseClient() {
             if (!supabaseClient && supabaseUrl && supabaseKey && typeof window.supabase !== 'undefined') {
                 supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -675,7 +725,6 @@
             return supabaseClient;
         }
 
-        // Authentication State Listener
         async function checkAuthState() {
             const client = getSupabaseClient();
             if (!client) {
@@ -692,7 +741,6 @@
 
                 currentUser = session.user;
                 
-                // Fetch User Profile with Role
                 const { data: profile, error: profileErr } = await client
                     .from('profiles')
                     .select('*')
@@ -715,7 +763,7 @@
                 await initCloudSync();
 
             } catch (err) {
-                console.error("Auth check error:", err);
+                console.error("Auth error:", err);
                 showLoginScreen(true);
             }
         }
@@ -758,9 +806,7 @@
                     password: password
                 });
 
-                if (error) {
-                    throw error;
-                }
+                if (error) throw error;
 
                 showToast("ورود با موفقیت انجام شد.", "success");
                 await checkAuthState();
@@ -801,14 +847,16 @@
             }
         }
 
-        // Permission Helpers
         window.hasPermission = function(action, targetProjectId) {
             if (!currentUserProfile) return false;
             if (currentUserProfile.role === 'pmo') return true;
-            if (currentUserProfile.role === 'executive') return false; // Read-only
+            if (currentUserProfile.role === 'executive') return false;
             if (currentUserProfile.role === 'lead') {
-                if (action === 'edit_wbs' || action === 'add_activity' || action === 'add_wbs') {
+                if (action === 'add_activity') {
                     return currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
+                }
+                if (action === 'edit_wbs' || action === 'add_wbs') {
+                    return false; // Only PMO can directly modify WBS weights and structure
                 }
             }
             return false;
@@ -830,13 +878,15 @@
                 if (noticeText) noticeText.innerText = "دسترسی شما: مشاهده و گزارش‌گیری کلان (فقط خواندنی)";
             } else if (role === 'lead') {
                 if (btnRestore) btnRestore.classList.add('hidden');
-                if (noticeText) noticeText.innerText = `دسترسی شما: ویرایش و ثبت اقدام برای پروژه تخصیص‌یافته (${currentUserProfile.assigned_project})`;
+                if (btnBackup) btnBackup.classList.add('hidden');
+                if (noticeText) noticeText.innerText = `دسترسی شما: ثبت اقدام برای پروژه (${currentUserProfile.assigned_project}) و ارسال به کارتابل تایید`;
             } else {
-                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان و مدیریت تمام پروژه‌ها (PMO)";
+                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان، ویرایش ساختار شکست و تایید اقدامات (PMO)";
             }
 
             renderSelectedProjectWBS();
             populateProjectDropdowns();
+            renderApprovalInbox();
         }
 
         window.openCloudConfigModal = function() {
@@ -989,7 +1039,7 @@
         });
     </script>
 
-    <!-- Core Strategic Portfolio Logic -->
+    <!-- Core Strategic Portfolio Logic & Stage-Gate Functions -->
     <script>
         const DEFAULT_PROJECTS = [
             {
@@ -1336,17 +1386,18 @@
             }
         ];
 
+        // Seed activities with Status
         const DEFAULT_ACTIVITIES = [
-            { id: "ACT-01", projectId: "PRJ-01", wbsId: "1.1.1.1", date: "1405/05/10", hours: 12, author: "دکتر صفری", description: "بررسی امکان‌سنجی اولیه استفاده از ضایعات آهنی و تحلیل فرآیندهای RHF (خاتمه یافته)" },
-            { id: "ACT-02", projectId: "PRJ-01", wbsId: "1.1.1.2", date: "1405/05/18", hours: 16, author: "دکتر صفری", description: "شناسایی صاحبان فناوری خارج از کشور و مذاکرات اولیه با هم‌سرمایه‌گذار داخلی" },
-            { id: "ACT-03", projectId: "PRJ-02", wbsId: "1.1.1.1", date: "1405/05/12", hours: 14, author: "مهندس سلطانی", description: "تهیه گزارش فنی اولیه برای پرعیارسازی مغناطیسی بستر سیال (خاتمه یافته)" },
-            { id: "ACT-04", projectId: "PRJ-02", wbsId: "1.1.1.3", date: "1405/05/22", hours: 20, author: "مهندس سلطانی", description: "مکاتبات اولیه با گزینه‌های داخلی و بررسی صاحبان فناوری خارجی" },
-            { id: "ACT-05", projectId: "PRJ-03", wbsId: "1.1.1.1", date: "1405/05/15", hours: 10, author: "مهندس روشان", description: "جلسه و مذاکره با شرکت فناور داخلی جهت بازیافت غبارات (خاتمه یافته)" },
-            { id: "ACT-06", projectId: "PRJ-03", wbsId: "1.1.1.2", date: "1405/05/24", hours: 15, author: "مهندس روشان", description: "به‌روزرسانی گزارش مطالعات امکان‌سنجی و شناسایی پتانسیل‌های خارجی" },
-            { id: "ACT-07", projectId: "PRJ-04", wbsId: "1.1.1.1", date: "1405/05/14", hours: 18, author: "دکتر پریان", description: "انجام تست‌های اولیه آزمایشگاهی سلول‌های فلوتاسیون پنوماتیک (خاتمه یافته)" },
-            { id: "ACT-08", projectId: "PRJ-04", wbsId: "1.1.1.2", date: "1405/05/25", hours: 12, author: "دکتر پریان", description: "مذاکرات انجام تست پایلوت و رصد صاحبان فناوری خارجی" },
-            { id: "ACT-09", projectId: "PRJ-05", wbsId: "1.1.1.1", date: "1405/05/16", hours: 16, author: "دکتر شیبانی‌فر", description: "تهیه گزارش فنی اولیه تشخیص عیوب غیرتماسی با EMAT (خاتمه یافته)" },
-            { id: "ACT-10", projectId: "PRJ-05", wbsId: "1.1.1.2", date: "1405/05/28", hours: 14, author: "دکتر شیبانی‌فر", description: "شناسایی پتانسیل‌های داخلی و بررسی ارائه‌دهندگان خارجی فناوری EMAT" }
+            { id: "ACT-01", projectId: "PRJ-01", wbsId: "1.1.1.1", date: "1405/05/10", hours: 12, author: "دکتر صفری", status: "approved", description: "بررسی امکان‌سنجی اولیه استفاده از ضایعات آهنی و تحلیل فرآیندهای RHF (خاتمه یافته)" },
+            { id: "ACT-02", projectId: "PRJ-01", wbsId: "1.1.1.2", date: "1405/05/18", hours: 16, author: "دکتر صفری", status: "approved", description: "شناسایی صاحبان فناوری خارج از کشور و مذاکرات اولیه با هم‌سرمایه‌گذار داخلی" },
+            { id: "ACT-03", projectId: "PRJ-02", wbsId: "1.1.1.1", date: "1405/05/12", hours: 14, author: "مهندس سلطانی", status: "approved", description: "تهیه گزارش فنی اولیه برای پرعیارسازی مغناطیسی بستر سیال (خاتمه یافته)" },
+            { id: "ACT-04", projectId: "PRJ-02", wbsId: "1.1.1.3", date: "1405/05/22", hours: 20, author: "مهندس سلطانی", status: "approved", description: "مکاتبات اولیه با گزینه‌های داخلی و بررسی صاحبان فناوری خارجی" },
+            { id: "ACT-05", projectId: "PRJ-03", wbsId: "1.1.1.1", date: "1405/05/15", hours: 10, author: "مهندس روشان", status: "approved", description: "جلسه و مذاکره با شرکت فناور داخلی جهت بازیافت غبارات (خاتمه یافته)" },
+            { id: "ACT-06", projectId: "PRJ-03", wbsId: "1.1.1.2", date: "1405/05/24", hours: 15, author: "مهندس روشان", status: "approved", description: "به‌روزرسانی گزارش مطالعات امکان‌سنجی و شناسایی پتانسیل‌های خارجی" },
+            { id: "ACT-07", projectId: "PRJ-04", wbsId: "1.1.1.1", date: "1405/05/14", hours: 18, author: "دکتر پریان", status: "approved", description: "انجام تست‌های اولیه آزمایشگاهی سلول‌های فلوتاسیون پنوماتیک (خاتمه یافته)" },
+            { id: "ACT-08", projectId: "PRJ-04", wbsId: "1.1.1.2", date: "1405/05/25", hours: 12, author: "دکتر پریان", status: "approved", description: "مذاکرات انجام تست پایلوت و رصد صاحبان فناوری خارجی" },
+            { id: "ACT-09", projectId: "PRJ-05", wbsId: "1.1.1.1", date: "1405/05/16", hours: 16, author: "دکتر شیبانی‌فر", status: "approved", description: "تهیه گزارش فنی اولیه تشخیص عیوب غیرتماسی با EMAT (خاتمه یافته)" },
+            { id: "ACT-10", projectId: "PRJ-05", wbsId: "1.1.1.2", date: "1405/05/28", hours: 14, author: "دکتر شیبانی‌فر", status: "approved", description: "شناسایی پتانسیل‌های داخلی و بررسی ارائه‌دهندگان خارجی فناوری EMAT" }
         ];
 
         window.projects = [];
@@ -1445,11 +1496,8 @@
             const savedActivities = localStorage.getItem('mstid_tech_activities');
 
             if (savedProjects) {
-                try {
-                    window.projects = JSON.parse(savedProjects);
-                } catch(e) {
-                    window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
-                }
+                try { window.projects = JSON.parse(savedProjects); }
+                catch(e) { window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS)); }
             } else {
                 window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
             }
@@ -1457,6 +1505,7 @@
             if (savedActivities) {
                 try {
                     window.activities = JSON.parse(savedActivities);
+                    window.activities.forEach(a => { if (!a.status) a.status = 'approved'; });
                 } catch(e) {
                     window.activities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
                 }
@@ -1503,6 +1552,7 @@
             renderSelectedProjectWBS();
             renderGanttChart();
             renderActivitiesTable();
+            renderApprovalInbox();
         };
 
         function renderOverviewKPIs() {
@@ -1531,6 +1581,10 @@
 
             const totalActEl = document.getElementById('kpi-total-activities');
             if (totalActEl) totalActEl.innerText = window.activities.length.toLocaleString('fa-IR');
+
+            const pendingCount = window.activities.filter(a => a.status === 'pending').length;
+            const pendingEl = document.getElementById('kpi-pending-count');
+            if (pendingEl) pendingEl.innerText = `${pendingCount} مورد در انتظار`;
         }
 
         function renderOverviewProjectCards() {
@@ -1688,7 +1742,6 @@
                 optGantt.innerText = `${p.code} - ${p.name}`;
                 ganttSelector.appendChild(optGantt);
 
-                // Filter Add Activity Select based on Role
                 if (userRole === 'pmo' || userAssigned === 'ALL' || userAssigned === p.id) {
                     const opt2 = document.createElement('option');
                     opt2.value = p.id;
@@ -1721,7 +1774,8 @@
             if (!project) return;
 
             const totalProg = calculateProjectProgress(project);
-            const canEdit = window.hasPermission('edit_wbs', project.id);
+            const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+            const canDirectEdit = userRole === 'pmo'; // Only PMO can edit directly in WBS
 
             container.innerHTML = `
                 <div class="bg-slate-900 text-white p-6">
@@ -1779,7 +1833,7 @@
                                     </div>
                                     <div class="flex items-center gap-3 text-xs">
                                         <span class="text-slate-600 font-medium">پیشرفت فاز: <b class="text-sky-700">${phase.actualProgress}%</b></span>
-                                        ${canEdit ? `
+                                        ${canDirectEdit ? `
                                             <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
                                                 <i class="fa-solid fa-plus text-[10px]"></i> افزودن فعالیت
                                             </button>
@@ -1811,7 +1865,7 @@
                                                         <div class="bg-sky-600 h-2 rounded-full" style="width: ${Math.min(item.actualProgress, 100)}%"></div>
                                                     </div>
                                                 </div>
-                                                ${canEdit ? `
+                                                ${canDirectEdit ? `
                                                     <button onclick="openEditWbsModal('${project.id}', '${item.id}')" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-medium transition shadow-sm whitespace-nowrap flex items-center gap-1">
                                                         <i class="fa-solid fa-pen-to-square text-sky-600"></i> ویرایش
                                                     </button>
@@ -1829,7 +1883,7 @@
 
         window.openEditWbsModal = function(projectId, wbsItemId) {
             if (!window.hasPermission('edit_wbs', projectId)) {
-                showToast("شما مجوز ویرایش ساختار این پروژه را ندارید.", "error");
+                showToast("شما مجوز ویرایش مستقیم ساختار این پروژه را ندارید.", "error");
                 return;
             }
             const prj = window.projects.find(p => p.id === projectId);
@@ -1893,7 +1947,7 @@
             saveState(true);
             renderAllViews();
             closeEditWbsModal();
-            showToast("تغییرات WBS با موفقیت ثبت و همگام شد.", "success");
+            showToast("تغییرات ساختار شکست با موفقیت ذخیره شد.", "success");
         };
 
         window.openAddWbsModal = function(projectId, phaseId) {
@@ -2086,6 +2140,7 @@
             }
         };
 
+        // Stage-Gate: Handle Activity Submission
         window.handleSaveActivity = function(e) {
             e.preventDefault();
             const prjId = document.getElementById('modalProjectSelect').value;
@@ -2100,6 +2155,20 @@
                 return;
             }
 
+            const userRole = currentUserProfile ? currentUserProfile.role : 'lead';
+            let proposedProg = null;
+
+            const checkEl = document.getElementById('modalUpdateProgressCheck');
+            if (checkEl && checkEl.checked) {
+                const newProg = parseInt(document.getElementById('modalNewProgress').value);
+                if (!isNaN(newProg) && newProg >= 0 && newProg <= 100) {
+                    proposedProg = newProg;
+                }
+            }
+
+            // PMO submissions can be auto-approved; Lead submissions are 'pending'
+            const initialStatus = (userRole === 'pmo') ? 'approved' : 'pending';
+
             const newAct = {
                 id: "ACT-" + Date.now().toString().slice(-4),
                 projectId: prjId,
@@ -2107,34 +2176,193 @@
                 date: date,
                 hours: parseFloat(hours),
                 author: author,
-                description: description
+                description: description,
+                status: initialStatus,
+                proposedProgress: proposedProg,
+                createdAt: new Date().toISOString()
             };
 
-            window.activities.unshift(newAct);
-
-            const checkEl = document.getElementById('modalUpdateProgressCheck');
-            if (checkEl && checkEl.checked) {
-                const newProg = parseInt(document.getElementById('modalNewProgress').value);
-                if (!isNaN(newProg) && newProg >= 0 && newProg <= 100) {
-                    const prj = window.projects.find(p => p.id === prjId);
-                    if (prj) {
-                        prj.wbs.forEach(phase => {
-                            const item = phase.children.find(c => c.id === wbsId);
-                            if (item) {
-                                item.actualProgress = newProg;
-                            }
-                        });
-                        prj.actualProgress = calculateProjectProgress(prj);
-                    }
-                }
+            // If auto-approved by PMO with progress update, apply immediately
+            if (initialStatus === 'approved' && proposedProg !== null) {
+                applyProgressUpdate(prjId, wbsId, proposedProg);
             }
 
+            window.activities.unshift(newAct);
             saveState(true);
             renderAllViews();
             closeLogModal();
             document.getElementById('activityForm').reset();
             toggleProgressInput();
-            showToast("اقدام با موفقیت ثبت شد.", "success");
+
+            if (initialStatus === 'pending') {
+                showToast("اقدام با موفقیت ثبت شد و در صف تایید کارتابل PMO قرار گرفت.", "info");
+            } else {
+                showToast("اقدام ثبت و پیشرفت فیزیکی اعمال شد.", "success");
+            }
+        };
+
+        function applyProgressUpdate(prjId, wbsId, newProg) {
+            const prj = window.projects.find(p => p.id === prjId);
+            if (prj) {
+                prj.wbs.forEach(phase => {
+                    const item = phase.children.find(c => c.id === wbsId);
+                    if (item) {
+                        item.actualProgress = newProg;
+                    }
+                    const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
+                    const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
+                    phase.actualProgress = Math.round(childSum / weightSum);
+                });
+                prj.actualProgress = calculateProjectProgress(prj);
+            }
+        }
+
+        // Render Approval Inbox
+        function renderApprovalInbox() {
+            const container = document.getElementById('pendingApprovalsList');
+            const pendingBadge = document.getElementById('pendingBadge');
+            const inboxBadge = document.getElementById('inboxPendingCountBadge');
+            if (!container) return;
+
+            const pendingActs = window.activities.filter(a => a.status === 'pending');
+            const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+            const isPmo = userRole === 'pmo';
+
+            if (pendingBadge) {
+                pendingBadge.innerText = pendingActs.length;
+                if (pendingActs.length > 0) pendingBadge.classList.remove('hidden');
+                else pendingBadge.classList.add('hidden');
+            }
+
+            if (inboxBadge) {
+                inboxBadge.innerText = `${pendingActs.length} اقدام در صف بررسی`;
+            }
+
+            container.innerHTML = '';
+
+            if (pendingActs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800">هیچ اقدامی در انتظار تایید وجود ندارد</h4>
+                        <p class="text-xs text-slate-400 mt-1">تمام اقدامات ثبت‌شده توسط مسئولین پروژه‌ها بررسی و تایید نهایی شده‌اند.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            pendingActs.forEach(act => {
+                const prj = window.projects.find(p => p.id === act.projectId);
+                const prjName = prj ? prj.name : act.projectId;
+                const prjCode = prj ? prj.code : act.projectId;
+
+                const card = document.createElement('div');
+                card.className = "bg-white border-2 border-amber-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition space-y-3";
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">در انتظار تایید PMO</span>
+                            <span class="text-xs font-mono font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded">${prjCode}</span>
+                            <b class="text-xs text-slate-800">${prjName}</b>
+                        </div>
+                        <div class="text-[11px] text-slate-400 font-mono">
+                            تاریخ ثبت: <b>${act.date}</b> | توسط: <b class="text-slate-700">${act.author}</b>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-1.5">
+                            <span class="text-slate-400 text-[11px]">شرح اقدام مسئول پروژه:</span>
+                            <p class="text-slate-700 leading-relaxed font-medium bg-slate-50 p-3 rounded-xl border border-slate-100">${act.description}</p>
+                        </div>
+                        <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100 space-y-2 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[11px] text-slate-500 block">بخش WBS مربوطه:</span>
+                                <b class="font-mono text-slate-800 text-xs">${act.wbsId}</b>
+                                <div class="mt-2">
+                                    <span class="text-[11px] text-slate-500">پیشنهاد پیشرفت فیزیکی:</span>
+                                    <b class="text-sky-700 block text-sm font-black mt-0.5">${act.proposedProgress !== null && act.proposedProgress !== undefined ? act.proposedProgress + '%' : 'بدون تغییر پیشرفت'}</b>
+                                </div>
+                            </div>
+                            <span class="text-[11px] text-slate-400">زمان: ${act.hours} ساعت کار</span>
+                        </div>
+                    </div>
+
+                    ${isPmo ? `
+                        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                            <button onclick="openRejectModal('${act.id}')" class="px-4 py-1.5 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-xmark"></i> <span>رد / نیاز به بازنگری</span>
+                            </button>
+                            <button onclick="approveActivity('${act.id}')" class="px-5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-md transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-check"></i> <span>تایید و اعمال در پیشرفت پروژه</span>
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100 text-left">
+                            * فقط مدیریت ارشد PMO امکان تایید یا رد این مورد را دارد.
+                        </div>
+                    `}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.approveActivity = function(activityId) {
+            if (currentUserProfile && currentUserProfile.role !== 'pmo') {
+                showToast("فقط مدیر ارشد PMO مجاز به تایید اقدامات است.", "error");
+                return;
+            }
+
+            const act = window.activities.find(a => a.id === activityId);
+            if (!act) return;
+
+            act.status = 'approved';
+            act.approvedBy = currentUserProfile ? currentUserProfile.full_name : 'PMO';
+            act.approvedAt = new Date().toISOString();
+
+            // Apply proposed progress if present
+            if (act.proposedProgress !== null && act.proposedProgress !== undefined) {
+                applyProgressUpdate(act.projectId, act.wbsId, act.proposedProgress);
+            }
+
+            saveState(true);
+            renderAllViews();
+            showToast("اقدام تایید شد و پیشرفت پروژه با موفقیت به‌روزرسانی گردید.", "success");
+        };
+
+        window.openRejectModal = function(activityId) {
+            document.getElementById('rejectTargetActivityId').value = activityId;
+            document.getElementById('rejectionReasonText').value = '';
+            document.getElementById('rejectActivityModal').classList.remove('hidden');
+        };
+
+        window.closeRejectModal = function() {
+            document.getElementById('rejectActivityModal').classList.add('hidden');
+        };
+
+        window.submitRejectActivity = function() {
+            const activityId = document.getElementById('rejectTargetActivityId').value;
+            const reason = document.getElementById('rejectionReasonText').value.trim();
+
+            if (!reason) {
+                showToast("لطفاً علت رد اقدام را بنویسید.", "error");
+                return;
+            }
+
+            const act = window.activities.find(a => a.id === activityId);
+            if (act) {
+                act.status = 'rejected';
+                act.rejectionReason = reason;
+                act.rejectedBy = currentUserProfile ? currentUserProfile.full_name : 'PMO';
+                act.rejectedAt = new Date().toISOString();
+
+                saveState(true);
+                renderAllViews();
+                closeRejectModal();
+                showToast("اقدام با موفقیت رد شد و به بخش بازنگری رفت.", "info");
+            }
         };
 
         function renderActivitiesTable() {
@@ -2143,16 +2371,23 @@
             tbody.innerHTML = '';
 
             if (window.activities.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">هیچ اقدامی ثبت نشده است.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400">هیچ اقدامی ثبت نشده است.</td></tr>`;
                 return;
             }
 
             const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+            const isPmo = userRole === 'pmo';
 
             window.activities.forEach(act => {
                 const prj = window.projects.find(p => p.id === act.projectId);
                 const prjCode = prj ? prj.code : act.projectId;
-                const canDelete = userRole === 'pmo';
+
+                let statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">🟢 تایید نهایی</span>';
+                if (act.status === 'pending') {
+                    statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 animate-pulse">🟡 در انتظار تایید</span>';
+                } else if (act.status === 'rejected') {
+                    statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800" title="${act.rejectionReason || ''}">🔴 نیازمند بازنگری</span>`;
+                }
 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
@@ -2160,11 +2395,15 @@
                     <td class="px-4 py-3 font-mono text-slate-500">${act.date}</td>
                     <td class="px-4 py-3 font-bold text-slate-800">${prjCode}</td>
                     <td class="px-4 py-3 font-mono text-slate-600">${act.wbsId}</td>
-                    <td class="px-4 py-3 text-slate-700 max-w-md">${act.description}</td>
+                    <td class="px-4 py-3 text-slate-700 max-w-md">
+                        <div>${act.description}</div>
+                        ${act.rejectionReason ? `<div class="text-[10px] text-rose-600 mt-1 font-semibold">علت رد: ${act.rejectionReason}</div>` : ''}
+                    </td>
                     <td class="px-4 py-3 text-slate-600 font-medium">${act.author}</td>
                     <td class="px-4 py-3 font-mono font-bold text-sky-700">${act.hours} ساعت</td>
+                    <td class="px-4 py-3 text-center">${statusBadge}</td>
                     <td class="px-4 py-3 text-center">
-                        ${canDelete ? `
+                        ${isPmo ? `
                             <button onclick="confirmDeleteActivity('${act.id}')" title="حذف اقدام" class="text-rose-500 hover:text-rose-700 p-1">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
@@ -2194,11 +2433,8 @@
                 const matchesSearch = text.includes(searchVal);
                 const matchesPrj = (filterPrj === 'ALL' || prjCell === filterPrj);
 
-                if (matchesSearch && matchesPrj) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                if (matchesSearch && matchesPrj) row.style.display = '';
+                else row.style.display = 'none';
             }
         };
 
@@ -2232,13 +2468,11 @@
         };
 
         window.switchTab = function(tabName) {
-            document.getElementById('view-overview').classList.add('hidden');
-            document.getElementById('view-projects').classList.add('hidden');
-            document.getElementById('view-gantt').classList.add('hidden');
-            document.getElementById('view-activities').classList.add('hidden');
-
-            const tabs = ['overview', 'projects', 'gantt', 'activities'];
+            const tabs = ['overview', 'projects', 'gantt', 'activities', 'approvals'];
             tabs.forEach(t => {
+                const view = document.getElementById(`view-${t}`);
+                if (view) view.classList.add('hidden');
+
                 const btn = document.getElementById(`tab-${t}`);
                 if (btn) {
                     if (t === tabName) {
@@ -2291,7 +2525,7 @@
                     </div>
                     <div class="text-left font-mono text-xs text-slate-500">
                         <span>سند مدیریتی محرمانه</span><br>
-                        <span>نسخه آنلاین ۱.۴</span>
+                        <span>نسخه آنلاین ۱.۵ (Stage-Gate)</span>
                     </div>
                 </div>
 
@@ -2301,7 +2535,7 @@
                         <b class="text-lg text-slate-800">${window.projects.length} پروژه</b>
                     </div>
                     <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                        <span class="text-[11px] text-slate-500 block">میانگین پیشرفت واقعی کل</span>
+                        <span class="text-[11px] text-slate-500 block">میانگین پیشرفت تاییدشده</span>
                         <b class="text-lg text-sky-700">${avgActual}%</b>
                     </div>
                     <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
@@ -2309,7 +2543,7 @@
                         <b class="text-lg text-slate-600">${avgPlanned}%</b>
                     </div>
                     <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                        <span class="text-[11px] text-slate-500 block">تعداد اقدامات ثبت‌شده</span>
+                        <span class="text-[11px] text-slate-500 block">تعداد کل اقدامات</span>
                         <b class="text-lg text-emerald-700">${window.activities.length} اقدام</b>
                     </div>
                 </div>
@@ -2359,7 +2593,7 @@
 
             window.projects.forEach(p => {
                 const actProg = calculateProjectProgress(p);
-                const projectActs = window.activities.filter(a => a.projectId === p.id);
+                const projectActs = window.activities.filter(a => a.projectId === p.id && a.status === 'approved');
 
                 html += `
                     <div class="border border-slate-300 rounded-xl p-4 space-y-3 bg-white print-card">
@@ -2395,12 +2629,12 @@
                         </div>
 
                         <div class="text-xs space-y-1 pt-1">
-                            <b class="text-slate-700 block text-[11px]">آخرین اقدامات ثبت‌شده (${projectActs.length} مورد):</b>
+                            <b class="text-slate-700 block text-[11px]">آخرین اقدامات تاییدشده (${projectActs.length} مورد):</b>
                             ${projectActs.length > 0 ? `
                                 <ul class="list-disc list-inside space-y-0.5 text-[11px] text-slate-600">
                                     ${projectActs.slice(0, 3).map(a => `<li><b>${a.date} (${a.author}):</b> ${a.description}</li>`).join('')}
                                 </ul>
-                            ` : `<p class="text-[10px] text-slate-400">اقدامی ثبت نشده است.</p>`}
+                            ` : `<p class="text-[10px] text-slate-400">اقدام تاییدشده‌ای ثبت نشده است.</p>`}
                         </div>
                     </div>
                 `;
