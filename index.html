@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سامانه مدیریت و پایش پروژه‌های استراتژیک جذب تکنولوژی (MSTID)</title>
+    <title>سامانه مدیریت و پایش پروژه‌های استراتژیک جذب فناوری (MSTID)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
@@ -24,14 +24,17 @@
                     },
                     colors: {
                         brand: {
-                            50: '#f0f7ff',
-                            100: '#e0effe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                            cyan: '#00b4d8',
+                            blue: '#1d4ed8',
+                            darkBlue: '#0f172a',
+                            purple: '#7e22ce',
+                            accent: '#6366f1',
                         }
+                    },
+                    backgroundImage: {
+                        'logo-gradient': 'linear-gradient(135deg, #00b4d8 0%, #1d4ed8 50%, #7e22ce 100%)',
+                        'logo-gradient-h': 'linear-gradient(90deg, #00b4d8 0%, #2563eb 50%, #7e22ce 100%)',
+                        'card-glow': 'radial-gradient(circle at top right, rgba(0, 180, 216, 0.08), transparent 70%)',
                     }
                 }
             }
@@ -44,61 +47,69 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateY(20px); }
-            10% { opacity: 1; transform: translateY(0); }
-            90% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-20px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .toast-animate {
-            animation: fadeInOut 3.5s forwards;
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 180, 216, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(126, 34, 206, 0.5); }
+        }
+        .glow-effect { animation: pulseGlow 4s infinite ease-in-out; }
+
+        .timeline-grid {
+            background-size: 80px 100%;
+            background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px);
         }
 
         @media print {
             header, nav, #mainTabs, button, .no-print, input, select, #authSection {
                 display: none !important;
             }
-            body {
-                background-color: #ffffff !important;
-                color: #000000 !important;
-            }
-            .print-container {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .page-break {
-                page-break-before: always;
-            }
-            .print-card {
-                border: 1px solid #cbd5e1 !important;
-                box-shadow: none !important;
-                break-inside: avoid;
-            }
+            body { background-color: #ffffff !important; color: #000000 !important; }
+            .print-container { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .page-break { page-break-before: always; }
+            .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; }
         }
     </style>
 </head>
-<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col">
+<body class="text-slate-800 bg-slate-50/70 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
 
     <!-- LOGIN SCREEN OVERLAY -->
-    <div id="loginScreen" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden p-6 sm:p-8 space-y-6">
-            <div class="text-center space-y-2">
-                <div class="inline-flex bg-sky-950 px-4 py-2 rounded-xl border border-sky-800/80 mb-2">
-                    <span class="text-xs font-black text-sky-300">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</span>
+    <div id="loginScreen" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="bg-white/95 rounded-3xl shadow-2xl border border-slate-200/80 w-full max-w-md overflow-hidden p-6 sm:p-8 space-y-6 relative">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-logo-gradient-h"></div>
+            
+            <div class="text-center space-y-3">
+                <div class="inline-flex items-center justify-center p-2 rounded-2xl bg-slate-900 shadow-lg">
+                    <!-- Embedded Brand Graphic -->
+                    <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 90C50 90 25 75 25 45C25 25 40 10 50 10C60 10 75 25 75 45C75 75 50 90 50 90Z" fill="url(#logoG)" opacity="0.9"/>
+                        <circle cx="50" cy="42" r="16" fill="#0f172a"/>
+                        <circle cx="50" cy="42" r="8" fill="#00b4d8"/>
+                        <defs>
+                            <linearGradient id="logoG" x1="25" y1="10" x2="75" y2="90" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00b4d8"/>
+                                <stop offset="0.5" stop-color="#1d4ed8"/>
+                                <stop offset="1" stop-color="#7e22ce"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
                 </div>
-                <h2 class="text-lg sm:text-xl font-black text-slate-900">سامانه پایش استراتژیک فناوری (MSTID)</h2>
-                <p class="text-xs text-slate-500">برای ورود به سامانه اطلاعات حساب سازمانی خود را وارد کنید</p>
+                <h2 class="text-lg font-black text-slate-900 tracking-tight">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</h2>
+                <p class="text-xs text-slate-500 font-medium">سامانه استراتژیک پایش و تصاحب فناوری (MSTID)</p>
             </div>
 
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 pt-2">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">پست الکترونیک سازمانی</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-xs">
                             <i class="fa-solid fa-envelope"></i>
                         </span>
-                        <input type="email" id="loginEmail" required placeholder="user@domain.ir" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 pr-8 block w-full focus:ring-sky-500 focus:border-sky-500 font-mono text-left dir-ltr">
+                        <input type="email" id="loginEmail" required placeholder="user@mstid.ir" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 pr-9 block w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 font-mono text-left dir-ltr transition shadow-sm">
                     </div>
                 </div>
 
@@ -108,91 +119,115 @@
                         <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-xs">
                             <i class="fa-solid fa-lock"></i>
                         </span>
-                        <input type="password" id="loginPassword" required placeholder="••••••••" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 pr-8 block w-full focus:ring-sky-500 focus:border-sky-500 font-mono text-left dir-ltr">
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 pr-9 block w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 font-mono text-left dir-ltr transition shadow-sm">
                     </div>
                 </div>
 
                 <div id="loginErrorMsg" class="hidden p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-medium"></div>
 
-                <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-600/30 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>ورود به داشبورد</span>
+                <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-logo-gradient hover:opacity-95 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/25 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>ورود امن به سامانه</span>
                 </button>
             </form>
         </div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
-    <div id="appContainer" class="flex-1 flex flex-col hidden">
-        <!-- Header -->
-        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md no-print">
+    <div id="appContainer" class="flex-1 flex flex-col hidden animate-fade-in">
+        <!-- Modern Executive Header -->
+        <header class="bg-slate-950/90 backdrop-blur-md text-white sticky top-0 z-40 border-b border-slate-800 shadow-xl no-print">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-wrap items-center justify-between py-2.5 gap-2">
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                        <div class="bg-sky-950/90 px-3.5 py-2 rounded-xl border border-sky-800/60 flex items-center justify-center">
-                            <span class="text-xs font-black text-sky-300 tracking-wide">فولاد مبارکه</span>
+                <div class="flex items-center justify-between py-2.5 gap-4">
+                    
+                    <!-- Right: Brand Logo & Title -->
+                    <div class="flex items-center space-x-3.5 space-x-reverse">
+                        <div class="bg-slate-900 border border-slate-800 p-1.5 rounded-2xl flex items-center justify-center shadow-inner">
+                            <!-- High-Fidelity Arc Brand Mark matching Logo -->
+                            <svg class="w-9 h-9" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="rotate(-15 50 50)">
+                                    <rect x="38" y="12" width="14" height="14" rx="4" transform="rotate(45 38 12)" fill="#7e22ce"/>
+                                    <rect x="54" y="20" width="13" height="13" rx="4" transform="rotate(45 54 20)" fill="#6b21a8"/>
+                                    <rect x="42" y="32" width="12" height="12" rx="3.5" transform="rotate(45 42 32)" fill="#2563eb"/>
+                                    <rect x="58" y="40" width="11" height="11" rx="3.5" transform="rotate(45 58 40)" fill="#1d4ed8"/>
+                                    <rect x="46" y="52" width="10" height="10" rx="3" transform="rotate(45 46 52)" fill="#00b4d8"/>
+                                    <rect x="60" y="60" width="9" height="9" rx="2.5" transform="rotate(45 60 60)" fill="#38bdf8"/>
+                                    <rect x="48" y="70" width="7" height="7" rx="2" transform="rotate(45 48 70)" fill="#06b6d4"/>
+                                </g>
+                            </svg>
                         </div>
+
                         <div>
-                            <h1 class="text-base sm:text-lg font-extrabold leading-tight tracking-tight">داشبورد استراتژیک جذب فناوری (MSTID)</h1>
-                            <p class="text-xs text-sky-300 font-medium mt-0.5">سامانه آنلاین پایش، کنترل و همگام‌سازی زنده</p>
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-sm sm:text-base font-black tracking-tight text-white">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</h1>
+                                <span class="bg-logo-gradient text-[10px] font-black px-2 py-0.5 rounded-md text-white shadow-sm">MSTID</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 font-medium">سامانه راهبری و کنترل پورتفولیوی پروژه‌های استراتژیک جذب فناوری</p>
                         </div>
                     </div>
 
-                    <!-- User Status Badge & Actions -->
-                    <div class="flex items-center space-x-2 sm:space-x-2.5 space-x-reverse flex-wrap gap-y-1">
-                        <div id="cloudStatusBadge" class="bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm">
-                            <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
-                            <span id="cloudStatusText">اتصال ابری</span>
-                        </div>
+                    <!-- Left Corner: User Profile Info, Role & System Actions -->
+                    <div class="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
+                        
+                        <!-- Actions -->
+                        <div class="flex items-center space-x-1.5 space-x-reverse">
+                            <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-rose-300 border border-rose-900/40 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-pdf text-rose-400"></i> <span class="hidden sm:inline">گزارش PDF</span>
+                            </button>
+                            
+                            <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl transition flex items-center gap-1 border border-slate-800">
+                                <i class="fa-solid fa-download text-cyan-400"></i> <span class="hidden sm:inline">پشتیبان</span>
+                            </button>
+                            <button id="btnRestore" onclick="document.getElementById('importFileInput').click()" class="px-3 py-1.5 text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl transition flex items-center gap-1 border border-slate-800">
+                                <i class="fa-solid fa-upload text-purple-400"></i> <span class="hidden sm:inline">بازیابی</span>
+                            </button>
+                            <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
 
-                        <div class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs flex items-center gap-2">
-                            <div class="text-right">
-                                <b id="userFullNameBadge" class="text-white block text-[11px]">کاربر سیستم</b>
-                                <span id="userRoleBadge" class="text-[10px] text-sky-400">دسترسی سازمانی</span>
-                            </div>
-                            <button onclick="handleLogout()" title="خروج از حساب" class="text-slate-400 hover:text-rose-400 p-1 transition mr-1">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <button id="btnAddActivityTop" onclick="openLogModal()" class="px-3.5 py-1.5 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl transition shadow-md shadow-blue-500/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> <span>ثبت اقدام</span>
                             </button>
                         </div>
 
-                        <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-rose-700 hover:bg-rose-600 text-white rounded-lg transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-file-pdf"></i> <span class="hidden sm:inline">گزارش PDF</span>
-                        </button>
-                        
-                        <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
-                            <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">پشتیبان</span>
-                        </button>
-                        <button id="btnRestore" onclick="document.getElementById('importFileInput').click()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1 border border-slate-700">
-                            <i class="fa-solid fa-upload"></i> <span class="hidden sm:inline">بازیابی</span>
-                        </button>
-                        <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
+                        <div class="h-6 w-px bg-slate-800 mx-1"></div>
 
-                        <button id="btnAddActivityTop" onclick="openLogModal()" class="px-3.5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition shadow-sm flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> <span>ثبت اقدام جدید</span>
-                        </button>
+                        <!-- User Profile Card (Top Left Corner) -->
+                        <div class="bg-slate-900/90 border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-2xl text-xs flex items-center gap-3 transition shadow-sm">
+                            <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs shadow-inner">
+                                <i class="fa-solid fa-user-tie text-[11px]"></i>
+                            </div>
+                            <div class="text-right leading-tight">
+                                <b id="userFullNameBadge" class="text-white block text-xs font-bold">کاربر سامانه</b>
+                                <span id="userRoleBadge" class="text-[10px] text-cyan-400 font-medium">سطح دسترسی</span>
+                            </div>
+                            <button onclick="handleLogout()" title="خروج از حساب کاربری" class="text-slate-400 hover:text-rose-400 p-1 transition mr-0.5">
+                                <i class="fa-solid fa-power-off text-xs"></i>
+                            </button>
+                        </div>
+
                     </div>
+
                 </div>
             </div>
         </header>
 
-        <!-- Navigation Tabs -->
-        <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[68px] z-30">
+        <!-- Navigation Tabs Bar -->
+        <div class="bg-white border-b border-slate-200 sticky top-[61px] z-30 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <nav class="flex space-x-8 space-x-reverse overflow-x-auto custom-scrollbar" id="mainTabs">
-                    <button onclick="switchTab('overview')" id="tab-overview" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-sky-600 text-sky-600">
-                        <i class="fa-solid fa-chart-pie"></i> نمای کلی و داشبورد
+                <nav class="flex space-x-2 space-x-reverse overflow-x-auto py-2 custom-scrollbar" id="mainTabs">
+                    <button onclick="switchTab('overview')" id="tab-overview" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-bold text-xs whitespace-nowrap bg-slate-900 text-white shadow-sm transition">
+                        <i class="fa-solid fa-chart-pie text-cyan-400"></i> نمای کلی و داشبورد
                     </button>
-                    <button onclick="switchTab('projects')" id="tab-projects" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                        <i class="fa-solid fa-sitemap"></i> ساختار شکست (WBS) و پیشرفت
+                    <button onclick="switchTab('projects')" id="tab-projects" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-sitemap text-blue-600"></i> ساختار شکست (WBS)
                     </button>
-                    <button onclick="switchTab('gantt')" id="tab-gantt" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                        <i class="fa-solid fa-timeline"></i> گانت‌چارت و زمان‌بندی
+                    <button onclick="switchTab('gantt')" id="tab-gantt" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-timeline text-purple-600"></i> تایم‌لاین و گانت‌چارت
                     </button>
-                    <button onclick="switchTab('activities')" id="tab-activities" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                        <i class="fa-solid fa-list-check"></i> گزارش اقدامات ثبت‌شده
+                    <button onclick="switchTab('activities')" id="tab-activities" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-list-check text-emerald-600"></i> گزارش اقدامات
                     </button>
-                    <button onclick="switchTab('approvals')" id="tab-approvals" class="py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
-                        <i class="fa-solid fa-inbox"></i> 
+                    <button onclick="switchTab('approvals')" id="tab-approvals" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-inbox text-amber-500"></i> 
                         <span>کارتابل تاییدات PMO</span>
                         <span id="pendingBadge" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full hidden">0</span>
                     </button>
@@ -205,66 +240,79 @@
 
             <!-- TAB 1: OVERVIEW DASHBOARD -->
             <div id="view-overview" class="space-y-6">
+                <!-- Summary KPI Cards with Subtle Brand Glow -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-slate-500">تعداد کل پروژه‌ها</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total-projects">۵ پروژه</h3>
-                            <p class="text-xs text-sky-600 font-medium mt-1"><i class="fa-solid fa-coins"></i> سرمایه کل: ۴۰ هزار میلیارد ریال</p>
-                        </div>
-                        <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-diagram-project"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-slate-500">میانگین پیشرفت کل (تاییدشده)</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-avg-progress">0%</h3>
-                            <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای زمان‌بندی: <span id="kpi-avg-planned" class="font-bold text-sky-700">0%</span></p>
-                            <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5">
-                                <div id="kpi-avg-bar" class="bg-sky-600 h-1.5 rounded-full" style="width: 0%"></div>
+                    
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition relative overflow-hidden bg-card-glow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400">تعداد پروژه‌ها</p>
+                                <h3 class="text-2xl font-black text-slate-900 mt-1" id="kpi-total-projects">۵ پروژه</h3>
+                                <p class="text-[11px] text-cyan-600 font-bold mt-1.5"><i class="fa-solid fa-coins"></i> سرمایه‌گذاری: ۴۰ همت</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100 text-cyan-600 flex items-center justify-center text-xl shadow-inner">
+                                <i class="fa-solid fa-cubes-stacked"></i>
                             </div>
                         </div>
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-chart-line"></i>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition relative overflow-hidden bg-card-glow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400">میانگین پیشرفت کل (تاییدشده)</p>
+                                <h3 class="text-2xl font-black text-blue-700 mt-1" id="kpi-avg-progress">0%</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای: <span id="kpi-avg-planned" class="font-bold text-slate-700">0%</span></p>
+                                <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5 overflow-hidden">
+                                    <div id="kpi-avg-bar" class="bg-logo-gradient-h h-1.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center text-xl shadow-inner">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-slate-500">اقدامات ثبت‌شده</p>
-                            <h3 class="text-2xl font-black text-slate-800 mt-1" id="kpi-total-activities">۰</h3>
-                            <p class="text-xs text-slate-400 font-medium mt-1">توسط مسئولین پروژه‌ها</p>
-                        </div>
-                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition relative overflow-hidden bg-card-glow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400">اقدامات ثبت‌شده</p>
+                                <h3 class="text-2xl font-black text-purple-700 mt-1" id="kpi-total-activities">۰</h3>
+                                <p class="text-[11px] text-slate-400 font-medium mt-1.5">توسط مسئولین ۵ پروژه</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-inner">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-slate-500">وضعیت کارتابل بررسی</p>
-                            <h3 class="text-lg font-bold text-amber-600 mt-1" id="kpi-pending-count">۰ مورد در انتظار</h3>
-                            <p class="text-xs text-slate-400 font-medium mt-1">نیازمند بررسی و تایید PMO</p>
-                        </div>
-                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-hourglass-half"></i>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition relative overflow-hidden bg-card-glow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400">وضعیت کارتابل بررسی</p>
+                                <h3 class="text-lg font-black text-amber-600 mt-1" id="kpi-pending-count">۰ مورد در انتظار</h3>
+                                <p class="text-[11px] text-slate-400 font-medium mt-1">تاییدات دروازه‌ای PMO</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center text-xl shadow-inner">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Charts Grid -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
-                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-chart-column text-sky-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای ۵ پروژه
-                            </h3>
-                            <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                                <i class="fa-solid fa-calendar-day text-sky-600 text-xs"></i>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-column text-blue-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای ۵ پروژه
+                                </h3>
+                                <p class="text-[11px] text-slate-400 mt-0.5">تحلیل انحراف عملکردی نسبت به زمان‌بندی مبنا</p>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200">
+                                <i class="fa-solid fa-calendar-day text-cyan-600 text-xs"></i>
                                 <label for="currentEvaluationDate" class="text-xs font-bold text-slate-700 whitespace-nowrap">تاریخ پایش:</label>
-                                <input type="text" id="currentEvaluationDate" onchange="handleEvaluationDateChange()" value="1405/05/26" class="bg-white border border-slate-300 text-xs font-bold font-mono rounded-lg p-1 text-center w-24 text-sky-800 focus:ring-sky-500">
+                                <input type="text" id="currentEvaluationDate" onchange="handleEvaluationDateChange()" value="1405/05/26" class="bg-white border border-slate-300 text-xs font-bold font-mono rounded-lg p-1 text-center w-24 text-blue-900 focus:ring-2 focus:ring-cyan-500">
                             </div>
                         </div>
                         <div class="relative h-64">
@@ -272,12 +320,15 @@
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-chart-pie text-indigo-600"></i> نمودار راداری پیشرفت پروژه‌ها
-                            </h3>
-                            <span id="radarMonthBadge" class="text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">مرداد ۱۴۰۵</span>
+                            <div>
+                                <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-pie text-purple-600"></i> توازن پیشرفت پورتفولیو
+                                </h3>
+                                <p class="text-[11px] text-slate-400 mt-0.5">نمودار راداری وضعیت ۵ فناوری</p>
+                            </div>
+                            <span id="radarMonthBadge" class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">مرداد ۱۴۰۵</span>
                         </div>
                         <div class="relative h-64 flex items-center justify-center">
                             <canvas id="radarChart"></canvas>
@@ -286,9 +337,9 @@
                 </div>
 
                 <!-- Project Quick Summary Cards -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-cubes text-slate-600"></i> خلاصه اطلاعات و وضعیت ۵ پروژه استراتژیک
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+                    <h3 class="font-black text-slate-900 text-sm mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-slate-600"></i> مشخصات و وضعیت ۵ پروژه استراتژیک
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="project-overview-cards">
                     </div>
@@ -297,35 +348,59 @@
 
             <!-- TAB 2: PROJECTS & WBS MANAGEMENT -->
             <div id="view-projects" class="hidden space-y-6">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-3 w-full md:w-auto">
-                        <label for="projectSelector" class="text-xs font-bold text-slate-600 whitespace-nowrap">انتخاب پروژه:</label>
-                        <select id="projectSelector" onchange="renderSelectedProjectWBS()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
+                        <label for="projectSelector" class="text-xs font-bold text-slate-700 whitespace-nowrap">انتخاب پروژه:</label>
+                        <select id="projectSelector" onchange="renderSelectedProjectWBS()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 font-bold">
                         </select>
                     </div>
-                    <div id="wbsRoleNotice" class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-xl border border-slate-200 w-full md:w-auto justify-center">
-                        <i class="fa-solid fa-shield-halved text-sky-500"></i>
+                    <div id="wbsRoleNotice" class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-200 w-full md:w-auto justify-center">
+                        <i class="fa-solid fa-shield-halved text-cyan-600"></i>
                         <span id="wbsRoleNoticeText">سطح دسترسی شما اعمال شده است.</span>
                     </div>
                 </div>
 
-                <div id="wbsContainer" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div id="wbsContainer" class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
                 </div>
             </div>
 
-            <!-- TAB 3: GANTT CHART & TIMELINE -->
+            <!-- TAB 3: GANTT CHART & SCIENTIFIC TIMELINE -->
             <div id="view-gantt" class="hidden space-y-6">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-timeline text-sky-600"></i> زمان‌بندی و گانت‌چارت پروژه‌های استراتژیک
-                        </h3>
-                        <select id="ganttProjectSelector" onchange="renderGanttChart()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-sky-500 focus:border-sky-500">
-                            <option value="ALL">نمایش تمام پروژه‌ها</option>
-                        </select>
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-timeline text-purple-600"></i> تایم‌لاین تقویمی و گانت‌چارت کلاسیک مهندسی
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">پایش انطباق زمانی واقعی در برابر برنامه‌ای فازهای WBS در طول افق ۲۴ ماهه</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <select id="ganttProjectSelector" onchange="renderGanttChart()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-cyan-500 focus:border-cyan-500 font-bold">
+                                <option value="ALL">نمایش تمام ۵ پروژه</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <div id="ganttViewContainer" class="min-w-[750px] space-y-6">
+
+                    <!-- Gantt Legend -->
+                    <div class="flex flex-wrap items-center gap-4 text-xs bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                        <span class="font-bold text-slate-700">راهنمای علائم:</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-logo-gradient"></span>
+                            <span class="text-slate-600 font-medium">پیشرفت واقعی تاییدشده</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-slate-300"></span>
+                            <span class="text-slate-600 font-medium">بازه برنامه‌ای مصوب</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                            <span class="text-slate-600 font-medium">خط پایش تاریخ جاری (۱۴۰۵/۰۵/۲۶)</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Scientific Gantt Timeline Grid Container -->
+                    <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded-2xl bg-white">
+                        <div id="ganttViewContainer" class="min-w-[920px] p-4 space-y-6">
                         </div>
                     </div>
                 </div>
@@ -333,25 +408,25 @@
 
             <!-- TAB 4: ACTIVITIES LOG HISTORY -->
             <div id="view-activities" class="hidden space-y-6">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-clock-rotate-left text-sky-600"></i> تاریخچه کامل اقدامات انجام شده
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> تاریخچه کامل اقدامات و وقایع ثبت‌شده
                         </h3>
                         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                            <input type="text" id="searchActivity" onkeyup="filterActivitiesTable()" placeholder="جستجو در اقدامات..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 w-full sm:w-48 focus:ring-sky-500 focus:border-sky-500">
-                            <select id="filterProjectActivity" onchange="filterActivitiesTable()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-sky-500 focus:border-sky-500">
+                            <input type="text" id="searchActivity" onkeyup="filterActivitiesTable()" placeholder="جستجو در شرح اقدامات..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 w-full sm:w-52 focus:ring-cyan-500 focus:border-cyan-500 font-medium">
+                            <select id="filterProjectActivity" onchange="filterActivitiesTable()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-cyan-500 focus:border-cyan-500 font-bold">
                                 <option value="ALL">همه پروژه‌ها</option>
                             </select>
                         </div>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar">
                         <table class="w-full text-xs text-right text-slate-600">
-                            <thead class="text-xs text-slate-700 uppercase bg-slate-100 border-b border-slate-200">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100/80 border-b border-slate-200">
                                 <tr>
                                     <th scope="col" class="px-4 py-3 rounded-tr-xl">تاریخ ثبت</th>
                                     <th scope="col" class="px-4 py-3">پروژه</th>
-                                    <th scope="col" class="px-4 py-3">بخش / WBS</th>
+                                    <th scope="col" class="px-4 py-3">بخش WBS</th>
                                     <th scope="col" class="px-4 py-3">شرح اقدام انجام‌شده</th>
                                     <th scope="col" class="px-4 py-3">مسئول</th>
                                     <th scope="col" class="px-4 py-3">زمان</th>
@@ -368,13 +443,13 @@
 
             <!-- TAB 5: PMO APPROVAL INBOX -->
             <div id="view-approvals" class="hidden space-y-6">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                         <div>
-                            <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
                                 <i class="fa-solid fa-inbox text-amber-500"></i> کارتابل تاییدات و بررسی دروازه‌ای (Stage-Gate)
                             </h3>
-                            <p class="text-xs text-slate-500 mt-1">اقدامات و تغییرات درصد پیشرفت ثبت‌شده توسط مسئولین پروژه‌ها پس از بررسی PMO اعمال خواهند شد.</p>
+                            <p class="text-xs text-slate-500 mt-1">تغییرات درصد پیشرفت ثبت‌شده توسط مسئولین پروژه‌ها پس از بررسی PMO در محاسبات اعمال می‌شوند.</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs bg-amber-50 text-amber-800 font-bold px-3 py-1.5 rounded-xl border border-amber-200" id="inboxPendingCountBadge">
@@ -390,28 +465,28 @@
 
         </main>
 
-        <!-- Footer -->
+        <!-- Modern Footer with Brand Gradient Touch -->
         <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-logo-gradient"></span>
                     <span>سامانه پایش استراتژیک پروژه‌ها — <b>صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</b></span>
                 </div>
                 <div class="font-mono text-slate-400 flex items-center gap-2.5">
-                    <span class="text-sky-700 font-semibold dir-ltr">MSTID Stage-Gate Workflow</span>
+                    <span class="text-blue-700 font-semibold dir-ltr">MSTID Protected Architecture</span>
                     <span class="text-slate-300">•</span>
-                    <span>MSTID Portfolio Management © 1405</span>
+                    <span>© 1405 MSTID Portfolio Management</span>
                 </div>
             </div>
         </footer>
     </div>
 
     <!-- MODAL 1: ADD NEW ACTIVITY LOG -->
-    <div id="addLogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden my-8">
-            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-sky-400"></i> ثبت اقدام و فعالیت جدید مسئول پروژه
+    <div id="addLogModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
+            <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+                <h3 class="font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-cyan-400"></i> ثبت اقدام و فعالیت جدید مسئول پروژه
                 </h3>
                 <button onclick="closeLogModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -419,62 +494,62 @@
             <form id="activityForm" onsubmit="handleSaveActivity(event)" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">پروژه مربوطه <span class="text-rose-500">*</span></label>
-                    <select id="modalProjectSelect" onchange="updateModalWBSOptions()" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
+                    <select id="modalProjectSelect" onchange="updateModalWBSOptions()" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 font-bold">
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">بخش شکست کار (WBS) <span class="text-rose-500">*</span></label>
-                    <select id="modalWbsSelect" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium">
+                    <select id="modalWbsSelect" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 font-medium">
                     </select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ اقدام <span class="text-rose-500">*</span></label>
-                        <input type="text" id="modalDate" placeholder="1405/05/20" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        <input type="text" id="modalDate" placeholder="1405/05/20" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">زمان صرف‌شده (ساعت)</label>
-                        <input type="number" id="modalHours" min="0.5" step="0.5" placeholder="مثلا ۴" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        <input type="number" id="modalHours" min="0.5" step="0.5" placeholder="مثلا ۴" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">مسئول / انجام‌دهنده <span class="text-rose-500">*</span></label>
-                    <input type="text" id="modalAuthor" value="MSTID" placeholder="نام مسئول یا کارشناس" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    <input type="text" id="modalAuthor" value="MSTID" placeholder="نام مسئول یا کارشناس" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">شرح دقیق اقدام انجام شده <span class="text-rose-500">*</span></label>
-                    <textarea id="modalDescription" rows="3" required placeholder="توضیح دهید چه کارهایی در این تاریخ انجام شده است..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
+                    <textarea id="modalDescription" rows="3" required placeholder="شرح دستاورد، مکاتبات، نتایج تست‌ها یا جلسات..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
                 </div>
 
-                <div class="bg-sky-50 p-3 rounded-xl border border-sky-100 flex items-center justify-between">
-                    <span class="text-xs text-sky-800 font-medium">پیشنهاد درصد پیشرفت واقعی جدید برای این بخش:</span>
-                    <input type="checkbox" id="modalUpdateProgressCheck" onchange="toggleProgressInput()" class="w-4 h-4 text-sky-600 rounded focus:ring-sky-500">
+                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between">
+                    <span class="text-xs text-slate-800 font-bold">پیشنهاد درصد پیشرفت واقعی جدید برای این بخش:</span>
+                    <input type="checkbox" id="modalUpdateProgressCheck" onchange="toggleProgressInput()" class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500">
                 </div>
 
                 <div id="progressInputContainer" class="hidden">
                     <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت پیشنهادی واقعی (%)</label>
-                    <input type="number" id="modalNewProgress" min="0" max="100" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold text-sky-700">
-                    <p class="text-[10px] text-amber-600 mt-1">* در صورت تایید مدیر PMO، درصد پیشرفت پروژه بر این مبنا به‌روزرسانی خواهد شد.</p>
+                    <input type="number" id="modalNewProgress" min="0" max="100" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-black text-blue-700">
+                    <p class="text-[10px] text-amber-600 mt-1 font-medium">* در صورت تایید مدیر PMO، درصد پیشرفت پروژه اعمال خواهد شد.</p>
                 </div>
 
-                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                    <button type="button" onclick="closeLogModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition">ارسال جهت تایید</button>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeLogModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">ارسال جهت تایید</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL 2: EDIT WBS ITEM & TIMELINE -->
-    <div id="editWbsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden my-8">
-            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-sky-400"></i> ویرایش مستقیم اطلاعات و پیشرفت آیتم WBS
+    <div id="editWbsModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
+            <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+                <h3 class="font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-cyan-400"></i> ویرایش مستقیم اطلاعات و پیشرفت WBS
                 </h3>
                 <button onclick="closeEditWbsModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -490,17 +565,17 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">عنوان فعالیت / بخش WBS <span class="text-rose-500">*</span></label>
-                    <input type="text" id="editWbsTitle" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    <input type="text" id="editWbsTitle" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">وزن فعالیت</label>
-                        <input type="number" id="editWbsWeight" min="1" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        <input type="number" id="editWbsWeight" min="1" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت برنامه‌ای (%)</label>
-                        <input type="number" id="editWbsPlanned" min="0" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        <input type="number" id="editWbsPlanned" min="0" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                 </div>
 
@@ -517,23 +592,23 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت واقعی قطعی (%) <span class="text-rose-500">*</span></label>
-                    <input type="number" id="editWbsActual" min="0" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold text-sky-700">
+                    <input type="number" id="editWbsActual" min="0" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-black text-blue-700">
                 </div>
 
-                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                    <button type="button" onclick="closeEditWbsModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition">ذخیره تغییرات WBS</button>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeEditWbsModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">ذخیره تغییرات WBS</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL 3: ADD NEW WBS SUB-TASK -->
-    <div id="addWbsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden my-8">
-            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-plus text-sky-400"></i> افزودن زیرشاخه و فعالیت جدید به فاز WBS
+    <div id="addWbsModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
+            <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+                <h3 class="font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-cyan-400"></i> افزودن زیرشاخه و فعالیت جدید به WBS
                 </h3>
                 <button onclick="closeAddWbsModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -549,17 +624,17 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">عنوان فعالیت <span class="text-rose-500">*</span></label>
-                    <input type="text" id="addWbsTitle" required placeholder="عنوان فعالیت جدید..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    <input type="text" id="addWbsTitle" required placeholder="عنوان فعالیت..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">وزن فعالیت</label>
-                        <input type="number" id="addWbsWeight" min="1" max="100" value="1" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        <input type="number" id="addWbsWeight" min="1" max="100" value="1" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت برنامه‌ای (%)</label>
-                        <input type="number" id="addWbsPlanned" min="0" max="100" value="0" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        <input type="number" id="addWbsPlanned" min="0" max="100" value="0" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                 </div>
 
@@ -576,74 +651,73 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت اولیه واقعی (%)</label>
-                    <input type="number" id="addWbsActual" min="0" max="100" value="0" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    <input type="number" id="addWbsActual" min="0" max="100" value="0" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono font-bold">
                 </div>
 
-                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                    <button type="button" onclick="closeAddWbsModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-xl shadow-md transition">افزودن فعالیت به WBS</button>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeAddWbsModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">افزودن به ساختار شکست</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL 4: REJECT ACTIVITY MODAL WITH REASON -->
-    <div id="rejectActivityModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4">
+    <!-- MODAL 4: REJECT ACTIVITY MODAL -->
+    <div id="rejectActivityModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4 animate-fade-in">
             <div class="flex items-center gap-3 text-rose-600">
-                <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-lg">
+                <div class="w-10 h-10 bg-rose-50 rounded-2xl flex items-center justify-center text-lg">
                     <i class="fa-solid fa-ban"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-sm text-slate-800">بازنگری / رد اقدام ثبت‌شده</h3>
-                    <p class="text-[11px] text-slate-500">علت عدم تایید یا نقص مستندات را وارد کنید</p>
+                    <h3 class="font-black text-sm text-slate-900">بازنگری / عدم تایید اقدام</h3>
+                    <p class="text-[11px] text-slate-500">علت بازنگری یا نقص مستندات را بنویسید</p>
                 </div>
             </div>
             <input type="hidden" id="rejectTargetActivityId">
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">علت رد / توضیحات بازنگری <span class="text-rose-500">*</span></label>
-                <textarea id="rejectionReasonText" rows="3" required placeholder="مثال: گزارش امکان‌سنجی پیوست نشده است یا درصد پیشرفت نیازمند تایید مشاور است..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
+                <textarea id="rejectionReasonText" rows="3" required placeholder="توضیحات لازم جهت اصلاح..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
             </div>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button onclick="closeRejectModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                <button onclick="submitRejectActivity()" class="px-5 py-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">ثبت رد اقدام</button>
+                <button onclick="closeRejectModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                <button onclick="submitRejectActivity()" class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">ثبت نتیجه بازنگری</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL 5: EXECUTIVE PDF / PRINT REPORT PREVIEW -->
-    <div id="pdfReportModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-2 sm:p-6 overflow-y-auto no-print">
-        <div class="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden my-auto max-h-[92vh] flex flex-col">
-            <div class="bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-10">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-rose-400"></i> پیش‌نمایش گزارش مدیریتی و خروجی PDF وضعیت پروژه‌ها
+    <div id="pdfReportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-2 sm:p-6 overflow-y-auto no-print">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden my-auto max-h-[92vh] flex flex-col">
+            <div class="bg-slate-950 text-white p-4 flex items-center justify-between sticky top-0 z-10 border-b border-slate-800">
+                <h3 class="font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-rose-400"></i> پیش‌نمایش گزارش مدیریتی پروژه‌های استراتژیک
                 </h3>
                 <div class="flex items-center gap-3">
-                    <button onclick="triggerPrint()" class="px-4 py-1.5 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-print"></i> <span>ذخیره به عنوان PDF / چاپ</span>
+                    <button onclick="triggerPrint()" class="px-4 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-print"></i> <span>چاپ / ذخیره PDF</span>
                     </button>
                     <button onclick="closePdfReportModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
-
             <div class="p-6 overflow-y-auto flex-1 space-y-6 text-slate-800" id="pdfReportContent">
             </div>
         </div>
     </div>
 
     <!-- MODAL 6: CUSTOM DELETE CONFIRM MODAL -->
-    <div id="deleteConfirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4">
+    <div id="deleteConfirmModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4 animate-fade-in">
             <div class="flex items-center gap-3 text-rose-600">
-                <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-lg">
+                <div class="w-10 h-10 bg-rose-50 rounded-2xl flex items-center justify-center text-lg">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
-                <h3 class="font-bold text-sm text-slate-800">تایید حذف اقدام</h3>
+                <h3 class="font-black text-sm text-slate-900">تایید حذف اقدام</h3>
             </div>
             <p class="text-xs text-slate-600 leading-relaxed">آیا از حذف این اقدام مطمئن هستید؟ این عملیات قابل بازگشت نیست.</p>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                <button id="confirmDeleteBtn" class="px-5 py-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">حذف اقدام</button>
+                <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                <button id="confirmDeleteBtn" class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">حذف اقدام</button>
             </div>
         </div>
     </div>
@@ -655,7 +729,6 @@
     <script>
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
         
-        // Permanent Built-in Supabase Configuration
         const SUPABASE_URL = 'https://juebikpjazsqbfeallqu.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_arJUJ2Xor-HtEO1TxnON5Q_-oZgtAB5';
 
@@ -673,17 +746,11 @@
 
         async function checkAuthState() {
             const client = getSupabaseClient();
-            if (!client) {
-                showLoginScreen(true);
-                return;
-            }
+            if (!client) { showLoginScreen(true); return; }
 
             try {
                 const { data: { session }, error } = await client.auth.getSession();
-                if (error || !session) {
-                    showLoginScreen(true);
-                    return;
-                }
+                if (error || !session) { showLoginScreen(true); return; }
 
                 currentUser = session.user;
                 
@@ -738,7 +805,7 @@
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>در حال بررسی...</span>`;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>در حال اعتبارسنجی...</span>`;
 
                 const { data, error } = await client.auth.signInWithPassword({
                     email: email,
@@ -757,15 +824,13 @@
                 errorBox.classList.remove('hidden');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> <span>ورود به داشبورد</span>`;
+                submitBtn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> <span>ورود امن به سامانه</span>`;
             }
         };
 
         window.handleLogout = async function() {
             const client = getSupabaseClient();
-            if (client) {
-                await client.auth.signOut();
-            }
+            if (client) await client.auth.signOut();
             currentUser = null;
             currentUserProfile = null;
             showToast("از حساب کاربری خارج شدید.", "info");
@@ -779,8 +844,8 @@
             if (nameBadge) nameBadge.innerText = currentUserProfile.full_name || currentUser.email;
 
             if (roleBadge) {
-                let roleTitle = 'ناظر ارشد (فقط خواندنی)';
-                if (currentUserProfile.role === 'pmo') roleTitle = 'مدیر ارشد / راهبر PMO';
+                let roleTitle = 'ناظر ارشد';
+                if (currentUserProfile.role === 'pmo') roleTitle = 'مدیر ارشد PMO';
                 if (currentUserProfile.role === 'lead') roleTitle = `مسئول پروژه (${currentUserProfile.assigned_project})`;
                 roleBadge.innerText = roleTitle;
             }
@@ -794,9 +859,7 @@
                 if (action === 'add_activity') {
                     return currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
                 }
-                if (action === 'edit_wbs' || action === 'add_wbs') {
-                    return false;
-                }
+                if (action === 'edit_wbs' || action === 'add_wbs') return false;
             }
             return false;
         };
@@ -814,13 +877,13 @@
                 if (btnBackup) btnBackup.classList.add('hidden');
                 if (btnRestore) btnRestore.classList.add('hidden');
                 if (btnAddActTop) btnAddActTop.classList.add('hidden');
-                if (noticeText) noticeText.innerText = "دسترسی شما: مشاهده و گزارش‌گیری کلان (فقط خواندنی)";
+                if (noticeText) noticeText.innerText = "دسترسی شما: پایش و گزارش‌گیری کلان (فقط خواندنی)";
             } else if (role === 'lead') {
                 if (btnRestore) btnRestore.classList.add('hidden');
                 if (btnBackup) btnBackup.classList.add('hidden');
                 if (noticeText) noticeText.innerText = `دسترسی شما: ثبت اقدام برای پروژه (${currentUserProfile.assigned_project}) و ارسال به کارتابل تایید`;
             } else {
-                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان، ویرایش ساختار شکست و تایید اقدامات (PMO)";
+                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان پورتفولیو، ویرایش WBS و تایید اقدامات (PMO)";
             }
 
             renderSelectedProjectWBS();
@@ -833,34 +896,13 @@
             if (!container) return;
 
             const toast = document.createElement('div');
-            const bgClass = type === 'success' ? 'bg-emerald-900 border-emerald-500 text-emerald-100' :
-                            type === 'error' ? 'bg-rose-900 border-rose-500 text-rose-100' : 'bg-slate-900 border-slate-700 text-slate-100';
-            toast.className = `px-4 py-3 rounded-xl border text-xs font-semibold shadow-xl flex items-center gap-2 toast-animate ${bgClass}`;
-            toast.innerHTML = `<i class="fa-solid fa-circle-check text-sky-400"></i> <span>${message}</span>`;
+            const bgClass = type === 'success' ? 'bg-slate-900 border-cyan-500 text-cyan-200' :
+                            type === 'error' ? 'bg-rose-950 border-rose-500 text-rose-100' : 'bg-slate-900 border-slate-700 text-slate-100';
+            toast.className = `px-4 py-3 rounded-2xl border text-xs font-bold shadow-2xl flex items-center gap-2.5 animate-fade-in ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-cyan-400"></i> <span>${message}</span>`;
             container.appendChild(toast);
 
             setTimeout(() => { toast.remove(); }, 3600);
-        };
-
-        window.updateCloudBadge = function(status, text) {
-            const badge = document.getElementById('cloudStatusBadge');
-            const dot = document.getElementById('cloudStatusDot');
-            const txt = document.getElementById('cloudStatusText');
-            if (!badge || !dot || !txt) return;
-
-            if (status === 'online') {
-                badge.className = "bg-emerald-950/90 border border-emerald-500/50 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
-                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
-                txt.innerText = text || "اتصال زنده دیتابیس";
-            } else if (status === 'syncing') {
-                badge.className = "bg-amber-950/90 border border-amber-500/50 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-spin";
-                txt.innerText = text || "در حال ذخیره‌سازی...";
-            } else {
-                badge.className = "bg-slate-800 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-sm";
-                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-400";
-                txt.innerText = text || "ذخیره‌سازی محلی";
-            }
         };
 
         async function initCloudSync() {
@@ -894,15 +936,10 @@
                             if (typeof window.renderAllViews === 'function') window.renderAllViews();
                         }
                     })
-                    .subscribe((status) => {
-                        if (status === 'SUBSCRIBED') {
-                            window.updateCloudBadge('online', 'اتصال زنده به ابر');
-                        }
-                    });
+                    .subscribe();
 
             } catch (err) {
                 console.warn("Sync error:", err);
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی');
             }
         }
 
@@ -912,8 +949,6 @@
 
             try {
                 isSyncing = true;
-                window.updateCloudBadge('syncing', 'ارسال تغییرات...');
-                
                 const { error } = await client
                     .from('mstid_state')
                     .upsert({
@@ -925,10 +960,8 @@
                     });
 
                 if (error) throw error;
-                window.updateCloudBadge('online', 'اتصال زنده به ابر');
             } catch (e) {
                 console.warn("Cloud push error:", e);
-                window.updateCloudBadge('offline', 'ذخیره‌سازی محلی');
             } finally {
                 setTimeout(() => { isSyncing = false; }, 400);
             }
@@ -940,7 +973,7 @@
         });
     </script>
 
-    <!-- Core Strategic Portfolio Logic & Stage-Gate Functions -->
+    <!-- Core Strategic Portfolio Logic & Scientific Gantt Engine -->
     <script>
         const DEFAULT_PROJECTS = [
             {
@@ -1000,7 +1033,7 @@
                         plannedProgress: 0,
                         actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
                             { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
                             { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/26" },
                             { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/26", endDate: "1405/11/05" },
@@ -1078,7 +1111,7 @@
                         plannedProgress: 0,
                         actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/25" },
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/25" },
                             { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
                             { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/05" },
                             { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/05", endDate: "1405/10/15" },
@@ -1144,7 +1177,7 @@
                         plannedProgress: 0,
                         actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
                             { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
                             { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/15" },
                             { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/26" },
@@ -1381,7 +1414,7 @@
             updateAllPlannedProgresses();
             saveState(true);
             renderAllViews();
-            showToast("پیشرفت برنامه‌ای پروژه‌ها بر اساس تاریخ جدید محاسبه شد.", "info");
+            showToast("پیشرفت برنامه‌ای پروژه‌ها بر اساس تاریخ جدید پایش شد.", "info");
         };
 
         window.onload = function() {
@@ -1494,31 +1527,31 @@
 
             window.projects.forEach(p => {
                 const prog = calculateProjectProgress(p);
-                let badgeClass = "bg-emerald-100 text-emerald-700";
-                if (p.status.includes('تاخیر')) badgeClass = "bg-amber-100 text-amber-700";
+                let badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                if (p.status.includes('تاخیر')) badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
 
                 const card = document.createElement('div');
-                card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between space-y-3 hover:shadow-md transition";
+                card.className = "bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between space-y-3 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300";
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass}">${p.status}</span>
-                            <span class="text-[11px] font-bold text-sky-700 font-mono">${p.code}</span>
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeClass}">${p.status}</span>
+                            <span class="text-[11px] font-black text-cyan-600 font-mono">${p.code}</span>
                         </div>
                         <h4 class="text-xs font-bold text-slate-800 line-clamp-2 leading-relaxed" title="${p.name}">${p.name}</h4>
-                        <p class="text-[10px] text-slate-500 mt-1"><i class="fa-solid fa-coins text-amber-500"></i> ${p.budget}</p>
+                        <p class="text-[10px] text-slate-500 mt-1 font-medium"><i class="fa-solid fa-coins text-amber-500"></i> ${p.budget}</p>
                     </div>
 
                     <div>
-                        <div class="flex justify-between items-center text-[11px] mb-1">
-                            <span class="text-slate-500">واقعی: <b class="text-sky-700">${prog}%</b></span>
-                            <span class="text-slate-400">برنامه‌ای: ${p.plannedProgress}%</span>
+                        <div class="flex justify-between items-center text-[11px] mb-1.5 font-bold">
+                            <span class="text-slate-500">واقعی: <b class="text-blue-700 font-black">${prog}%</b></span>
+                            <span class="text-slate-400 font-mono">${p.plannedProgress}%</span>
                         </div>
-                        <div class="w-full bg-slate-200 rounded-full h-2">
-                            <div class="bg-sky-600 h-2 rounded-full transition-all duration-500" style="width: ${Math.min(prog, 100)}%"></div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="bg-logo-gradient-h h-2 rounded-full transition-all duration-500" style="width: ${Math.min(prog, 100)}%"></div>
                         </div>
-                        <div class="text-[10px] text-slate-500 mt-2 flex justify-between items-center border-t border-slate-200/60 pt-2">
-                            <span>مسئول: ${p.lead}</span>
+                        <div class="text-[10px] text-slate-500 mt-2.5 flex justify-between items-center border-t border-slate-100 pt-2 font-medium">
+                            <span>مسئول: <b>${p.lead}</b></span>
                             <span class="font-bold text-emerald-600">تحقق: ${p.periodRealization}</span>
                         </div>
                     </div>
@@ -1532,13 +1565,19 @@
             const radarCanvas = document.getElementById('radarChart');
             if (!chartCanvas || !radarCanvas) return;
 
-            const labels = window.projects.map(p => p.code + ' (' + p.name.substring(0, 10) + '...)');
+            const labels = window.projects.map(p => p.code + ' (' + p.name.substring(0, 12) + '...)');
             const projectCodes = window.projects.map(p => p.code);
             const actualData = window.projects.map(p => calculateProjectProgress(p));
             const plannedData = window.projects.map(p => p.plannedProgress);
 
             const ctxBar = chartCanvas.getContext('2d');
             if (chartInstance) chartInstance.destroy();
+
+            // Gradient for Bar Chart
+            const gradientActual = ctxBar.createLinearGradient(0, 0, 0, 250);
+            gradientActual.addColorStop(0, '#00b4d8');
+            gradientActual.addColorStop(0.5, '#1d4ed8');
+            gradientActual.addColorStop(1, '#7e22ce');
 
             chartInstance = new Chart(ctxBar, {
                 type: 'bar',
@@ -1548,26 +1587,28 @@
                         {
                             label: 'پیشرفت واقعی کل (%)',
                             data: actualData,
-                            backgroundColor: '#0284c7',
-                            borderRadius: 6,
-                            barThickness: 18
+                            backgroundColor: gradientActual,
+                            borderRadius: 8,
+                            barThickness: 20
                         },
                         {
-                            label: 'پیشرفت برنامه‌ای کل (%)',
+                            label: 'پیشرفت برنامه‌ای مصوب (%)',
                             data: plannedData,
-                            backgroundColor: '#cbd5e1',
-                            borderRadius: 6,
-                            barThickness: 18
+                            backgroundColor: '#e2e8f0',
+                            borderRadius: 8,
+                            barThickness: 20
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top', labels: { font: { family: 'Vazirmatn', size: 11 } } } },
+                    plugins: { 
+                        legend: { position: 'top', labels: { font: { family: 'Vazirmatn', size: 11, weight: 'bold' } } } 
+                    },
                     scales: {
                         y: { beginAtZero: true, max: 15, ticks: { callback: function(v) { return v + '%'; } } },
-                        x: { ticks: { font: { family: 'Vazirmatn', size: 10 } } }
+                        x: { ticks: { font: { family: 'Vazirmatn', size: 10, weight: 'bold' } } }
                     }
                 }
             });
@@ -1581,27 +1622,28 @@
                     labels: projectCodes,
                     datasets: [
                         {
-                            label: 'پیشرفت واقعی کل (%)',
+                            label: 'پیشرفت واقعی (%)',
                             data: actualData,
-                            backgroundColor: 'rgba(2, 132, 199, 0.25)',
-                            borderColor: '#0284c7',
-                            pointBackgroundColor: '#0284c7',
-                            borderWidth: 2
+                            backgroundColor: 'rgba(0, 180, 216, 0.25)',
+                            borderColor: '#00b4d8',
+                            pointBackgroundColor: '#7e22ce',
+                            pointBorderColor: '#fff',
+                            borderWidth: 2.5
                         },
                         {
-                            label: 'پیشرفت برنامه‌ای کل (%)',
+                            label: 'پیشرفت برنامه‌ای (%)',
                             data: plannedData,
-                            backgroundColor: 'rgba(148, 163, 184, 0.25)',
-                            borderColor: '#64748b',
-                            pointBackgroundColor: '#64748b',
-                            borderWidth: 2
+                            backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                            borderColor: '#94a3b8',
+                            borderWidth: 1.5,
+                            borderDash: [4, 4]
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Vazirmatn', size: 10 } } } },
+                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Vazirmatn', size: 10, weight: 'bold' } } } },
                     scales: {
                         r: {
                             angleLines: { color: '#e2e8f0' },
@@ -1678,29 +1720,31 @@
             const canDirectEdit = userRole === 'pmo';
 
             container.innerHTML = `
-                <div class="bg-slate-900 text-white p-6">
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="bg-slate-950 text-white p-6 relative overflow-hidden">
+                    <div class="absolute -left-10 -bottom-10 w-48 h-48 bg-logo-gradient opacity-15 rounded-full blur-3xl"></div>
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
                         <div>
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="text-xs font-bold text-sky-400 bg-sky-950 px-2.5 py-1 rounded-md border border-sky-800 font-mono">${project.code} (${project.id})</span>
-                                <span class="text-xs text-slate-300 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">${project.duration}</span>
+                                <span class="text-xs font-black text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-xl border border-cyan-800/80 font-mono">${project.code}</span>
+                                <span class="text-xs text-slate-300 bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-700">${project.duration}</span>
+                                <span class="text-xs text-purple-300 bg-purple-950/80 px-2.5 py-1 rounded-xl border border-purple-800/80">TRL: ${project.trlCurrent} ⬅️ ${project.trlTarget}</span>
                             </div>
-                            <h2 class="text-lg font-bold">${project.name}</h2>
-                            <p class="text-xs text-slate-400 mt-2">مجری / مسئول: ${project.lead} | سرمایه: ${project.budget} | ظرفیت: ${project.capacity}</p>
-                            <p class="text-xs text-slate-400 mt-1">تاریخ شروع: ${project.startDate} | تاریخ پایان برنامه‌ای: ${project.endDatePlanned}</p>
+                            <h2 class="text-lg font-black tracking-tight">${project.name}</h2>
+                            <p class="text-xs text-slate-400 mt-2 font-medium">مسئول پروژه: <b class="text-white">${project.lead}</b> | سرمایه‌گذاری: ${project.budget} | ظرفیت: ${project.capacity}</p>
+                            <p class="text-xs text-slate-400 mt-1 font-mono">شروع: ${project.startDate} | پایان برنامه‌ای: ${project.endDatePlanned}</p>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="bg-slate-800/90 p-4 rounded-xl border border-slate-700 min-w-[160px] text-center">
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 min-w-[160px] text-center shadow-lg">
                                 <span class="text-[11px] text-slate-400 block mb-1">پیشرفت واقعی کل</span>
-                                <span class="text-2xl font-black text-sky-400">${totalProg}%</span>
-                                <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
-                                    <div class="bg-sky-500 h-1.5 rounded-full" style="width: ${Math.min(totalProg, 100)}%"></div>
+                                <span class="text-2xl font-black text-cyan-400">${totalProg}%</span>
+                                <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
+                                    <div class="bg-logo-gradient-h h-1.5 rounded-full" style="width: ${Math.min(totalProg, 100)}%"></div>
                                 </div>
                             </div>
-                            <div class="bg-slate-800/90 p-4 rounded-xl border border-slate-700 min-w-[160px] text-center">
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 min-w-[160px] text-center shadow-lg">
                                 <span class="text-[11px] text-slate-400 block mb-1">پیشرفت برنامه‌ای کل</span>
-                                <span class="text-2xl font-black text-slate-300">${project.plannedProgress}%</span>
-                                <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+                                <span class="text-2xl font-black text-slate-300 font-mono">${project.plannedProgress}%</span>
+                                <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
                                     <div class="bg-slate-400 h-1.5 rounded-full" style="width: ${Math.min(project.plannedProgress, 100)}%"></div>
                                 </div>
                             </div>
@@ -1708,13 +1752,13 @@
                     </div>
                 </div>
 
-                <div class="bg-amber-50/60 p-4 border-b border-amber-200/60 flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <span class="font-bold text-amber-800 flex items-center gap-1.5">
-                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> چالش‌ها و ریسک‌های بحرانی پروژه:
+                <div class="bg-amber-50/70 p-4 border-b border-amber-200/70 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <span class="font-bold text-amber-900 flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> چالش‌ها و ریسک‌های بحرانی ارزیابی‌شده:
                     </span>
                     <div class="flex flex-wrap gap-2">
                         ${project.risks.map(r => `
-                            <span class="bg-white border border-amber-300 text-amber-900 px-2.5 py-1 rounded-lg shadow-sm">
+                            <span class="bg-white border border-amber-300/80 text-amber-950 px-3 py-1 rounded-xl shadow-sm font-medium">
                                 ${r.title} <b class="text-amber-600 font-bold">(${r.level})</b>
                             </span>
                         `).join('')}
@@ -1724,17 +1768,17 @@
                 <div class="p-6 space-y-6">
                     <div class="space-y-4">
                         ${project.wbs.map(phase => `
-                            <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50">
-                                <div class="bg-slate-100 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200">
-                                    <div>
-                                        <span class="text-xs font-mono font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded">${phase.id}</span>
-                                        <span class="text-xs font-bold text-slate-800 mr-2">${phase.title}</span>
-                                        <span class="text-[11px] text-slate-400 mr-2 font-normal">(${phase.duration})</span>
+                            <div class="border border-slate-200 rounded-3xl overflow-hidden bg-slate-50/50">
+                                <div class="bg-slate-100/90 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-mono font-black text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded-lg">${phase.id}</span>
+                                        <span class="text-xs font-bold text-slate-900">${phase.title}</span>
+                                        <span class="text-[11px] text-slate-400 font-mono">(${phase.duration})</span>
                                     </div>
                                     <div class="flex items-center gap-3 text-xs">
-                                        <span class="text-slate-600 font-medium">پیشرفت فاز: <b class="text-sky-700">${phase.actualProgress}%</b></span>
+                                        <span class="text-slate-600 font-medium">پیشرفت فاز: <b class="text-blue-700">${phase.actualProgress}%</b></span>
                                         ${canDirectEdit ? `
-                                            <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-medium transition shadow-sm flex items-center gap-1">
+                                            <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-3 py-1 bg-logo-gradient hover:opacity-95 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
                                                 <i class="fa-solid fa-plus text-[10px]"></i> افزودن فعالیت
                                             </button>
                                         ` : ''}
@@ -1743,31 +1787,31 @@
 
                                 <div class="divide-y divide-slate-200/60 p-2 sm:p-4 bg-white">
                                     ${phase.children.map(item => `
-                                        <div class="py-3 px-2 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50 transition rounded-xl">
+                                        <div class="py-3 px-3 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/80 transition rounded-2xl">
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2">
-                                                    <span class="text-xs font-mono font-bold text-slate-500">${item.id}</span>
-                                                    <h4 class="text-xs font-semibold text-slate-800">${item.title}</h4>
+                                                    <span class="text-xs font-mono font-bold text-slate-400">${item.id}</span>
+                                                    <h4 class="text-xs font-bold text-slate-800">${item.title}</h4>
                                                 </div>
-                                                <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 mt-1.5">
+                                                <div class="flex flex-wrap items-center gap-4 text-[11px] text-slate-400 mt-1.5 font-medium">
                                                     <span>وزن: <b>${item.weight}</b></span>
-                                                    <span>زمان‌بندی: <b>${item.startDate} تا ${item.endDate}</b></span>
+                                                    <span>بازه زمانی: <b class="font-mono">${item.startDate} تا ${item.endDate}</b></span>
                                                 </div>
                                             </div>
 
                                             <div class="flex items-center gap-3 w-full md:w-auto">
-                                                <div class="w-full md:w-40">
+                                                <div class="w-full md:w-44">
                                                     <div class="flex justify-between text-[11px] font-bold mb-1">
-                                                        <span class="text-slate-500">واقعی: <span class="text-sky-700">${item.actualProgress}%</span></span>
-                                                        <span class="text-slate-400">برنامه‌ای: ${item.plannedProgress}%</span>
+                                                        <span class="text-slate-500">واقعی: <span class="text-blue-700">${item.actualProgress}%</span></span>
+                                                        <span class="text-slate-400 font-mono">${item.plannedProgress}%</span>
                                                     </div>
-                                                    <div class="w-full bg-slate-200 rounded-full h-2">
-                                                        <div class="bg-sky-600 h-2 rounded-full" style="width: ${Math.min(item.actualProgress, 100)}%"></div>
+                                                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                                        <div class="bg-logo-gradient-h h-2 rounded-full" style="width: ${Math.min(item.actualProgress, 100)}%"></div>
                                                     </div>
                                                 </div>
                                                 ${canDirectEdit ? `
-                                                    <button onclick="openEditWbsModal('${project.id}', '${item.id}')" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-medium transition shadow-sm whitespace-nowrap flex items-center gap-1">
-                                                        <i class="fa-solid fa-pen-to-square text-sky-600"></i> ویرایش
+                                                    <button onclick="openEditWbsModal('${project.id}', '${item.id}')" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap flex items-center gap-1">
+                                                        <i class="fa-solid fa-pen-to-square text-cyan-600"></i> ویرایش
                                                     </button>
                                                 ` : ''}
                                             </div>
@@ -1847,7 +1891,7 @@
             saveState(true);
             renderAllViews();
             closeEditWbsModal();
-            showToast("تغییرات ساختار شکست با موفقیت ذخیره شد.", "success");
+            showToast("تغییرات ساختار شکست ذخیره شد.", "success");
         };
 
         window.openAddWbsModal = function(projectId, phaseId) {
@@ -1910,6 +1954,7 @@
             closeAddWbsModal();
         };
 
+        // Redesigned Scientific Timeline & Classical Gantt Engine
         function renderGanttChart() {
             const ganttContainer = document.getElementById('ganttViewContainer');
             const ganttSelect = document.getElementById('ganttProjectSelector');
@@ -1920,71 +1965,92 @@
 
             const projectsToDisplay = selectedPrjFilter === 'ALL' ? window.projects : window.projects.filter(p => p.id === selectedPrjFilter);
 
+            // Month timeline slots from Mordad 1405 to Shahrivar 1406
+            const months = [
+                "مرداد ۱۴۰۵", "شهریور ۱۴۰۵", "مهر ۱۴۰۵", "آبان ۱۴۰۵", "آذر ۱۴۰۵", "دی ۱۴۰۵", 
+                "بهمن ۱۴۰۵", "اسفند ۱۴۰۵", "فروردین ۱۴۰۶", "اردیبهشت ۱۴۰۶", "خرداد ۱۴۰۶", "۱۴۰۶+"
+            ];
+
+            const baseStartDays = jalaliToDays(1405, 5, 1); // 1405/05/01 Base
+            const totalTimelineDays = 365 + 90; // ~15 months horizon
+
             projectsToDisplay.forEach(p => {
                 const card = document.createElement('div');
-                card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4";
+                card.className = "bg-white border border-slate-200/90 rounded-3xl p-5 shadow-sm space-y-4";
                 const totalProg = calculateProjectProgress(p);
 
                 let html = `
-                    <div class="border-b border-slate-200 pb-4 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold font-mono bg-sky-100 text-sky-800 px-2.5 py-1 rounded">${p.code}</span>
-                                <h4 class="text-sm font-bold text-slate-800">${p.name}</h4>
-                            </div>
-                            <span class="text-xs text-slate-500 font-medium">مدت: ${p.duration} | شروع: ${p.startDate} | پایان: ${p.endDatePlanned}</span>
+                    <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black font-mono bg-cyan-50 text-cyan-800 border border-cyan-200 px-3 py-1 rounded-xl">${p.code}</span>
+                            <h4 class="text-sm font-black text-slate-900">${p.name}</h4>
                         </div>
-
-                        <div class="bg-white p-3 rounded-xl border border-sky-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-                            <div class="text-xs font-bold text-slate-700 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-line text-sky-600"></i>
-                                <span>پیشرفت کل پروژه ${p.code}:</span>
-                            </div>
-                            <div class="w-full sm:w-2/3 flex items-center gap-3">
-                                <div class="w-full bg-slate-200 rounded-full h-3.5 relative overflow-hidden">
-                                    <div class="bg-sky-600 h-3.5 rounded-full transition-all duration-500" style="width: ${Math.min(totalProg, 100)}%"></div>
-                                </div>
-                                <span class="text-xs font-black text-sky-700 font-mono whitespace-nowrap">${totalProg}% واقعی</span>
-                                <span class="text-xs text-slate-400 font-mono whitespace-nowrap">(${p.plannedProgress}% برنامه‌ای)</span>
-                            </div>
+                        <div class="flex items-center gap-3 text-xs text-slate-500 font-medium">
+                            <span>مدت: <b class="text-slate-800">${p.duration}</b></span>
+                            <span>مسئول: <b class="text-blue-700">${p.lead}</b></span>
+                            <span class="font-bold text-cyan-600">${totalProg}% واقعی</span>
                         </div>
                     </div>
 
-                    <div class="space-y-3">
+                    <!-- Timeline Calendar Table Header -->
+                    <div class="border border-slate-200/90 rounded-2xl overflow-hidden shadow-inner">
+                        <div class="grid grid-cols-12 bg-slate-900 text-white text-[11px] font-bold text-center border-b border-slate-800">
+                            <div class="col-span-4 p-2.5 text-right pr-4 border-l border-slate-800 flex items-center justify-between">
+                                <span>فعالیت / ساختار شکست WBS</span>
+                                <span class="text-[10px] text-slate-400 font-mono">پیشرفت</span>
+                            </div>
+                            <div class="col-span-8 grid grid-cols-6 divide-x divide-slate-800 divide-x-reverse text-[10px] py-2.5">
+                                ${months.slice(0, 6).map(m => `<span class="truncate px-1">${m}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="divide-y divide-slate-100 text-xs">
                 `;
 
                 p.wbs.forEach(phase => {
                     html += `
-                        <div class="text-xs">
-                            <div class="flex justify-between items-center font-bold text-slate-700 mb-1">
-                                <span>${phase.id} ${phase.title}</span>
-                                <span class="text-sky-700">${phase.actualProgress}%</span>
+                        <div class="grid grid-cols-12 bg-slate-50/90 font-bold text-slate-800 items-center">
+                            <div class="col-span-4 p-2.5 text-right pr-4 border-l border-slate-200 flex items-center justify-between">
+                                <span class="truncate"><span class="font-mono text-cyan-700 ml-1.5">${phase.id}</span>${phase.title}</span>
+                                <span class="font-mono text-blue-700 text-xs">${phase.actualProgress}%</span>
                             </div>
-                            <div class="space-y-1.5 pr-4 border-r-2 border-sky-300">
+                            <div class="col-span-8 relative h-8 flex items-center px-2 timeline-grid">
+                                <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-logo-gradient-h h-2.5 rounded-full" style="width: ${Math.min(phase.actualProgress, 100)}%"></div>
+                                </div>
+                            </div>
+                        </div>
                     `;
 
                     phase.children.forEach(c => {
+                        // Calculate precise timeline offset percentage
+                        let startD = parseJalaliDateStr(c.startDate) || baseStartDays;
+                        let endD = parseJalaliDateStr(c.endDate) || (startD + 30);
+                        
+                        let offsetLeft = Math.max(0, Math.min(100, ((startD - baseStartDays) / 180) * 100));
+                        let barWidth = Math.max(8, Math.min(100 - offsetLeft, ((endD - startD) / 180) * 100));
+
                         html += `
-                            <div class="grid grid-cols-12 gap-2 items-center text-[11px]">
-                                <div class="col-span-5 truncate text-slate-600" title="${c.title}">
-                                    <span class="font-mono text-slate-400 ml-1">${c.id}</span>${c.title}
+                            <div class="grid grid-cols-12 items-center hover:bg-slate-50/80 transition">
+                                <div class="col-span-4 p-2 text-right pr-6 border-l border-slate-100 flex items-center justify-between text-[11px]">
+                                    <span class="truncate text-slate-700" title="${c.title}">
+                                        <span class="font-mono text-slate-400 ml-1">${c.id}</span>${c.title}
+                                    </span>
+                                    <span class="font-mono text-slate-500 font-bold">${c.actualProgress}%</span>
                                 </div>
-                                <div class="col-span-3 text-slate-400 font-mono text-[10px] truncate">
-                                    ${c.startDate} تا ${c.endDate}
-                                </div>
-                                <div class="col-span-4">
-                                    <div class="w-full bg-slate-200 rounded-full h-2 relative">
-                                        <div class="bg-sky-600 h-2 rounded-full" style="width: ${Math.min(c.actualProgress, 100)}%"></div>
+                                <div class="col-span-8 relative h-7 flex items-center px-2 timeline-grid">
+                                    <!-- Planned Baseline Span -->
+                                    <div class="absolute h-4 bg-slate-200/90 rounded-md border border-slate-300" style="right: ${offsetLeft}%; width: ${barWidth}%;">
+                                        <!-- Actual Progress Fill inside Baseline -->
+                                        <div class="h-full bg-logo-gradient rounded-md transition-all duration-300" style="width: ${Math.min(c.actualProgress, 100)}%;"></div>
                                     </div>
                                 </div>
                             </div>
                         `;
                     });
-
-                    html += `</div></div>`;
                 });
 
-                html += `</div>`;
+                html += `</div></div>`;
                 card.innerHTML = html;
                 ganttContainer.appendChild(card);
             });
@@ -2033,11 +2099,8 @@
             const container = document.getElementById('progressInputContainer');
             if (!checkEl || !container) return;
 
-            if (checkEl.checked) {
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-            }
+            if (checkEl.checked) container.classList.remove('hidden');
+            else container.classList.add('hidden');
         };
 
         window.handleSaveActivity = function(e) {
@@ -2092,7 +2155,7 @@
             toggleProgressInput();
 
             if (initialStatus === 'pending') {
-                showToast("اقدام با موفقیت ثبت شد و در صف تایید کارتابل PMO قرار گرفت.", "info");
+                showToast("اقدام با موفقیت ثبت و به کارتابل تایید PMO ارسال شد.", "info");
             } else {
                 showToast("اقدام ثبت و پیشرفت فیزیکی اعمال شد.", "success");
             }
@@ -2103,9 +2166,7 @@
             if (prj) {
                 prj.wbs.forEach(phase => {
                     const item = phase.children.find(c => c.id === wbsId);
-                    if (item) {
-                        item.actualProgress = newProg;
-                    }
+                    if (item) item.actualProgress = newProg;
                     const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
                     const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
                     phase.actualProgress = Math.round(childSum / weightSum);
@@ -2138,12 +2199,12 @@
 
             if (pendingActs.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
-                            <i class="fa-solid fa-check"></i>
+                    <div class="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                            <i class="fa-solid fa-check-double"></i>
                         </div>
                         <h4 class="text-sm font-bold text-slate-800">هیچ اقدامی در انتظار تایید وجود ندارد</h4>
-                        <p class="text-xs text-slate-400 mt-1">تمام اقدامات ثبت‌شده توسط مسئولین پروژه‌ها بررسی و تایید نهایی شده‌اند.</p>
+                        <p class="text-xs text-slate-400 mt-1">تمام اقدامات ثبت‌شده توسط مسئولین پروژه‌ها بررسی و تایید شده‌اند.</p>
                     </div>
                 `;
                 return;
@@ -2155,43 +2216,43 @@
                 const prjCode = prj ? prj.code : act.projectId;
 
                 const card = document.createElement('div');
-                card.className = "bg-white border-2 border-amber-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition space-y-3";
+                card.className = "bg-white border-2 border-amber-200/80 rounded-3xl p-5 shadow-sm space-y-3";
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <div class="flex items-center gap-2">
-                            <span class="bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">در انتظار تایید PMO</span>
-                            <span class="text-xs font-mono font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded">${prjCode}</span>
-                            <b class="text-xs text-slate-800">${prjName}</b>
+                            <span class="bg-amber-100 text-amber-900 text-[11px] font-black px-2.5 py-1 rounded-xl">در انتظار تایید PMO</span>
+                            <span class="text-xs font-mono font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md">${prjCode}</span>
+                            <b class="text-xs text-slate-900">${prjName}</b>
                         </div>
                         <div class="text-[11px] text-slate-400 font-mono">
-                            تاریخ ثبت: <b>${act.date}</b> | توسط: <b class="text-slate-700">${act.author}</b>
+                            تاریخ: <b>${act.date}</b> | ثبت توسط: <b class="text-slate-700">${act.author}</b>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                         <div class="md:col-span-2 space-y-1.5">
-                            <span class="text-slate-400 text-[11px]">شرح اقدام مسئول پروژه:</span>
-                            <p class="text-slate-700 leading-relaxed font-medium bg-slate-50 p-3 rounded-xl border border-slate-100">${act.description}</p>
+                            <span class="text-slate-400 text-[11px] font-bold">شرح اقدام مسئول پروژه:</span>
+                            <p class="text-slate-700 leading-relaxed font-medium bg-slate-50 p-3.5 rounded-2xl border border-slate-100">${act.description}</p>
                         </div>
-                        <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100 space-y-2 flex flex-col justify-between">
+                        <div class="bg-amber-50/50 p-3.5 rounded-2xl border border-amber-100 space-y-2 flex flex-col justify-between">
                             <div>
-                                <span class="text-[11px] text-slate-500 block">بخش WBS مربوطه:</span>
-                                <b class="font-mono text-slate-800 text-xs">${act.wbsId}</b>
+                                <span class="text-[11px] text-slate-500 block">بخش شکست WBS:</span>
+                                <b class="font-mono text-slate-900 text-xs">${act.wbsId}</b>
                                 <div class="mt-2">
                                     <span class="text-[11px] text-slate-500">پیشنهاد پیشرفت فیزیکی:</span>
-                                    <b class="text-sky-700 block text-sm font-black mt-0.5">${act.proposedProgress !== null && act.proposedProgress !== undefined ? act.proposedProgress + '%' : 'بدون تغییر پیشرفت'}</b>
+                                    <b class="text-blue-700 block text-sm font-black mt-0.5">${act.proposedProgress !== null && act.proposedProgress !== undefined ? act.proposedProgress + '%' : 'بدون تغییر پیشرفت'}</b>
                                 </div>
                             </div>
-                            <span class="text-[11px] text-slate-400">زمان: ${act.hours} ساعت کار</span>
+                            <span class="text-[11px] text-slate-400 font-medium">زمان کار: ${act.hours} ساعت</span>
                         </div>
                     </div>
 
                     ${isPmo ? `
                         <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                            <button onclick="openRejectModal('${act.id}')" class="px-4 py-1.5 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition flex items-center gap-1.5">
+                            <button onclick="openRejectModal('${act.id}')" class="px-4 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition flex items-center gap-1.5">
                                 <i class="fa-solid fa-xmark"></i> <span>رد / نیاز به بازنگری</span>
                             </button>
-                            <button onclick="approveActivity('${act.id}')" class="px-5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-md transition flex items-center gap-1.5">
+                            <button onclick="approveActivity('${act.id}')" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-md transition flex items-center gap-1.5">
                                 <i class="fa-solid fa-check"></i> <span>تایید و اعمال در پیشرفت پروژه</span>
                             </button>
                         </div>
@@ -2224,7 +2285,7 @@
 
             saveState(true);
             renderAllViews();
-            showToast("اقدام تایید شد و پیشرفت پروژه با موفقیت به‌روزرسانی گردید.", "success");
+            showToast("اقدام تایید و پیشرفت پروژه به‌روزرسانی شد.", "success");
         };
 
         window.openRejectModal = function(activityId) {
@@ -2256,7 +2317,7 @@
                 saveState(true);
                 renderAllViews();
                 closeRejectModal();
-                showToast("اقدام با موفقیت رد شد و به بخش بازنگری رفت.", "info");
+                showToast("اقدام جهت بازنگری عودت داده شد.", "info");
             }
         };
 
@@ -2266,7 +2327,7 @@
             tbody.innerHTML = '';
 
             if (window.activities.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400">هیچ اقدامی ثبت نشده است.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 font-bold">هیچ اقدامی ثبت نشده است.</td></tr>`;
                 return;
             }
 
@@ -2277,25 +2338,25 @@
                 const prj = window.projects.find(p => p.id === act.projectId);
                 const prjCode = prj ? prj.code : act.projectId;
 
-                let statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">🟢 تایید نهایی</span>';
+                let statusBadge = '<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">🟢 تایید نهایی</span>';
                 if (act.status === 'pending') {
-                    statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 animate-pulse">🟡 در انتظار تایید</span>';
+                    statusBadge = '<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse">🟡 در انتظار تایید</span>';
                 } else if (act.status === 'rejected') {
-                    statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800" title="${act.rejectionReason || ''}">🔴 نیازمند بازنگری</span>`;
+                    statusBadge = `<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200" title="${act.rejectionReason || ''}">🔴 نیازمند بازنگری</span>`;
                 }
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-mono text-slate-500">${act.date}</td>
-                    <td class="px-4 py-3 font-bold text-slate-800">${prjCode}</td>
+                    <td class="px-4 py-3 font-bold text-slate-900">${prjCode}</td>
                     <td class="px-4 py-3 font-mono text-slate-600">${act.wbsId}</td>
                     <td class="px-4 py-3 text-slate-700 max-w-md">
-                        <div>${act.description}</div>
-                        ${act.rejectionReason ? `<div class="text-[10px] text-rose-600 mt-1 font-semibold">علت رد: ${act.rejectionReason}</div>` : ''}
+                        <div class="font-medium leading-relaxed">${act.description}</div>
+                        ${act.rejectionReason ? `<div class="text-[10px] text-rose-600 mt-1 font-bold">علت بازنگری: ${act.rejectionReason}</div>` : ''}
                     </td>
-                    <td class="px-4 py-3 text-slate-600 font-medium">${act.author}</td>
-                    <td class="px-4 py-3 font-mono font-bold text-sky-700">${act.hours} ساعت</td>
+                    <td class="px-4 py-3 text-slate-600 font-bold">${act.author}</td>
+                    <td class="px-4 py-3 font-mono font-bold text-blue-700">${act.hours} ساعت</td>
                     <td class="px-4 py-3 text-center">${statusBadge}</td>
                     <td class="px-4 py-3 text-center">
                         ${isPmo ? `
@@ -2371,9 +2432,9 @@
                 const btn = document.getElementById(`tab-${t}`);
                 if (btn) {
                     if (t === tabName) {
-                        btn.className = "py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-sky-600 text-sky-600";
+                        btn.className = "py-2 px-4 inline-flex items-center gap-2 rounded-xl font-bold text-xs whitespace-nowrap bg-slate-900 text-white shadow-sm transition";
                     } else {
-                        btn.className = "py-4 px-1 inline-flex items-center gap-2 border-b-2 font-medium text-sm whitespace-nowrap border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300";
+                        btn.className = "py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition";
                     }
                 }
             });
@@ -2410,41 +2471,41 @@
             let html = `
                 <div class="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="border border-slate-300 rounded-xl px-4 py-2.5 bg-slate-100 flex items-center justify-center">
-                            <span class="text-sm font-black text-sky-900">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</span>
+                        <div class="border border-slate-300 rounded-2xl px-4 py-2.5 bg-slate-900 text-white flex items-center justify-center font-black text-sm">
+                            MSTID
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و پایش آخرین وضعیت پروژه‌های استراتژیک (MSTID)</h2>
-                            <p class="text-xs text-slate-500 mt-1">تاریخ تنظیم گزارش: ${todayStr}</p>
+                            <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و پایش آخرین وضعیت پروژه‌های استراتژیک</h2>
+                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ تنظیم: ${todayStr}</p>
                         </div>
                     </div>
                     <div class="text-left font-mono text-xs text-slate-500">
                         <span>سند مدیریتی محرمانه</span><br>
-                        <span>نسخه آنلاین ۱.۵ (Stage-Gate)</span>
+                        <span>نسخه آنلاین ۱.۶</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-4 gap-4 text-center">
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
                         <span class="text-[11px] text-slate-500 block">تعداد پروژه‌ها</span>
-                        <b class="text-lg text-slate-800">${window.projects.length} پروژه</b>
+                        <b class="text-lg text-slate-900">${window.projects.length} پروژه</b>
                     </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
                         <span class="text-[11px] text-slate-500 block">میانگین پیشرفت تاییدشده</span>
-                        <b class="text-lg text-sky-700">${avgActual}%</b>
+                        <b class="text-lg text-blue-700">${avgActual}%</b>
                     </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
                         <span class="text-[11px] text-slate-500 block">میانگین پیشرفت برنامه‌ای</span>
                         <b class="text-lg text-slate-600">${avgPlanned}%</b>
                     </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
                         <span class="text-[11px] text-slate-500 block">تعداد کل اقدامات</span>
-                        <b class="text-lg text-emerald-700">${window.activities.length} اقدام</b>
+                        <b class="text-lg text-purple-700">${window.activities.length} اقدام</b>
                     </div>
                 </div>
 
-                <div class="space-y-3">
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">جدول خلاصه آخرین وضعیت ۵ پروژه استراتژیک</h3>
+                <div class="space-y-3 pt-2">
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">جدول خلاصه وضعیت ۵ پروژه استراتژیک</h3>
                     <table class="w-full text-xs text-right border-collapse border border-slate-300">
                         <thead class="bg-slate-100 font-bold text-slate-800 border-b border-slate-300">
                             <tr>
@@ -2465,12 +2526,12 @@
                 const actProg = calculateProjectProgress(p);
                 html += `
                     <tr class="border-b border-slate-200">
-                        <td class="p-2 border border-slate-300 font-mono font-bold text-sky-800">${p.code}</td>
+                        <td class="p-2 border border-slate-300 font-mono font-bold text-blue-800">${p.code}</td>
                         <td class="p-2 border border-slate-300 font-bold">${p.name}</td>
                         <td class="p-2 border border-slate-300">${p.lead}</td>
-                        <td class="p-2 border border-slate-300">${p.budget}</td>
-                        <td class="p-2 border border-slate-300 text-center font-bold text-sky-700">${actProg}%</td>
-                        <td class="p-2 border border-slate-300 text-center">${p.plannedProgress}%</td>
+                        <td class="p-2 border border-slate-300 font-mono">${p.budget}</td>
+                        <td class="p-2 border border-slate-300 text-center font-bold text-blue-700">${actProg}%</td>
+                        <td class="p-2 border border-slate-300 text-center font-mono">${p.plannedProgress}%</td>
                         <td class="p-2 border border-slate-300 text-center font-bold text-emerald-700">${p.periodRealization}</td>
                         <td class="p-2 border border-slate-300 text-center">${p.status}</td>
                     </tr>
@@ -2491,13 +2552,13 @@
                 const projectActs = window.activities.filter(a => a.projectId === p.id && a.status === 'approved');
 
                 html += `
-                    <div class="border border-slate-300 rounded-xl p-4 space-y-3 bg-white print-card">
+                    <div class="border border-slate-300 rounded-2xl p-4 space-y-3 bg-white print-card">
                         <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                             <div>
-                                <span class="font-mono text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded">${p.code}</span>
-                                <b class="text-sm font-extrabold text-slate-900 mr-2">${p.name}</b>
+                                <span class="font-mono text-xs font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded">${p.code}</span>
+                                <b class="text-sm font-black text-slate-900 mr-2">${p.name}</b>
                             </div>
-                            <span class="text-xs text-slate-600">مسئول: <b>${p.lead}</b> | پیشرفت واقعی: <b class="text-sky-700">${actProg}%</b></span>
+                            <span class="text-xs text-slate-600 font-medium">مسئول: <b>${p.lead}</b> | پیشرفت واقعی: <b class="text-blue-700">${actProg}%</b></span>
                         </div>
 
                         <div class="text-xs space-y-1.5">
@@ -2507,10 +2568,10 @@
 
                 p.wbs.forEach(ph => {
                     html += `
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                             <div class="flex justify-between font-bold text-slate-800 mb-1">
                                 <span>${ph.id} ${ph.title}</span>
-                                <span>${ph.actualProgress}%</span>
+                                <span class="text-blue-700">${ph.actualProgress}%</span>
                             </div>
                             <div class="text-[10px] text-slate-500">
                                 ${ph.children.map(c => `${c.id} (${c.actualProgress}%)`).join(' • ')}
@@ -2526,7 +2587,7 @@
                         <div class="text-xs space-y-1 pt-1">
                             <b class="text-slate-700 block text-[11px]">آخرین اقدامات تاییدشده (${projectActs.length} مورد):</b>
                             ${projectActs.length > 0 ? `
-                                <ul class="list-disc list-inside space-y-0.5 text-[11px] text-slate-600">
+                                <ul class="list-disc list-inside space-y-0.5 text-[11px] text-slate-600 font-medium">
                                     ${projectActs.slice(0, 3).map(a => `<li><b>${a.date} (${a.author}):</b> ${a.description}</li>`).join('')}
                                 </ul>
                             ` : `<p class="text-[10px] text-slate-400">اقدام تاییدشده‌ای ثبت نشده است.</p>`}
