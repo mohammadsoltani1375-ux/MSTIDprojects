@@ -1049,6 +1049,39 @@
         let radarChartInstance = null;
         let deleteTargetId = null;
 
+        // Global Tab Switcher Function
+        function switchTab(tabName) {
+            const tabs = ['overview', 'projects', 'gantt', 'activities', 'approvals'];
+            tabs.forEach(t => {
+                const view = document.getElementById(`view-${t}`);
+                if (view) {
+                    if (t === tabName) {
+                        view.classList.remove('hidden');
+                    } else {
+                        view.classList.add('hidden');
+                    }
+                }
+                const btn = document.getElementById(`tab-${t}`);
+                if (btn) {
+                    if (t === tabName) {
+                        btn.className = "py-2 px-4 inline-flex items-center gap-2 rounded-xl font-bold text-xs whitespace-nowrap bg-logo-gradient text-white shadow-md shadow-blue-500/20 transition";
+                    } else {
+                        btn.className = "py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-blue-700 hover:bg-blue-50/70 transition";
+                    }
+                }
+            });
+
+            if (tabName === 'projects') renderSelectedProjectWBS();
+            if (tabName === 'gantt') renderGanttChart();
+            if (tabName === 'activities') renderActivitiesTable();
+            if (tabName === 'approvals') renderApprovalInbox();
+            if (tabName === 'overview') {
+                if (chartInstance) chartInstance.resize();
+                if (radarChartInstance) radarChartInstance.resize();
+            }
+        }
+        window.switchTab = switchTab;
+
         function gregorianToJalali(gy, gm, gd) {
             var g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
             var gy2 = (gm > 2) ? (gy + 1) : gy;
@@ -1282,13 +1315,7 @@
             showLoginScreen(false);
             updateUserBadgeUI();
             applyRBACUI();
-            
-            try {
-                renderAllViews();
-            } catch (err) {
-                console.warn("Render warning during login:", err);
-            }
-            
+            renderAllViews();
             await initCloudSync();
         }
 
@@ -1497,7 +1524,7 @@
             }
         };
 
-        window.renderAllViews = function() {
+        function renderAllViews() {
             updateAllPlannedProgresses();
             renderOverviewKPIs();
             renderOverviewProjectCards();
@@ -1507,7 +1534,8 @@
             renderGanttChart();
             renderActivitiesTable();
             renderApprovalInbox();
-        };
+        }
+        window.renderAllViews = renderAllViews;
 
         function renderOverviewKPIs() {
             let totalActual = 0; let totalPlanned = 0;
@@ -1765,7 +1793,7 @@
                                     </div>
                                 </div>
                                 <div class="divide-y divide-slate-200/60 p-2 sm:p-4 bg-white">
-                                    ${phase.children.map(item => `
+                                    ${(phase.children || []).map(item => `
                                         <div class="py-3 px-3 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/80 transition rounded-2xl">
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2">
@@ -1879,6 +1907,536 @@
             closeAddWbsModal();
         };
 
+        function renderGanttChart() {
+            const ganttContainer = document.getElementById('ganttViewContainer');
+            const ganttSelect = document.getElementById('ganttProjectSelector');
+            if (!ganttContainer || !ganttSelect) return;
+
+            const selectedPrjFilter = ganttSelect.value;
+            ganttContainer.innerHTML = '';
+
+            const accessibleProjects = filterByAccess(window.projects, 'id');
+            const projectsToDisplay = selectedPrjFilter === 'ALL' ? accessibleProjects : accessibleProjects.filter(p => p.id === selectedPrjFilter);
+
+            const months = [ "مرداد ۱۴۰۵", "شهریور ۱۴۰۵", "مهر ۱۴۰۵", "آبان ۱۴۰۵", "آذر ۱۴۰۵", "دی ۱۴۰۵", "بهمن ۱۴۰۵", "اسفند ۱۴۰۵", "فروردین ۱۴۰۶", "اردیبهشت ۱۴۰۶", "خرداد ۱۴۰۶", "۱۴۰۶+" ];
+            const baseStartDays = jalaliToDays(1405, 5, 1);
+            const totalTimelineDays = 186;
+
+            projectsToDisplay.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200/90 rounded-3xl p-5 shadow-sm space-y-4";
+                const totalProg = calculateProjectProgress(p);
+
+                let html = `
+                    <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black font-mono bg-cyan-50 text-cyan-800 border border-cyan-200 px-3 py-1 rounded-xl">${p.code}</span>
+                            <h4 class="text-sm font-black text-slate-900">${p.name}</h4>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs text-slate-500 font-medium">
+                            <span>مدت: <b class="text-slate-800">${p.duration}</b></span>
+                            <span>مسئول: <b class="text-blue-700">${p.lead}</b></span>
+                            <span class="font-bold text-cyan-600">${totalProg}% واقعی</span>
+                            <span class="font-mono text-slate-400">(${p.plannedProgress}% برنامه‌ای)</span>
+                        </div>
+                    </div>
+                    <div class="border border-slate-200/90 rounded-2xl overflow-hidden shadow-inner">
+                        <div class="grid grid-cols-12 bg-gradient-to-r from-slate-800 via-indigo-950 to-blue-950 text-white text-[11px] font-bold text-center border-b border-indigo-900/50">
+                            <div class="col-span-4 p-2.5 text-right pr-4 border-l border-indigo-800/40 flex items-center justify-between">
+                                <span>فاز / فعالیت‌های WBS</span>
+                                <span class="text-[10px] text-indigo-200 font-mono">پیشرفت</span>
+                            </div>
+                            <div class="col-span-8 grid grid-cols-6 divide-x divide-indigo-800/40 divide-x-reverse text-[10px] py-2.5">
+                                ${months.slice(0, 6).map(m => `<span class="truncate px-1 text-slate-200">${m}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="divide-y divide-slate-100 text-xs">
+                `;
+
+                if (p.wbs && p.wbs.length > 0) {
+                    p.wbs.forEach(phase => {
+                        let childStartDaysList = [];
+                        let childEndDaysList = [];
+
+                        if (phase.children && phase.children.length > 0) {
+                            phase.children.forEach(c => {
+                                let s = parseJalaliDateStr(c.startDate);
+                                let e = parseJalaliDateStr(c.endDate);
+                                if (s) childStartDaysList.push(s);
+                                if (e) childEndDaysList.push(e);
+                            });
+                        }
+
+                        let phaseStartDays = childStartDaysList.length > 0 ? Math.min(...childStartDaysList) : null;
+                        let phaseEndDays = childEndDaysList.length > 0 ? Math.max(...childEndDaysList) : null;
+
+                        let phaseBarHtml = '';
+                        if (phaseStartDays && phaseEndDays && phaseEndDays >= phaseStartDays) {
+                            let offsetLeft = Math.max(0, Math.min(100, ((phaseStartDays - baseStartDays) / totalTimelineDays) * 100));
+                            let barWidth = Math.max(5, Math.min(100 - offsetLeft, ((phaseEndDays - phaseStartDays + 1) / totalTimelineDays) * 100));
+
+                            phaseBarHtml = `
+                                <div class="absolute h-4 bg-indigo-950/90 rounded-md border border-indigo-700/60 shadow-sm flex items-center overflow-hidden" style="right: ${offsetLeft}%; width: ${barWidth}%;" title="بازه فاز: ${phase.duration || ''}">
+                                    <div class="h-full bg-logo-gradient-h transition-all duration-300" style="width: ${Math.min(phase.actualProgress, 100)}%;"></div>
+                                </div>
+                            `;
+                        } else {
+                            phaseBarHtml = `<span class="text-[10px] text-slate-400 font-normal italic pr-2">در حال برنامه‌ریزی فازهای آتی</span>`;
+                        }
+
+                        html += `
+                            <div class="grid grid-cols-12 bg-slate-50/95 font-bold text-slate-900 items-center">
+                                <div class="col-span-4 p-2.5 text-right pr-4 border-l border-slate-200 flex items-center justify-between">
+                                    <span class="truncate"><span class="font-mono text-cyan-700 ml-1.5">${phase.id}</span>${phase.title}</span>
+                                    <div class="text-left font-mono">
+                                        <span class="text-blue-700 text-xs">${phase.actualProgress}%</span>
+                                        <span class="text-[10px] text-slate-400 mr-1">(${phase.plannedProgress}%)</span>
+                                    </div>
+                                </div>
+                                <div class="col-span-8 relative h-8 flex items-center px-2 timeline-grid">
+                                    ${phaseBarHtml}
+                                </div>
+                            </div>
+                        `;
+
+                        if (phase.children && phase.children.length > 0) {
+                            phase.children.forEach(c => {
+                                let startD = parseJalaliDateStr(c.startDate);
+                                let endD = parseJalaliDateStr(c.endDate);
+
+                                let subBarHtml = '';
+                                if (startD && endD && endD >= startD) {
+                                    let offsetLeft = Math.max(0, Math.min(100, ((startD - baseStartDays) / totalTimelineDays) * 100));
+                                    let barWidth = Math.max(4, Math.min(100 - offsetLeft, ((endD - startD + 1) / totalTimelineDays) * 100));
+
+                                    subBarHtml = `
+                                        <div class="absolute h-3.5 bg-slate-200/90 rounded border border-slate-300 flex items-center overflow-hidden" style="right: ${offsetLeft}%; width: ${barWidth}%;">
+                                            <div class="h-full bg-logo-gradient rounded transition-all duration-300" style="width: ${Math.min(c.actualProgress, 100)}%;"></div>
+                                        </div>
+                                    `;
+                                } else {
+                                    subBarHtml = `<span class="text-[10px] text-slate-400 font-mono pr-2">—</span>`;
+                                }
+
+                                html += `
+                                    <div class="grid grid-cols-12 items-center hover:bg-slate-50/80 transition">
+                                        <div class="col-span-4 p-2 text-right pr-6 border-l border-slate-100 flex items-center justify-between text-[11px]">
+                                            <span class="truncate text-slate-700" title="${c.title}">
+                                                <span class="font-mono text-slate-400 ml-1">${c.id}</span>${c.title}
+                                            </span>
+                                            <div class="text-left font-mono">
+                                                <span class="text-slate-700 font-bold">${c.actualProgress}%</span>
+                                                <span class="text-[10px] text-slate-400 mr-1">(${c.plannedProgress}%)</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-span-8 relative h-7 flex items-center px-2 timeline-grid">
+                                            ${subBarHtml}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                    });
+                }
+
+                html += `</div></div>`;
+                card.innerHTML = html;
+                ganttContainer.appendChild(card);
+            });
+        }
+
+        window.openLogModal = function() {
+            if (currentUserProfile && currentUserProfile.role === 'executive') { showToast("ناظرین ارشد امکان ثبت اقدام ندارند.", "error"); return; }
+            populateProjectDropdowns(); document.getElementById('addLogModal').classList.remove('hidden');
+        };
+
+        window.closeLogModal = function() { document.getElementById('addLogModal').classList.add('hidden'); };
+
+        window.updateModalWBSOptions = function() {
+            const selectPrj = document.getElementById('modalProjectSelect');
+            const modalWbsSelect = document.getElementById('modalWbsSelect');
+            if (!selectPrj || !modalWbsSelect) return;
+            const selectedPrjId = selectPrj.value;
+            modalWbsSelect.innerHTML = '';
+            const prj = window.projects.find(p => p.id === selectedPrjId);
+            if (prj && prj.wbs) {
+                const authorInput = document.getElementById('modalAuthor');
+                if (authorInput) { authorInput.value = currentUserProfile ? (currentUserProfile.full_name || prj.lead) : prj.lead; }
+                prj.wbs.forEach(phase => {
+                    (phase.children || []).forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id; opt.innerText = `${c.id} - ${c.title}`;
+                        modalWbsSelect.appendChild(opt);
+                    });
+                });
+            }
+        };
+
+        window.toggleProgressInput = function() {
+            const checkEl = document.getElementById('modalUpdateProgressCheck');
+            const container = document.getElementById('progressInputContainer');
+            if (!checkEl || !container) return;
+            if (checkEl.checked) container.classList.remove('hidden'); else container.classList.add('hidden');
+        };
+
+        window.handleSaveActivity = function(e) {
+            e.preventDefault();
+            const prjId = document.getElementById('modalProjectSelect').value;
+            const wbsId = document.getElementById('modalWbsSelect').value;
+            const date = document.getElementById('modalDate').value;
+            const hours = document.getElementById('modalHours').value || 0;
+            const author = document.getElementById('modalAuthor').value;
+            const description = document.getElementById('modalDescription').value;
+
+            if (!window.hasPermission('add_activity', prjId)) { showToast("شما دسترسی ثبت اقدام برای این پروژه را ندارید.", "error"); return; }
+
+            const userRole = currentUserProfile ? currentUserProfile.role : 'lead';
+            let proposedProg = null;
+            const checkEl = document.getElementById('modalUpdateProgressCheck');
+            if (checkEl && checkEl.checked) {
+                const newProg = parseInt(document.getElementById('modalNewProgress').value);
+                if (!isNaN(newProg) && newProg >= 0 && newProg <= 100) proposedProg = newProg;
+            }
+
+            const initialStatus = (userRole === 'pmo') ? 'approved' : 'pending';
+            const newAct = {
+                id: "ACT-" + Date.now().toString().slice(-4),
+                projectId: prjId, wbsId: wbsId, date: date, hours: parseFloat(hours), author: author,
+                description: description, status: initialStatus, proposedProgress: proposedProg, createdAt: new Date().toISOString()
+            };
+
+            if (initialStatus === 'approved' && proposedProg !== null) { applyProgressUpdate(prjId, wbsId, proposedProg); }
+            window.activities.unshift(newAct);
+            saveState(true); renderAllViews(); closeLogModal(); document.getElementById('activityForm').reset(); toggleProgressInput();
+            if (initialStatus === 'pending') { showToast("اقدام با موفقیت ثبت و به کارتابل تایید PMO ارسال شد.", "info"); } 
+            else { showToast("اقدام ثبت و پیشرفت فیزیکی اعمال شد.", "success"); }
+        };
+
+        function applyProgressUpdate(prjId, wbsId, newProg) {
+            const prj = window.projects.find(p => p.id === prjId);
+            if (prj && prj.wbs) {
+                prj.wbs.forEach(phase => {
+                    const item = (phase.children || []).find(c => c.id === wbsId);
+                    if (item) item.actualProgress = newProg;
+                });
+                updateAllPlannedProgresses();
+                prj.actualProgress = calculateProjectProgress(prj);
+            }
+        }
+
+        function renderApprovalInbox() {
+            const container = document.getElementById('pendingApprovalsList');
+            const pendingBadge = document.getElementById('pendingBadge');
+            const inboxBadge = document.getElementById('inboxPendingCountBadge');
+            if (!container) return;
+
+            const accessibleActivities = filterByAccess(window.activities, 'projectId');
+            const pendingActs = accessibleActivities.filter(a => a.status === 'pending');
+            const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+            const isPmo = userRole === 'pmo';
+
+            if (pendingBadge) {
+                pendingBadge.innerText = pendingActs.length;
+                if (pendingActs.length > 0) pendingBadge.classList.remove('hidden'); else pendingBadge.classList.add('hidden');
+            }
+            if (inboxBadge) inboxBadge.innerText = `${pendingActs.length} اقدام در صف بررسی`;
+            container.innerHTML = '';
+
+            if (pendingActs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800">هیچ اقدامی در انتظار تایید وجود ندارد</h4>
+                        <p class="text-xs text-slate-400 mt-1">تمام اقدامات ثبت‌شده بررسی و تایید شده‌اند.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            pendingActs.forEach(act => {
+                const prj = window.projects.find(p => p.id === act.projectId);
+                const prjName = prj ? prj.name : act.projectId;
+                const prjCode = prj ? prj.code : act.projectId;
+
+                const card = document.createElement('div');
+                card.className = "bg-white border-2 border-amber-200/80 rounded-3xl p-5 shadow-sm space-y-3";
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-amber-100 text-amber-900 text-[11px] font-black px-2.5 py-1 rounded-xl">در انتظار تایید PMO</span>
+                            <span class="text-xs font-mono font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md">${prjCode}</span>
+                            <b class="text-xs text-slate-900">${prjName}</b>
+                        </div>
+                        <div class="text-[11px] text-slate-400 font-mono">تاریخ: <b>${act.date}</b> | ثبت توسط: <b class="text-slate-700">${act.author}</b></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-1.5">
+                            <span class="text-slate-400 text-[11px] font-bold">شرح اقدام مسئول پروژه:</span>
+                            <p class="text-slate-700 leading-relaxed font-medium bg-slate-50 p-3.5 rounded-2xl border border-slate-100">${act.description}</p>
+                        </div>
+                        <div class="bg-amber-50/50 p-3.5 rounded-2xl border border-amber-100 space-y-2 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[11px] text-slate-500 block">بخش شکست WBS:</span>
+                                <b class="font-mono text-slate-900 text-xs">${act.wbsId}</b>
+                                <div class="mt-2">
+                                    <span class="text-[11px] text-slate-500">پیشنهاد پیشرفت فیزیکی:</span>
+                                    <b class="text-blue-700 block text-sm font-black mt-0.5">${act.proposedProgress !== null && act.proposedProgress !== undefined ? act.proposedProgress + '%' : 'بدون تغییر پیشرفت'}</b>
+                                </div>
+                            </div>
+                            <span class="text-[11px] text-slate-400 font-medium">زمان کار: ${act.hours} ساعت</span>
+                        </div>
+                    </div>
+                    ${isPmo ? `
+                        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                            <button onclick="openRejectModal('${act.id}')" class="px-4 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition flex items-center gap-1.5"><i class="fa-solid fa-xmark"></i> <span>رد / نیاز به بازنگری</span></button>
+                            <button onclick="approveActivity('${act.id}')" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-check"></i> <span>تایید و اعمال در پیشرفت پروژه</span></button>
+                        </div>
+                    ` : `<div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100 text-left">* فقط مدیریت ارشد PMO امکان تایید یا رد این مورد را دارد.</div>`}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.approveActivity = function(activityId) {
+            if (currentUserProfile && currentUserProfile.role !== 'pmo') { showToast("فقط مدیر ارشد PMO مجاز به تایید اقدامات است.", "error"); return; }
+            const act = window.activities.find(a => a.id === activityId);
+            if (!act) return;
+            act.status = 'approved';
+            act.approvedBy = currentUserProfile ? currentUserProfile.full_name : 'PMO';
+            act.approvedAt = new Date().toISOString();
+            if (act.proposedProgress !== null && act.proposedProgress !== undefined) { applyProgressUpdate(act.projectId, act.wbsId, act.proposedProgress); }
+            saveState(true); renderAllViews(); showToast("اقدام تایید و پیشرفت پروژه به‌روزرسانی شد.", "success");
+        };
+
+        window.openRejectModal = function(activityId) {
+            document.getElementById('rejectTargetActivityId').value = activityId;
+            document.getElementById('rejectionReasonText').value = '';
+            document.getElementById('rejectActivityModal').classList.remove('hidden');
+        };
+
+        window.closeRejectModal = function() { document.getElementById('rejectActivityModal').classList.add('hidden'); };
+
+        window.submitRejectActivity = function() {
+            const activityId = document.getElementById('rejectTargetActivityId').value;
+            const reason = document.getElementById('rejectionReasonText').value.trim();
+            if (!reason) { showToast("لطفاً علت رد اقدام را بنویسید.", "error"); return; }
+            const act = window.activities.find(a => a.id === activityId);
+            if (act) {
+                act.status = 'rejected'; act.rejectionReason = reason;
+                act.rejectedBy = currentUserProfile ? currentUserProfile.full_name : 'PMO'; act.rejectedAt = new Date().toISOString();
+                saveState(true); renderAllViews(); closeRejectModal(); showToast("اقدام جهت بازنگری عودت داده شد.", "info");
+            }
+        };
+
+        function renderActivitiesTable() {
+            const tbody = document.getElementById('activitiesTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const accessibleActivities = filterByAccess(window.activities, 'projectId');
+
+            if (accessibleActivities.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 font-bold">هیچ اقدامی ثبت نشده است.</td></tr>`;
+                return;
+            }
+
+            const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
+            const isPmo = userRole === 'pmo';
+
+            accessibleActivities.forEach(act => {
+                const prj = window.projects.find(p => p.id === act.projectId);
+                const prjCode = prj ? prj.code : act.projectId;
+                let statusBadge = '<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">🟢 تایید نهایی</span>';
+                if (act.status === 'pending') statusBadge = '<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse">🟡 در انتظار تایید</span>';
+                else if (act.status === 'rejected') statusBadge = `<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200" title="${act.rejectionReason || ''}">🔴 نیازمند بازنگری</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-mono text-slate-500">${act.date}</td>
+                    <td class="px-4 py-3 font-bold text-slate-900">${prjCode}</td>
+                    <td class="px-4 py-3 font-mono text-slate-600">${act.wbsId}</td>
+                    <td class="px-4 py-3 text-slate-700 max-w-md">
+                        <div class="font-medium leading-relaxed">${act.description}</div>
+                        ${act.rejectionReason ? `<div class="text-[10px] text-rose-600 mt-1 font-bold">علت بازنگری: ${act.rejectionReason}</div>` : ''}
+                    </td>
+                    <td class="px-4 py-3 text-slate-600 font-bold">${act.author}</td>
+                    <td class="px-4 py-3 font-mono font-bold text-blue-700">${act.hours} ساعت</td>
+                    <td class="px-4 py-3 text-center">${statusBadge}</td>
+                    <td class="px-4 py-3 text-center">
+                        ${isPmo ? `<button onclick="confirmDeleteActivity('${act.id}')" title="حذف اقدام" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>` : `<span class="text-slate-300">—</span>`}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.filterActivitiesTable = function() {
+            const searchInput = document.getElementById('searchActivity');
+            const filterPrjSelect = document.getElementById('filterProjectActivity');
+            const tbody = document.getElementById('activitiesTableBody');
+            if (!searchInput || !filterPrjSelect || !tbody) return;
+
+            const searchVal = searchInput.value.toLowerCase();
+            const filterPrj = filterPrjSelect.value;
+            const rows = tbody.getElementsByTagName('tr');
+
+            const accessibleActivities = filterByAccess(window.activities, 'projectId');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.innerText.toLowerCase();
+                const prjCell = accessibleActivities[i] ? accessibleActivities[i].projectId : '';
+                const matchesSearch = text.includes(searchVal);
+                const matchesPrj = (filterPrj === 'ALL' || prjCell === filterPrj);
+                if (matchesSearch && matchesPrj) row.style.display = ''; else row.style.display = 'none';
+            }
+        };
+
+        window.confirmDeleteActivity = function(id) {
+            if (currentUserProfile && currentUserProfile.role !== 'pmo') { showToast("فقط مدیر ارشد PMO امکان حذف اقدامات را دارد.", "error"); return; }
+            deleteTargetId = id;
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+            document.getElementById('confirmDeleteBtn').onclick = function() {
+                if (deleteTargetId) {
+                    window.activities = window.activities.filter(a => a.id !== deleteTargetId);
+                    saveState(true); renderAllViews(); closeDeleteConfirmModal(); showToast("اقدام با موفقیت حذف شد.", "success");
+                }
+            };
+        };
+
+        window.closeDeleteConfirmModal = function() { deleteTargetId = null; document.getElementById('deleteConfirmModal').classList.add('hidden'); };
+
+        window.exportData = function() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ projects: window.projects, activities: window.activities }, null, 2));
+            const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `mstid_tech_projects_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
+        };
+
+        window.exportExecutivePDF = function() {
+            const container = document.getElementById('pdfReportContent');
+            if (!container) return;
+            const today = getTodayJalali();
+            
+            const accessibleProjects = filterByAccess(window.projects, 'id');
+
+            let totalActual = 0; let totalPlanned = 0;
+            accessibleProjects.forEach(p => { totalActual += calculateProjectProgress(p); totalPlanned += (p.plannedProgress || 0); });
+            const avgActual = accessibleProjects.length ? (totalActual / accessibleProjects.length).toFixed(2) : 0;
+            const avgPlanned = accessibleProjects.length ? (totalPlanned / accessibleProjects.length).toFixed(2) : 0;
+            
+            const accessibleActivities = filterByAccess(window.activities, 'projectId');
+
+            let html = `
+                <div class="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="border border-indigo-900 rounded-2xl px-4 py-2.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white flex items-center justify-center font-black text-sm">MSTID</div>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و پایش آخرین وضعیت پروژه‌های استراتژیک</h2>
+                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ تنظیم: ${today.dateStr}</p>
+                        </div>
+                    </div>
+                    <div class="text-left font-mono text-xs text-slate-500"><span>سند مدیریتی محرمانه</span><br><span>نسخه آنلاین ۱.۹</span></div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-4 text-center">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <span class="text-[11px] text-slate-500 block">تعداد پروژه‌ها</span>
+                        <b class="text-lg text-slate-900">${accessibleProjects.length} پروژه</b>
+                    </div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <span class="text-[11px] text-slate-500 block">میانگین پیشرفت تاییدشده</span>
+                        <b class="text-lg text-blue-700">${avgActual}%</b>
+                    </div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <span class="text-[11px] text-slate-500 block">میانگین پیشرفت برنامه‌ای</span>
+                        <b class="text-lg text-slate-600">${avgPlanned}%</b>
+                    </div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <span class="text-[11px] text-slate-500 block">تعداد کل اقدامات</span>
+                        <b class="text-lg text-purple-700">${accessibleActivities.length} اقدام</b>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-2">
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">جدول خلاصه وضعیت پروژه‌های استراتژیک</h3>
+                    <table class="w-full text-xs text-right border-collapse border border-slate-300">
+                        <thead class="bg-slate-100 font-bold text-slate-800 border-b border-slate-300">
+                            <tr>
+                                <th class="p-2 border border-slate-300">کد</th><th class="p-2 border border-slate-300">نام پروژه</th>
+                                <th class="p-2 border border-slate-300">مسئول پروژه</th><th class="p-2 border border-slate-300">بودجه</th>
+                                <th class="p-2 border border-slate-300 text-center">پیشرفت واقعی</th><th class="p-2 border border-slate-300 text-center">پیشرفت برنامه‌ای</th>
+                                <th class="p-2 border border-slate-300 text-center">تحقق دوره</th><th class="p-2 border border-slate-300 text-center">وضعیت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            accessibleProjects.forEach(p => {
+                const actProg = calculateProjectProgress(p);
+                html += `
+                    <tr class="border-b border-slate-200">
+                        <td class="p-2 border border-slate-300 font-mono font-bold text-blue-800">${p.code}</td><td class="p-2 border border-slate-300 font-bold">${p.name}</td>
+                        <td class="p-2 border border-slate-300">${p.lead}</td><td class="p-2 border border-slate-300 font-mono">${p.budget}</td>
+                        <td class="p-2 border border-slate-300 text-center font-bold text-blue-700">${actProg}%</td><td class="p-2 border border-slate-300 text-center font-mono">${p.plannedProgress}%</td>
+                        <td class="p-2 border border-slate-300 text-center font-bold text-emerald-700">${p.periodRealization}</td><td class="p-2 border border-slate-300 text-center">${p.status}</td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table></div><div class="space-y-6 pt-4"><h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-300 pb-2">جزئیات شکست WBS و اقدامات هر پروژه</h3>`;
+
+            accessibleProjects.forEach(p => {
+                const actProg = calculateProjectProgress(p);
+                const projectActs = accessibleActivities.filter(a => a.projectId === p.id && a.status === 'approved');
+                html += `
+                    <div class="border border-slate-300 rounded-2xl p-4 space-y-3 bg-white print-card">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <div><span class="font-mono text-xs font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded">${p.code}</span><b class="text-sm font-black text-slate-900 mr-2">${p.name}</b></div>
+                            <span class="text-xs text-slate-600 font-medium">مسئول: <b>${p.lead}</b> | پیشرفت واقعی: <b class="text-blue-700">${actProg}%</b></span>
+                        </div>
+                        <div class="text-xs space-y-1.5"><b class="text-slate-700 block text-[11px]">فازها و فعالیت‌های WBS:</b><div class="grid grid-cols-2 gap-2 text-[11px]">
+                `;
+                if (p.wbs) {
+                    p.wbs.forEach(ph => {
+                        html += `
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                                <div class="flex justify-between font-bold text-slate-800 mb-1"><span>${ph.id} ${ph.title}</span><span class="text-blue-700">${ph.actualProgress}%</span></div>
+                                <div class="text-[10px] text-slate-500">${ph.children ? ph.children.map(c => `${c.id} (${c.actualProgress}%)`).join(' • ')}</div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div><div class="text-xs space-y-1 pt-1"><b class="text-slate-700 block text-[11px]">آخرین اقدامات تاییدشده (${projectActs.length} مورد):</b>`;
+                if (projectActs.length > 0) {
+                    html += `<ul class="list-disc list-inside space-y-0.5 text-[11px] text-slate-600 font-medium">${projectActs.slice(0, 3).map(a => `<li><b>${a.date} (${a.author}):</b> ${a.description}</li>`).join('')}</ul>`;
+                } else { html += `<p class="text-[10px] text-slate-400">اقدام تاییدشده‌ای ثبت نشده است.</p>`; }
+                html += `</div></div>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+            document.getElementById('pdfReportModal').classList.remove('hidden');
+        };
+
+        window.closePdfReportModal = function() { document.getElementById('pdfReportModal').classList.add('hidden'); };
+        window.triggerPrint = function() { window.print(); };
+
+        window.importData = function(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed.projects && parsed.activities) {
+                        window.projects = parsed.projects; window.activities = parsed.activities;
+                        saveState(true); renderAllViews(); showToast("اطلاعات بازیابی و همگام شد.", "success");
+                    }
+                } catch (err) { showToast("خطا در خواندن فایل پشتیبان!", "error"); }
+            };
+            reader.readAsText(event.target.files[0]);
+        };
+
+        // Self-invoking startup logic
         (function initApp() {
             loadState();
             const client = getSupabaseClient();
@@ -1887,7 +2445,7 @@
                 client.auth.onAuthStateChange((event, session) => {
                     if (session) {
                         authenticateUserSession(session);
-                    } else {
+                    } else if (event === 'SIGNED_OUT') {
                         showLoginScreen(true);
                     }
                 });
