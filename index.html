@@ -134,7 +134,7 @@
 
     <!-- MAIN APP CONTAINER -->
     <div id="appContainer" class="flex-1 flex flex-col hidden animate-fade-in">
-        <!-- Modern Executive Header -->
+        <!-- Header -->
         <header class="bg-slate-950/90 backdrop-blur-md text-white sticky top-0 z-40 border-b border-slate-800 shadow-xl no-print">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between py-2.5 gap-4">
@@ -235,7 +235,7 @@
                     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition relative overflow-hidden bg-card-glow">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-xs font-semibold text-slate-400">تعداد پروژه‌ها</p>
+                                <p class="text-xs font-semibold text-slate-400">تعداد کل پروژه‌ها</p>
                                 <h3 class="text-2xl font-black text-slate-900 mt-1" id="kpi-total-projects">۵ پروژه</h3>
                                 <p class="text-[11px] text-cyan-600 font-bold mt-1.5"><i class="fa-solid fa-coins"></i> سرمایه‌گذاری: ۴۰ همت</p>
                             </div>
@@ -250,7 +250,7 @@
                             <div>
                                 <p class="text-xs font-semibold text-slate-400">میانگین پیشرفت کل (تاییدشده)</p>
                                 <h3 class="text-2xl font-black text-blue-700 mt-1" id="kpi-avg-progress">0%</h3>
-                                <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای: <span id="kpi-avg-planned" class="font-bold text-slate-700">0%</span></p>
+                                <p class="text-[11px] text-slate-400 mt-1">برنامه‌ای خودکار: <span id="kpi-avg-planned" class="font-bold text-slate-700">0%</span></p>
                                 <div class="w-28 bg-slate-100 rounded-full h-1.5 mt-1.5 overflow-hidden">
                                     <div id="kpi-avg-bar" class="bg-logo-gradient-h h-1.5 rounded-full" style="width: 0%"></div>
                                 </div>
@@ -296,12 +296,12 @@
                                 <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
                                     <i class="fa-solid fa-chart-column text-blue-600"></i> مقایسه درصد پیشرفت واقعی و برنامه‌ای ۵ پروژه
                                 </h3>
-                                <p class="text-[11px] text-slate-400 mt-0.5">تحلیل انحراف عملکردی نسبت به زمان‌بندی مبنا</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">محاسبه خودکار انحراف زمانی و سهم ماه جاری بر پایه تاریخ زنده سیستم</p>
                             </div>
-                            <div class="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200">
-                                <i class="fa-solid fa-calendar-day text-cyan-600 text-xs"></i>
-                                <label for="currentEvaluationDate" class="text-xs font-bold text-slate-700 whitespace-nowrap">تاریخ پایش:</label>
-                                <input type="text" id="currentEvaluationDate" onchange="handleEvaluationDateChange()" value="1405/05/26" class="bg-white border border-slate-300 text-xs font-bold font-mono rounded-lg p-1 text-center w-24 text-blue-900 focus:ring-2 focus:ring-cyan-500">
+                            <div class="flex items-center gap-2 bg-slate-100/90 px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="text-xs font-bold text-slate-600 whitespace-nowrap">تاریخ پایش آنلاین:</span>
+                                <span id="currentEvaluationDateBadge" class="text-xs font-black font-mono text-blue-900 bg-white px-2.5 py-0.5 rounded-lg border border-slate-200 shadow-xs">--/--/--</span>
                             </div>
                         </div>
                         <div class="relative h-64">
@@ -317,7 +317,7 @@
                                 </h3>
                                 <p class="text-[11px] text-slate-400 mt-0.5">نمودار راداری وضعیت ۵ فناوری</p>
                             </div>
-                            <span id="radarMonthBadge" class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">مرداد ۱۴۰۵</span>
+                            <span id="radarMonthBadge" class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">--</span>
                         </div>
                         <div class="relative h-64 flex items-center justify-center">
                             <canvas id="radarChart"></canvas>
@@ -328,7 +328,7 @@
                 <!-- Project Quick Summary Cards -->
                 <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
                     <h3 class="font-black text-slate-900 text-sm mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group text-slate-600"></i> مشخصات و وضعیت ۵ پروژه استراتژیک
+                        <i class="fa-solid fa-layer-group text-slate-600"></i> مشخصات، پیشرفت تجمعی و تحقق دوره ۱ ماهه ۵ پروژه
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="project-overview-cards">
                     </div>
@@ -382,8 +382,8 @@
                             <span class="text-slate-600 font-medium">بازه برنامه‌ای مصوب</span>
                         </div>
                         <div class="flex items-center gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                            <span class="text-slate-600 font-medium">خط پایش تاریخ جاری (۱۴۰۵/۰۵/۲۶)</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-slate-600 font-medium">خط پایش تاریخ زنده امروز (<span id="ganttTodayDateText" class="font-mono font-bold text-slate-800"></span>)</span>
                         </div>
                     </div>
 
@@ -561,20 +561,14 @@
                         <input type="number" id="editWbsWeight" min="1" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت برنامه‌ای (%)</label>
-                        <input type="number" id="editWbsPlanned" min="0" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ شروع (شمسی) <span class="text-rose-500">*</span></label>
                         <input type="text" id="editWbsStartDate" required placeholder="1405/05/04" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان (شمسی) <span class="text-rose-500">*</span></label>
-                        <input type="text" id="editWbsEndDate" required placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان (شمسی) <span class="text-rose-500">*</span></label>
+                    <input type="text" id="editWbsEndDate" required placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                 </div>
 
                 <div>
@@ -620,20 +614,14 @@
                         <input type="number" id="addWbsWeight" min="1" max="100" value="1" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت برنامه‌ای (%)</label>
-                        <input type="number" id="addWbsPlanned" min="0" max="100" value="0" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ شروع</label>
                         <input type="text" id="addWbsStartDate" placeholder="1405/05/04" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان</label>
-                        <input type="text" id="addWbsEndDate" placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان</label>
+                    <input type="text" id="addWbsEndDate" placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                 </div>
 
                 <div>
@@ -712,7 +700,7 @@
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-5 left-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- Scripts -->
+    <!-- Supabase Auth, RBAC & Cloud Sync Script -->
     <script>
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
         
@@ -851,7 +839,6 @@
             return false;
         };
 
-        // Added Data Filtering Function
         function filterByAccess(dataList, projectIdKey = 'id') {
             if (!currentUserProfile || currentUserProfile.role === 'pmo' || currentUserProfile.role === 'executive' || currentUserProfile.assigned_project === 'ALL') {
                 return dataList;
@@ -968,6 +955,7 @@
         });
     </script>
 
+    <!-- Mathematical Progress Engine & Dynamic Periodic Progression -->
     <script>
         const DEFAULT_PROJECTS = [
             {
@@ -997,52 +985,44 @@
                         id: "1.1.1",
                         title: "فاز اول (مطالعات اولیه)",
                         duration: "32 روز",
-                        plannedProgress: 59,
-                        actualProgress: 59,
                         children: [
-                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 2, plannedProgress: 90, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/24" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 1, plannedProgress: 90, actualProgress: 80, startDate: "1405/05/04", endDate: "1405/05/24" },
-                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 4, plannedProgress: 10, actualProgress: 50, startDate: "1405/05/20", endDate: "1405/05/31" },
-                            { id: "1.1.1.4", title: "بررسی منابع مورد نیاز برای اجرای پروژه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
-                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/15" }
+                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 2, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/24" },
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 1, actualProgress: 80, startDate: "1405/05/04", endDate: "1405/05/24" },
+                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 4, actualProgress: 50, startDate: "1405/05/20", endDate: "1405/05/31" },
+                            { id: "1.1.1.4", title: "بررسی منابع مورد نیاز برای اجرای پروژه", weight: 2, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
+                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/15" }
                         ]
                     },
                     {
                         id: "1.1.2",
                         title: "فاز دوم (امکان‌سنجی، مدل کسب و کار)",
                         duration: "39 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/25" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/07/15" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/29" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/29", endDate: "1405/08/05" }
+                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/25" },
+                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/07/15" },
+                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/29" },
+                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 2, actualProgress: 0, startDate: "1405/07/29", endDate: "1405/08/05" }
                         ]
                     },
                     {
                         id: "1.1.3",
                         title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
                         duration: "93 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/26" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/26", endDate: "1405/11/05" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/11/05", endDate: "1405/11/20" },
-                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/11/20", endDate: "1405/12/10" }
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
+                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
+                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/26" },
+                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, actualProgress: 0, startDate: "1405/10/26", endDate: "1405/11/05" },
+                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 1, actualProgress: 0, startDate: "1405/11/05", endDate: "1405/11/20" },
+                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 2, actualProgress: 0, startDate: "1405/11/20", endDate: "1405/12/10" }
                         ]
                     },
                     {
                         id: "1.1.4",
                         title: "فاز چهارم (اجرای پروژه تجاری‌سازی)",
                         duration: "در حال برنامه‌ریزی",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.4.1", title: "اجرای پروژه تجاری‌سازی صنعتی", weight: 10, plannedProgress: 0, actualProgress: 0, startDate: "1405/12/10", endDate: "1407/05/01" }
+                            { id: "1.1.4.1", title: "اجرای پروژه تجاری‌سازی صنعتی", weight: 10, actualProgress: 0, startDate: "1405/12/10", endDate: "1407/05/01" }
                         ]
                     }
                 ]
@@ -1074,43 +1054,37 @@
                         id: "1.1.1",
                         title: "فاز اول (مطالعات اولیه)",
                         duration: "36 روز",
-                        plannedProgress: 57,
-                        actualProgress: 57,
                         children: [
-                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 1, plannedProgress: 90, actualProgress: 80, startDate: "1405/05/04", endDate: "1405/05/25" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 1, plannedProgress: 90, actualProgress: 100, startDate: "1405/05/04", endDate: "1405/05/25" },
-                            { id: "1.1.1.3", title: "مذاکرات و مکاتبات با گزینه‌های داخلی و خارجی", weight: 3, plannedProgress: 70, actualProgress: 80, startDate: "1405/05/10", endDate: "1405/05/31" },
-                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
-                            { id: "1.1.1.5", title: "بررسی و تخصیص منابع مورد نیاز", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/15" },
-                            { id: "1.1.1.6", title: "ارائه گزارش نهایی فاز اول", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/21" }
+                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 1, actualProgress: 80, startDate: "1405/05/04", endDate: "1405/05/25" },
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 1, actualProgress: 100, startDate: "1405/05/04", endDate: "1405/05/25" },
+                            { id: "1.1.1.3", title: "مذاکرات و مکاتبات با گزینه‌های داخلی و خارجی", weight: 3, actualProgress: 80, startDate: "1405/05/10", endDate: "1405/05/31" },
+                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 1, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
+                            { id: "1.1.1.5", title: "بررسی و تخصیص منابع مورد نیاز", weight: 1, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/15" },
+                            { id: "1.1.1.6", title: "ارائه گزارش نهایی فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/21" }
                         ]
                     },
                     {
                         id: "1.1.2",
                         title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
                         duration: "31 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/31" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/07/15" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/26", endDate: "1405/07/29" }
+                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/31" },
+                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/07/15" },
+                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
+                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/07/26", endDate: "1405/07/29" }
                         ]
                     },
                     {
                         id: "1.1.3",
                         title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
                         duration: "73 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/25" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/05" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/05", endDate: "1405/10/15" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/20" },
-                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/20", endDate: "1405/11/10" }
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/25" },
+                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
+                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/05" },
+                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, actualProgress: 0, startDate: "1405/10/05", endDate: "1405/10/15" },
+                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 1, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/20" },
+                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 2, actualProgress: 0, startDate: "1405/10/20", endDate: "1405/11/10" }
                         ]
                     }
                 ]
@@ -1141,42 +1115,36 @@
                         id: "1.1.1",
                         title: "فاز اول (مطالعات اولیه)",
                         duration: "40 روز",
-                        plannedProgress: 58,
-                        actualProgress: 58,
                         children: [
-                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 5, plannedProgress: 90, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/20" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 3, plannedProgress: 80, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" },
-                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/10" },
-                            { id: "1.1.1.4", title: "بررسی و تخصیص منابع مورد نیاز برای اجرای پروژه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/21" },
-                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/25" }
+                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 5, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/20" },
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 3, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" },
+                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 2, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/10" },
+                            { id: "1.1.1.4", title: "بررسی و تخصیص منابع مورد نیاز برای اجرای پروژه", weight: 2, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/21" },
+                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/25" }
                         ]
                     },
                     {
                         id: "1.1.2",
                         title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
                         duration: "31 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/25", endDate: "1405/07/05" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/25", endDate: "1405/07/20" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/20", endDate: "1405/07/29" },
-                            { id: "1.1.2.4", title: "ارائه گزارش فاز دوم", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/29", endDate: "1405/08/05" }
+                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/25", endDate: "1405/07/05" },
+                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, actualProgress: 0, startDate: "1405/06/25", endDate: "1405/07/20" },
+                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/20", endDate: "1405/07/29" },
+                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/07/29", endDate: "1405/08/05" }
                         ]
                     },
                     {
                         id: "1.1.3",
                         title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
                         duration: "79 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/15" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/26" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/30" },
-                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/30", endDate: "1405/11/20" }
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 3, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
+                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
+                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/15" },
+                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/26" },
+                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 2, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/30" },
+                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 3, actualProgress: 0, startDate: "1405/10/30", endDate: "1405/11/20" }
                         ]
                     }
                 ]
@@ -1207,42 +1175,36 @@
                         id: "1.1.1",
                         title: "فاز اول (مطالعات اولیه)",
                         duration: "68 روز",
-                        plannedProgress: 35,
-                        actualProgress: 35,
                         children: [
-                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 3, plannedProgress: 90, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/20" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 2, plannedProgress: 80, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" },
-                            { id: "1.1.1.3", title: "انجام تست‌های امکان‌سنجی", weight: 10, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/07/15" },
-                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 5, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
-                            { id: "1.1.1.5", title: "بررسی و تخصیص منابع مورد نیاز", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
-                            { id: "1.1.1.6", title: "ارائه گزارش نهایی فاز اول", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/26", endDate: "1405/08/02" }
+                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 3, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/20" },
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 2, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" },
+                            { id: "1.1.1.3", title: "انجام تست‌های امکان‌سنجی", weight: 10, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/07/15" },
+                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 5, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
+                            { id: "1.1.1.5", title: "بررسی و تخصیص منابع مورد نیاز", weight: 3, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
+                            { id: "1.1.1.6", title: "ارائه گزارش نهایی فاز اول", weight: 1, actualProgress: 0, startDate: "1405/07/26", endDate: "1405/08/02" }
                         ]
                     },
                     {
                         id: "1.1.2",
                         title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
                         duration: "21 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/10" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/16" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و پیشنهاد نحوه اجرا", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/16", endDate: "1405/08/26" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/26", endDate: "1405/08/30" }
+                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/10" },
+                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/16" },
+                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و پیشنهاد نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/08/16", endDate: "1405/08/26" },
+                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/08/26", endDate: "1405/08/30" }
                         ]
                     },
                     {
                         id: "1.1.3",
                         title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
                         duration: "72 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/30", endDate: "1405/09/01" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/01", endDate: "1405/09/21" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/21", endDate: "1405/10/21" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/21", endDate: "1405/10/30" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/10/30", endDate: "1405/11/20" }
+                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری", weight: 2, actualProgress: 0, startDate: "1405/08/30", endDate: "1405/09/01" },
+                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, actualProgress: 0, startDate: "1405/09/01", endDate: "1405/09/21" },
+                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 3, actualProgress: 0, startDate: "1405/09/21", endDate: "1405/10/21" },
+                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, actualProgress: 0, startDate: "1405/10/21", endDate: "1405/10/30" },
+                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 2, actualProgress: 0, startDate: "1405/10/30", endDate: "1405/11/20" }
                         ]
                     }
                 ]
@@ -1274,40 +1236,34 @@
                         id: "1.1.1",
                         title: "فاز اول (مطالعات اولیه)",
                         duration: "46 روز",
-                        plannedProgress: 46,
-                        actualProgress: 46,
                         children: [
-                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 5, plannedProgress: 90, actualProgress: 100, startDate: "1405/05/04", endDate: "1405/05/20" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 5, plannedProgress: 60, actualProgress: 70, startDate: "1405/05/04", endDate: "1405/05/31" },
-                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/15" },
-                            { id: "1.1.1.4", title: "بررسی و تخصیص منابع مورد نیاز برای اجرای پروژه", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/15" },
-                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/21" }
+                            { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 5, actualProgress: 100, startDate: "1405/05/04", endDate: "1405/05/20" },
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 5, actualProgress: 70, startDate: "1405/05/04", endDate: "1405/05/31" },
+                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 2, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/15" },
+                            { id: "1.1.1.4", title: "بررسی و تخصیص منابع مورد نیاز برای اجرای پروژه", weight: 3, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/15" },
+                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/21" }
                         ]
                     },
                     {
                         id: "1.1.2",
                         title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
                         duration: "31 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/31" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, plannedProgress: 0, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/07/20" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/20", endDate: "1405/07/28" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, plannedProgress: 0, actualProgress: 0, startDate: "1405/07/28", endDate: "1405/08/05" }
+                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 3, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/31" },
+                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/07/20" },
+                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/20", endDate: "1405/07/28" },
+                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/07/28", endDate: "1405/08/05" }
                         ]
                     },
                     {
                         id: "1.1.3",
                         title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
                         duration: "75 روز",
-                        plannedProgress: 0,
-                        actualProgress: 0,
                         children: [
-                            { id: "1.1.3.1", title: "مکاتبه با صاحبان فناوری در خارج از کشور", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/09/04" },
-                            { id: "1.1.3.2", title: "ارزیابی ارائه‌دهندگان فناوری بر اساس شاخص‌ها", weight: 4, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/04", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "انتخاب ارائه‌دهنده فناوری", weight: 2, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/09/30" },
-                            { id: "1.1.3.4", title: "تدوین قرارداد بر اساس شاخص‌های جذب فناوری", weight: 3, plannedProgress: 0, actualProgress: 0, startDate: "1405/09/30", endDate: "1405/10/30" }
+                            { id: "1.1.3.1", title: "مکاتبه با صاحبان فناوری در خارج از کشور", weight: 3, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/09/04" },
+                            { id: "1.1.3.2", title: "ارزیابی ارائه‌دهندگان فناوری بر اساس شاخص‌ها", weight: 4, actualProgress: 0, startDate: "1405/09/04", endDate: "1405/09/25" },
+                            { id: "1.1.3.3", title: "انتخاب ارائه‌دهنده فناوری", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/09/30" },
+                            { id: "1.1.3.4", title: "تدوین قرارداد بر اساس شاخص‌های جذب فناوری", weight: 3, actualProgress: 0, startDate: "1405/09/30", endDate: "1405/10/30" }
                         ]
                     }
                 ]
@@ -1327,11 +1283,50 @@
             { id: "ACT-10", projectId: "PRJ-05", wbsId: "1.1.1.2", date: "1405/05/28", hours: 14, author: "دکتر شیبانی‌فر", status: "approved", description: "شناسایی پتانسیل‌های داخلی و بررسی ارائه‌دهندگان خارجی فناوری EMAT" }
         ];
 
+        const PERSIAN_MONTH_NAMES = [
+            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        ];
+
         window.projects = [];
         window.activities = [];
         let chartInstance = null;
         let radarChartInstance = null;
         let deleteTargetId = null;
+
+        function gregorianToJalali(gy, gm, gd) {
+            var g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+            var gy2 = (gm > 2) ? (gy + 1) : gy;
+            var days = 355666 + (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
+            var jy = -1595 + (33 * Math.floor(days / 12053));
+            days %= 12053;
+            jy += 4 * Math.floor(days / 1461);
+            days %= 1461;
+            if (days > 365) {
+                jy += Math.floor((days - 1) / 365);
+                days = (days - 1) % 365;
+            }
+            var jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+            var jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+            return [jy, jm, jd];
+        }
+
+        function getTodayJalali() {
+            const now = new Date();
+            const [jy, jm, jd] = gregorianToJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+            const pad = (n) => String(n).padStart(2, '0');
+            return {
+                jy, jm, jd,
+                dateStr: `${jy}/${pad(jm)}/${pad(jd)}`,
+                monthName: PERSIAN_MONTH_NAMES[jm - 1] + ' ' + jy
+            };
+        }
+
+        function getMonthDaysCount(jy, jm) {
+            if (jm <= 6) return 31;
+            if (jm <= 11) return 30;
+            return 29;
+        }
 
         function jalaliToDays(jy, jm, jd) {
             jy = parseInt(jy, 10); jm = parseInt(jm, 10); jd = parseInt(jd, 10);
@@ -1350,57 +1345,113 @@
             return jalaliToDays(y, m, d);
         }
 
-        function calculateTimePlannedProgress(item, evalDateDays) {
-            if (!item.startDate || !item.endDate) return item.plannedProgress || 0;
-            let startDays = parseJalaliDateStr(item.startDate);
-            let endDays = parseJalaliDateStr(item.endDate);
-            if (!startDays || !endDays || endDays <= startDays) return item.plannedProgress || 0;
-            if (evalDateDays <= startDays) return 0;
-            if (evalDateDays >= endDays) return 100;
-            let totalDuration = endDays - startDays;
-            let elapsed = evalDateDays - startDays;
-            let prog = Math.round((elapsed / totalDuration) * 100);
-            return Math.min(100, Math.max(0, prog));
-        }
-
+        // Automatic Time-Based Progression Engine
         function updateAllPlannedProgresses() {
-            const evalInput = document.getElementById('currentEvaluationDate');
-            const evalDateStr = evalInput ? evalInput.value.trim() : '1405/05/26';
-            const evalDateDays = parseJalaliDateStr(evalDateStr);
-            if (!evalDateDays) return;
+            const today = getTodayJalali();
+            const dateBadge = document.getElementById('currentEvaluationDateBadge');
+            if (dateBadge) dateBadge.innerText = today.dateStr;
+
+            const radarBadge = document.getElementById('radarMonthBadge');
+            if (radarBadge) radarBadge.innerText = today.monthName;
+
+            const ganttTodayText = document.getElementById('ganttTodayDateText');
+            if (ganttTodayText) ganttTodayText.innerText = today.dateStr;
+
+            const todayDays = jalaliToDays(today.jy, today.jm, today.jd);
+            
+            // Current 1-Month Period Boundary (Day 1 to Last Day of this Jalali Month)
+            const monthStartDays = jalaliToDays(today.jy, today.jm, 1);
+            const monthEndDays = jalaliToDays(today.jy, today.jm, getMonthDaysCount(today.jy, today.jm));
 
             window.projects.forEach(project => {
-                let totalWeightedPlanned = 0; let totalWeight = 0;
+                let totalProjectWeight = 0;
+                let totalWeightedPlanned = 0;
+                let totalWeightedActual = 0;
+                let totalMonthWeightedPlanned = 0;
+
                 project.wbs.forEach(phase => {
-                    let phaseWeightedPlanned = 0; let phaseWeight = 0;
+                    let phaseWeight = 0;
+                    let phaseWeightedPlanned = 0;
+                    let phaseWeightedActual = 0;
+
                     if (phase.children && phase.children.length > 0) {
                         phase.children.forEach(child => {
-                            let w = child.weight || 1;
-                            child.plannedProgress = calculateTimePlannedProgress(child, evalDateDays);
-                            phaseWeightedPlanned += (child.plannedProgress * w);
+                            const w = child.weight || 1;
+                            const sDays = parseJalaliDateStr(child.startDate);
+                            const eDays = parseJalaliDateStr(child.endDate);
+
+                            // 1. Calculate Cumulative Planned Progress for Task up to Today
+                            let taskPlanned = 0;
+                            if (sDays && eDays && eDays >= sDays) {
+                                const taskDuration = Math.max(1, eDays - sDays);
+                                if (todayDays <= sDays) {
+                                    taskPlanned = 0;
+                                } else if (todayDays >= eDays) {
+                                    taskPlanned = 100;
+                                } else {
+                                    taskPlanned = Math.round(((todayDays - sDays) / taskDuration) * 100);
+                                }
+                            }
+                            child.plannedProgress = taskPlanned;
+
+                            // 2. Calculate Task Work Share In Current Month (1-Month Period Planned)
+                            let taskMonthPlanned = 0;
+                            if (sDays && eDays && eDays >= sDays) {
+                                const taskDuration = Math.max(1, eDays - sDays);
+                                const overlapStart = Math.max(sDays, monthStartDays);
+                                const overlapEnd = Math.min(eDays, monthEndDays);
+
+                                if (overlapEnd >= overlapStart) {
+                                    const overlapDays = overlapEnd - overlapStart + 1;
+                                    taskMonthPlanned = (overlapDays / taskDuration) * 100;
+                                }
+                            }
+                            child.monthPeriodPlanned = taskMonthPlanned;
+
+                            phaseWeightedPlanned += (taskPlanned * w);
+                            phaseWeightedActual += ((child.actualProgress || 0) * w);
                             phaseWeight += w;
+
+                            totalMonthWeightedPlanned += (taskMonthPlanned * w);
                         });
+
                         phase.plannedProgress = phaseWeight > 0 ? Math.round(phaseWeightedPlanned / phaseWeight) : 0;
+                        phase.actualProgress = phaseWeight > 0 ? Math.round(phaseWeightedActual / phaseWeight) : 0;
                     }
-                    totalWeightedPlanned += (phase.plannedProgress * (phaseWeight || 1));
-                    totalWeight += (phaseWeight || 1);
+
+                    totalWeightedPlanned += phaseWeightedPlanned;
+                    totalWeightedActual += phaseWeightedActual;
+                    totalProjectWeight += phaseWeight;
                 });
-                if (totalWeight > 0) project.plannedProgress = parseFloat((totalWeightedPlanned / totalWeight).toFixed(2));
+
+                if (totalProjectWeight > 0) {
+                    project.plannedProgress = parseFloat((totalWeightedPlanned / totalProjectWeight).toFixed(2));
+                    project.actualProgress = parseFloat((totalWeightedActual / totalProjectWeight).toFixed(2));
+
+                    // Period (1-Month) Planned Progress
+                    project.periodPlanned = parseFloat((totalMonthWeightedPlanned / totalProjectWeight).toFixed(2));
+                    
+                    // Period Actual Progress (Default proportional or recorded)
+                    if (!project.periodActual || project.periodActual === 0) {
+                        project.periodActual = project.actualProgress;
+                    }
+
+                    // Period Realization Rate
+                    if (project.periodPlanned > 0) {
+                        const ratio = Math.round((project.periodActual / project.periodPlanned) * 100);
+                        project.periodRealization = `${Math.min(150, Math.max(0, ratio))}%`;
+                    } else {
+                        project.periodRealization = "۱۰۰%";
+                    }
+                }
             });
         }
-
-        window.handleEvaluationDateChange = function() {
-            updateAllPlannedProgresses();
-            saveState(true);
-            renderAllViews();
-            showToast("پیشرفت برنامه‌ای پروژه‌ها بر اساس تاریخ جدید پایش شد.", "info");
-        };
 
         window.onload = function() {
             loadState();
             renderAllViews();
             const dateInput = document.getElementById('modalDate');
-            if (dateInput) dateInput.value = "1405/05/26";
+            if (dateInput) dateInput.value = getTodayJalali().dateStr;
         };
 
         function loadState() {
@@ -1433,22 +1484,13 @@
                 if (phase.children && phase.children.length > 0) {
                     phase.children.forEach(item => {
                         const w = item.weight || 1;
-                        totalWeightedProgress += (item.actualProgress * w);
+                        totalWeightedProgress += ((item.actualProgress || 0) * w);
                         totalWeight += w;
                     });
                 }
             });
             if (totalWeight === 0) return project.actualProgress || 0;
             return parseFloat((totalWeightedProgress / totalWeight).toFixed(2));
-        }
-
-        // Apply global Role-Based Access Control logic to filter arrays.
-        function filterByAccess(dataList, projectIdKey = 'id') {
-            if (!currentUserProfile || currentUserProfile.role === 'pmo' || currentUserProfile.role === 'executive' || currentUserProfile.assigned_project === 'ALL') {
-                return dataList;
-            }
-            // A lead user only gets the project they are assigned to
-            return dataList.filter(item => item[projectIdKey] === currentUserProfile.assigned_project);
         }
 
         window.renderAllViews = function() {
@@ -1467,7 +1509,7 @@
             let totalActual = 0; let totalPlanned = 0;
             window.projects.forEach(p => {
                 totalActual += calculateProjectProgress(p);
-                totalPlanned += p.plannedProgress;
+                totalPlanned += (p.plannedProgress || 0);
             });
             const avgActual = (totalActual / window.projects.length).toFixed(2);
             const avgPlanned = (totalPlanned / window.projects.length).toFixed(2);
@@ -1497,18 +1539,17 @@
             if (!container) return;
             container.innerHTML = '';
             
-            // The overview tab shows ALL projects regardless of user role
             window.projects.forEach(p => {
                 const prog = calculateProjectProgress(p);
                 let badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                if (p.status.includes('تاخیر')) badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                if (p.status && p.status.includes('تاخیر')) badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
 
                 const card = document.createElement('div');
                 card.className = "bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between space-y-3 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300";
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeClass}">${p.status}</span>
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${badgeClass}">${p.status || 'در حال اجرا'}</span>
                             <span class="text-[11px] font-black text-cyan-600 font-mono">${p.code}</span>
                         </div>
                         <h4 class="text-xs font-bold text-slate-800 line-clamp-2 leading-relaxed" title="${p.name}">${p.name}</h4>
@@ -1517,14 +1558,14 @@
                     <div>
                         <div class="flex justify-between items-center text-[11px] mb-1.5 font-bold">
                             <span class="text-slate-500">واقعی: <b class="text-blue-700 font-black">${prog}%</b></span>
-                            <span class="text-slate-400 font-mono">${p.plannedProgress}%</span>
+                            <span class="text-slate-400 font-mono">برنامه‌ای: ${p.plannedProgress}%</span>
                         </div>
                         <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                             <div class="bg-logo-gradient-h h-2 rounded-full transition-all duration-500" style="width: ${Math.min(prog, 100)}%"></div>
                         </div>
                         <div class="text-[10px] text-slate-500 mt-2.5 flex justify-between items-center border-t border-slate-100 pt-2 font-medium">
                             <span>مسئول: <b>${p.lead}</b></span>
-                            <span class="font-bold text-emerald-600">تحقق: ${p.periodRealization}</span>
+                            <span class="font-bold text-emerald-600">تحقق دوره: ${p.periodRealization}</span>
                         </div>
                     </div>
                 `;
@@ -1537,7 +1578,6 @@
             const radarCanvas = document.getElementById('radarChart');
             if (!chartCanvas || !radarCanvas) return;
 
-            // Overview charts show ALL data
             const labels = window.projects.map(p => p.code + ' (' + p.name.substring(0, 12) + '...)');
             const projectCodes = window.projects.map(p => p.code);
             const actualData = window.projects.map(p => calculateProjectProgress(p));
@@ -1556,7 +1596,7 @@
                     labels: labels,
                     datasets: [
                         { label: 'پیشرفت واقعی کل (%)', data: actualData, backgroundColor: gradientActual, borderRadius: 8, barThickness: 20 },
-                        { label: 'پیشرفت برنامه‌ای مصوب (%)', data: plannedData, backgroundColor: '#e2e8f0', borderRadius: 8, barThickness: 20 }
+                        { label: 'پیشرفت برنامه‌ای خودکار (%)', data: plannedData, backgroundColor: '#e2e8f0', borderRadius: 8, barThickness: 20 }
                     ]
                 },
                 options: {
@@ -1578,7 +1618,7 @@
                     labels: projectCodes,
                     datasets: [
                         { label: 'پیشرفت واقعی (%)', data: actualData, backgroundColor: 'rgba(0, 180, 216, 0.25)', borderColor: '#00b4d8', pointBackgroundColor: '#7e22ce', pointBorderColor: '#fff', borderWidth: 2.5 },
-                        { label: 'پیشرفت برنامه‌ای (%)', data: plannedData, backgroundColor: 'rgba(148, 163, 184, 0.2)', borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4] }
+                        { label: 'پیشرفت برنامه‌ای خودکار (%)', data: plannedData, backgroundColor: 'rgba(148, 163, 184, 0.2)', borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4] }
                     ]
                 },
                 options: {
@@ -1605,7 +1645,6 @@
             modalSelect.innerHTML = '';
             filterSelect.innerHTML = '<option value="ALL">همه پروژه‌ها</option>';
 
-            // Filter the dropdown list itself so leads can only see their project
             const visibleProjects = filterByAccess(window.projects, 'id');
 
             visibleProjects.forEach(p => {
@@ -1630,7 +1669,6 @@
                 filterSelect.appendChild(opt3);
             });
 
-            // If a lead is logged in, select their project and disable the dropdowns
             if (currentUserProfile && currentUserProfile.role === 'lead' && currentUserProfile.assigned_project !== 'ALL') {
                 selector.value = currentUserProfile.assigned_project;
                 selector.disabled = true;
@@ -1681,7 +1719,7 @@
                                 </div>
                             </div>
                             <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 min-w-[160px] text-center shadow-lg">
-                                <span class="text-[11px] text-slate-400 block mb-1">پیشرفت برنامه‌ای کل</span>
+                                <span class="text-[11px] text-slate-400 block mb-1">پیشرفت برنامه‌ای خودکار</span>
                                 <span class="text-2xl font-black text-slate-300 font-mono">${project.plannedProgress}%</span>
                                 <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
                                     <div class="bg-slate-400 h-1.5 rounded-full" style="width: ${Math.min(project.plannedProgress, 100)}%"></div>
@@ -1713,7 +1751,8 @@
                                         <span class="text-[11px] text-slate-400 font-mono">(${phase.duration})</span>
                                     </div>
                                     <div class="flex items-center gap-3 text-xs">
-                                        <span class="text-slate-600 font-medium">پیشرفت فاز: <b class="text-blue-700">${phase.actualProgress}%</b></span>
+                                        <span class="text-slate-600 font-medium">پیشرفت واقعی فاز: <b class="text-blue-700">${phase.actualProgress}%</b></span>
+                                        <span class="text-slate-400 font-mono">برنامه‌ای: ${phase.plannedProgress}%</span>
                                         ${canDirectEdit ? `
                                             <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-3 py-1 bg-logo-gradient hover:opacity-95 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
                                                 <i class="fa-solid fa-plus text-[10px]"></i> افزودن فعالیت
@@ -1734,11 +1773,11 @@
                                                     <span>بازه زمانی: <b class="font-mono">${item.startDate} تا ${item.endDate}</b></span>
                                                 </div>
                                             </div>
-                                            <div class="flex items-center gap-3 w-full md:w-auto">
-                                                <div class="w-full md:w-44">
+                                            <div class="flex items-center gap-3 w-full md:w-44">
+                                                <div class="w-full">
                                                     <div class="flex justify-between text-[11px] font-bold mb-1">
                                                         <span class="text-slate-500">واقعی: <span class="text-blue-700">${item.actualProgress}%</span></span>
-                                                        <span class="text-slate-400 font-mono">${item.plannedProgress}%</span>
+                                                        <span class="text-slate-400 font-mono" title="پیشرفت برنامه‌ای خودکار محاسبه‌شده بر اساس زمان">${item.plannedProgress}%</span>
                                                     </div>
                                                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                                                         <div class="bg-logo-gradient-h h-2 rounded-full" style="width: ${Math.min(item.actualProgress, 100)}%"></div>
@@ -1772,7 +1811,6 @@
             document.getElementById('editWbsCodeDisplay').value = targetItem.id;
             document.getElementById('editWbsTitle').value = targetItem.title;
             document.getElementById('editWbsWeight').value = targetItem.weight || 1;
-            document.getElementById('editWbsPlanned').value = targetItem.plannedProgress || 0;
             document.getElementById('editWbsStartDate').value = targetItem.startDate || '';
             document.getElementById('editWbsEndDate').value = targetItem.endDate || '';
             document.getElementById('editWbsActual').value = targetItem.actualProgress || 0;
@@ -1793,17 +1831,14 @@
                 if (item) {
                     item.title = document.getElementById('editWbsTitle').value;
                     item.weight = parseFloat(document.getElementById('editWbsWeight').value);
-                    item.plannedProgress = parseFloat(document.getElementById('editWbsPlanned').value);
                     item.startDate = document.getElementById('editWbsStartDate').value;
                     item.endDate = document.getElementById('editWbsEndDate').value;
                     item.actualProgress = parseFloat(document.getElementById('editWbsActual').value);
-                    const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
-                    const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
-                    phase.actualProgress = Math.round(childSum / weightSum);
                 }
             });
+            updateAllPlannedProgresses();
             prj.actualProgress = calculateProjectProgress(prj);
-            saveState(true); renderAllViews(); closeEditWbsModal(); showToast("تغییرات ساختار شکست ذخیره شد.", "success");
+            saveState(true); renderAllViews(); closeEditWbsModal(); showToast("تغییرات ذخیره و پیشرفت برنامه‌ای بازمحاسبه شد.", "success");
         };
 
         window.openAddWbsModal = function(projectId, phaseId) {
@@ -1824,7 +1859,6 @@
             const newCode = document.getElementById('addWbsCode').value;
             const newTitle = document.getElementById('addWbsTitle').value;
             const newWeight = parseFloat(document.getElementById('addWbsWeight').value);
-            const newPlanned = parseFloat(document.getElementById('addWbsPlanned').value);
             const newStart = document.getElementById('addWbsStartDate').value;
             const newEnd = document.getElementById('addWbsEndDate').value;
             const newActual = parseFloat(document.getElementById('addWbsActual').value);
@@ -1832,13 +1866,11 @@
             if (prj) {
                 const phase = prj.wbs.find(ph => ph.id === phaseId);
                 if (phase) {
-                    phase.children.push({ id: newCode, title: newTitle, weight: newWeight, plannedProgress: newPlanned, actualProgress: newActual, startDate: newStart, endDate: newEnd });
-                    const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
-                    const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
-                    phase.actualProgress = Math.round(childSum / weightSum);
+                    phase.children.push({ id: newCode, title: newTitle, weight: newWeight, actualProgress: newActual, startDate: newStart, endDate: newEnd });
                 }
+                updateAllPlannedProgresses();
                 prj.actualProgress = calculateProjectProgress(prj);
-                saveState(true); renderAllViews(); showToast("فعالیت جدید به WBS افزوده شد.", "success");
+                saveState(true); renderAllViews(); showToast("فعالیت جدید افزوده و پیشرفت برنامه‌ای محاسبه شد.", "success");
             }
             closeAddWbsModal();
         };
@@ -1851,7 +1883,6 @@
             const selectedPrjFilter = ganttSelect.value;
             ganttContainer.innerHTML = '';
 
-            // Apply global filtering before rendering the timeline
             const accessibleProjects = filterByAccess(window.projects, 'id');
             const projectsToDisplay = selectedPrjFilter === 'ALL' ? accessibleProjects : accessibleProjects.filter(p => p.id === selectedPrjFilter);
 
@@ -1873,6 +1904,7 @@
                             <span>مدت: <b class="text-slate-800">${p.duration}</b></span>
                             <span>مسئول: <b class="text-blue-700">${p.lead}</b></span>
                             <span class="font-bold text-cyan-600">${totalProg}% واقعی</span>
+                            <span class="font-mono text-slate-400">(${p.plannedProgress}% برنامه‌ای)</span>
                         </div>
                     </div>
                     <div class="border border-slate-200/90 rounded-2xl overflow-hidden shadow-inner">
@@ -2002,10 +2034,8 @@
                 prj.wbs.forEach(phase => {
                     const item = phase.children.find(c => c.id === wbsId);
                     if (item) item.actualProgress = newProg;
-                    const childSum = phase.children.reduce((acc, curr) => acc + (curr.actualProgress * (curr.weight || 1)), 0);
-                    const weightSum = phase.children.reduce((acc, curr) => acc + (curr.weight || 1), 0);
-                    phase.actualProgress = Math.round(childSum / weightSum);
                 });
+                updateAllPlannedProgresses();
                 prj.actualProgress = calculateProjectProgress(prj);
             }
         }
@@ -2016,7 +2046,6 @@
             const inboxBadge = document.getElementById('inboxPendingCountBadge');
             if (!container) return;
 
-            // Apply global filtering before processing pending approvals
             const accessibleActivities = filterByAccess(window.activities, 'projectId');
             const pendingActs = accessibleActivities.filter(a => a.status === 'pending');
             const userRole = currentUserProfile ? currentUserProfile.role : 'pmo';
@@ -2122,7 +2151,6 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            // Apply global filtering before rendering the activities table
             const accessibleActivities = filterByAccess(window.activities, 'projectId');
 
             if (accessibleActivities.length === 0) {
@@ -2171,7 +2199,6 @@
             const filterPrj = filterPrjSelect.value;
             const rows = tbody.getElementsByTagName('tr');
 
-            // Map rows back to the accessible activities list
             const accessibleActivities = filterByAccess(window.activities, 'projectId');
 
             for (let i = 0; i < rows.length; i++) {
@@ -2222,13 +2249,12 @@
         window.exportExecutivePDF = function() {
             const container = document.getElementById('pdfReportContent');
             if (!container) return;
-            const todayStr = new Date().toLocaleDateString('fa-IR');
+            const today = getTodayJalali();
             
-            // Only export the projects the user has access to
             const accessibleProjects = filterByAccess(window.projects, 'id');
 
             let totalActual = 0; let totalPlanned = 0;
-            accessibleProjects.forEach(p => { totalActual += calculateProjectProgress(p); totalPlanned += p.plannedProgress; });
+            accessibleProjects.forEach(p => { totalActual += calculateProjectProgress(p); totalPlanned += (p.plannedProgress || 0); });
             const avgActual = accessibleProjects.length ? (totalActual / accessibleProjects.length).toFixed(2) : 0;
             const avgPlanned = accessibleProjects.length ? (totalPlanned / accessibleProjects.length).toFixed(2) : 0;
             
@@ -2240,10 +2266,10 @@
                         <div class="border border-slate-300 rounded-2xl px-4 py-2.5 bg-slate-900 text-white flex items-center justify-center font-black text-sm">MSTID</div>
                         <div>
                             <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و پایش آخرین وضعیت پروژه‌های استراتژیک</h2>
-                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ تنظیم: ${todayStr}</p>
+                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ تنظیم: ${today.dateStr}</p>
                         </div>
                     </div>
-                    <div class="text-left font-mono text-xs text-slate-500"><span>سند مدیریتی محرمانه</span><br><span>نسخه آنلاین ۱.۶</span></div>
+                    <div class="text-left font-mono text-xs text-slate-500"><span>سند مدیریتی محرمانه</span><br><span>نسخه آنلاین ۱.۷</span></div>
                 </div>
 
                 <div class="grid grid-cols-4 gap-4 text-center">
