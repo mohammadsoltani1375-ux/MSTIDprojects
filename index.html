@@ -26,7 +26,8 @@
                         brand: {
                             cyan: '#00b4d8',
                             blue: '#1d4ed8',
-                            darkBlue: '#0f172a',
+                            darkNavy: '#0f172a',
+                            indigo: '#1e1b4b',
                             purple: '#7e22ce',
                             accent: '#6366f1',
                         }
@@ -34,6 +35,7 @@
                     backgroundImage: {
                         'logo-gradient': 'linear-gradient(135deg, #00b4d8 0%, #1d4ed8 50%, #7e22ce 100%)',
                         'logo-gradient-h': 'linear-gradient(90deg, #00b4d8 0%, #2563eb 50%, #7e22ce 100%)',
+                        'executive-header': 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #172554 100%)',
                         'card-glow': 'radial-gradient(circle at top right, rgba(0, 180, 216, 0.08), transparent 70%)',
                     }
                 }
@@ -51,7 +53,7 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
 
         .timeline-grid {
             background-size: 80px 100%;
@@ -77,7 +79,7 @@
             <div class="absolute top-0 left-0 right-0 h-1.5 bg-logo-gradient-h"></div>
             
             <div class="text-center space-y-3">
-                <div class="inline-flex items-center justify-center p-2 rounded-2xl bg-slate-900 shadow-lg">
+                <div class="inline-flex items-center justify-center p-2 rounded-2xl bg-executive-header shadow-lg">
                     <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M50 90C50 90 25 75 25 45C25 25 40 10 50 10C60 10 75 25 75 45C75 75 50 90 50 90Z" fill="url(#logoG)" opacity="0.9"/>
                         <circle cx="50" cy="42" r="16" fill="#0f172a"/>
@@ -129,12 +131,12 @@
     <!-- MAIN APP CONTAINER -->
     <div id="appContainer" class="flex-1 flex flex-col hidden animate-fade-in">
         <!-- Header -->
-        <header class="bg-slate-950/90 backdrop-blur-md text-white sticky top-0 z-40 border-b border-slate-800 shadow-xl no-print">
+        <header class="bg-executive-header text-white sticky top-0 z-40 border-b border-indigo-900/50 shadow-xl no-print">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between py-2.5 gap-4">
                     
                     <div class="flex items-center space-x-3.5 space-x-reverse">
-                        <div class="bg-slate-900 border border-slate-800 p-1.5 rounded-2xl flex items-center justify-center shadow-inner">
+                        <div class="bg-indigo-950/80 border border-indigo-700/50 p-1.5 rounded-2xl flex items-center justify-center shadow-inner">
                             <svg class="w-9 h-9" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g transform="rotate(-15 50 50)">
                                     <rect x="38" y="12" width="14" height="14" rx="4" transform="rotate(45 38 12)" fill="#7e22ce"/>
@@ -153,21 +155,21 @@
                                 <h1 class="text-sm sm:text-base font-black tracking-tight text-white">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه</h1>
                                 <span class="bg-logo-gradient text-[10px] font-black px-2 py-0.5 rounded-md text-white shadow-sm">MSTID</span>
                             </div>
-                            <p class="text-[11px] text-slate-400 font-medium">سامانه راهبری و کنترل پورتفولیوی پروژه‌های استراتژیک جذب فناوری</p>
+                            <p class="text-[11px] text-slate-300 font-medium">سامانه راهبری و کنترل پورتفولیوی پروژه‌های استراتژیک جذب فناوری</p>
                         </div>
                     </div>
 
                     <div class="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
                         <div class="flex items-center space-x-1.5 space-x-reverse">
-                            <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-rose-300 border border-rose-900/40 rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                                <i class="fa-solid fa-file-pdf text-rose-400"></i> <span class="hidden sm:inline">گزارش PDF</span>
+                            <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 text-rose-200 border border-rose-400/30 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-pdf text-rose-300"></i> <span class="hidden sm:inline">گزارش PDF</span>
                             </button>
                             
-                            <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl transition flex items-center gap-1 border border-slate-800">
-                                <i class="fa-solid fa-download text-cyan-400"></i> <span class="hidden sm:inline">پشتیبان</span>
+                            <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-white/10 hover:bg-white/20 text-slate-200 rounded-xl transition flex items-center gap-1 border border-white/10">
+                                <i class="fa-solid fa-download text-cyan-300"></i> <span class="hidden sm:inline">پشتیبان</span>
                             </button>
-                            <button id="btnRestore" onclick="document.getElementById('importFileInput').click()" class="px-3 py-1.5 text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl transition flex items-center gap-1 border border-slate-800">
-                                <i class="fa-solid fa-upload text-purple-400"></i> <span class="hidden sm:inline">بازیابی</span>
+                            <button id="btnRestore" onclick="document.getElementById('importFileInput').click()" class="px-3 py-1.5 text-xs font-medium bg-white/10 hover:bg-white/20 text-slate-200 rounded-xl transition flex items-center gap-1 border border-white/10">
+                                <i class="fa-solid fa-upload text-purple-300"></i> <span class="hidden sm:inline">بازیابی</span>
                             </button>
                             <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(event)">
 
@@ -176,17 +178,17 @@
                             </button>
                         </div>
 
-                        <div class="h-6 w-px bg-slate-800 mx-1"></div>
+                        <div class="h-6 w-px bg-slate-700 mx-1"></div>
 
-                        <div class="bg-slate-900/90 border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-2xl text-xs flex items-center gap-3 transition shadow-sm">
+                        <div class="bg-white/10 border border-white/10 px-3 py-1.5 rounded-2xl text-xs flex items-center gap-3 transition shadow-sm">
                             <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs shadow-inner">
                                 <i class="fa-solid fa-user-tie text-[11px]"></i>
                             </div>
                             <div class="text-right leading-tight">
                                 <b id="userFullNameBadge" class="text-white block text-xs font-bold">کاربر سامانه</b>
-                                <span id="userRoleBadge" class="text-[10px] text-cyan-400 font-medium">سطح دسترسی</span>
+                                <span id="userRoleBadge" class="text-[10px] text-cyan-300 font-medium">سطح دسترسی</span>
                             </div>
-                            <button onclick="handleLogout()" title="خروج از حساب کاربری" class="text-slate-400 hover:text-rose-400 p-1 transition mr-0.5">
+                            <button onclick="handleLogout()" title="خروج از حساب کاربری" class="text-slate-300 hover:text-rose-400 p-1 transition mr-0.5">
                                 <i class="fa-solid fa-power-off text-xs"></i>
                             </button>
                         </div>
@@ -196,7 +198,7 @@
         </header>
 
         <!-- Navigation Tabs Bar -->
-        <div class="bg-white border-b border-slate-200 sticky top-[61px] z-30 shadow-sm">
+        <div class="bg-white border-b border-slate-200 sticky top-[61px] z-30 shadow-xs">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <nav class="flex space-x-2 space-x-reverse overflow-x-auto py-2 custom-scrollbar" id="mainTabs">
                     <button onclick="switchTab('overview')" id="tab-overview" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-bold text-xs whitespace-nowrap bg-slate-900 text-white shadow-sm transition">
@@ -207,6 +209,15 @@
                     </button>
                     <button onclick="switchTab('gantt')" id="tab-gantt" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                         <i class="fa-solid fa-timeline text-purple-600"></i> تایم‌لاین و گانت‌چارت
+                    </button>
+                    <button onclick="switchTab('timeline_journal')" id="tab-timeline_journal" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-clock-rotate-left text-cyan-600"></i> لاگ‌بوک و تایم‌لاین وقایع
+                    </button>
+                    <button onclick="switchTab('correspondence')" id="tab-correspondence" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-envelope-open-text text-indigo-600"></i> مکاتبات و مدارک
+                    </button>
+                    <button onclick="switchTab('delays')" id="tab-delays" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> تحلیل تاخیرات و ادعاها
                     </button>
                     <button onclick="switchTab('activities')" id="tab-activities" class="py-2 px-4 inline-flex items-center gap-2 rounded-xl font-medium text-xs whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                         <i class="fa-solid fa-list-check text-emerald-600"></i> گزارش اقدامات
@@ -378,10 +389,6 @@
                             <span class="w-3 h-3 rounded bg-slate-300"></span>
                             <span class="text-slate-600 font-medium">بازه برنامه‌ای مصوب زیرتسک</span>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-slate-600 font-medium">خط پایش تاریخ زنده امروز (<span id="ganttTodayDateText" class="font-mono font-bold text-slate-800"></span>)</span>
-                        </div>
                     </div>
 
                     <div class="overflow-x-auto custom-scrollbar border border-slate-200 rounded-2xl bg-white">
@@ -391,12 +398,111 @@
                 </div>
             </div>
 
-            <!-- TAB 4: ACTIVITIES LOG HISTORY -->
+            <!-- TAB 4: UNIFIED PROJECT TIMELINE & JOURNAL -->
+            <div id="view-timeline_journal" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-cyan-600"></i> لاگ‌بوک و تایم‌لاین یکپارچه رویدادهای پروژه
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">مشاهده جریان پیوسته تمام وقایع (اقدامات، نامه‌ها و تاخیرات) به ترتیب تاریخ</p>
+                        </div>
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <select id="journalProjectSelector" onchange="renderUnifiedTimelineView()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-cyan-500 focus:border-cyan-500 font-bold">
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Journal Stream Container -->
+                    <div id="journalStreamContainer" class="space-y-4 relative pr-6 before:absolute before:top-3 before:bottom-3 before:right-2.5 before:w-0.5 before:bg-slate-200">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: CORRESPONDENCE & DOCUMENTS -->
+            <div id="view-correspondence" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-envelope-open-text text-indigo-600"></i> دفتر ثبت مکاتبات و آرشیو مدارک
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">آرشیو اسناد و نامه‌های رسمی با قابلیت اتصال به بخش‌های WBS</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openAddLetterModal()" class="px-4 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> <span>ثبت نامه جدید</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-xs text-right text-slate-600">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100/90 border-b border-slate-200">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 rounded-tr-xl">شماره نامه</th>
+                                    <th scope="col" class="px-4 py-3">تاریخ</th>
+                                    <th scope="col" class="px-4 py-3">نوع</th>
+                                    <th scope="col" class="px-4 py-3">پروژه</th>
+                                    <th scope="col" class="px-4 py-3">موضوع و خلاصه</th>
+                                    <th scope="col" class="px-4 py-3">طرف مکاتبه</th>
+                                    <th scope="col" class="px-4 py-3">بخش WBS</th>
+                                    <th scope="col" class="px-4 py-3 text-center">پیوست</th>
+                                    <th scope="col" class="px-4 py-3 text-center rounded-tl-xl">عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="correspondenceTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: DELAY EVENTS & CLAIMS MATRIX -->
+            <div id="view-delays" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> ماتریس چندبعدی ریشه‌یابی تاخیرات و دعاوی (Claims)
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">پایش مستند تاخیرات با تفکیک سهم تقصیر طرفین</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openAddDelayModal()" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> <span>ثبت رویداد تاخیر / مانع</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Delay Statistics KPIs -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl">
+                            <span class="text-[11px] text-rose-700 block font-bold">تاخیرات مجاز با جبران مالی (کارفرما/تامین‌کننده)</span>
+                            <b class="text-xl text-rose-950 block mt-1" id="kpi-compensable-delays">۰ روز</b>
+                        </div>
+                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+                            <span class="text-[11px] text-amber-700 block font-bold">تاخیرات مجاز بدون جبران (فورس‌ماژور)</span>
+                            <b class="text-xl text-amber-950 block mt-1" id="kpi-noncompensable-delays">۰ روز</b>
+                        </div>
+                        <div class="p-4 bg-slate-100 border border-slate-300 rounded-2xl">
+                            <span class="text-[11px] text-slate-700 block font-bold">کل رویدادهای تاخیر مستندشده</span>
+                            <b class="text-xl text-slate-900 block mt-1" id="kpi-total-delays-count">۰ مانع</b>
+                        </div>
+                    </div>
+
+                    <div id="delaysListContainer" class="space-y-4">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 7: ACTIVITIES LOG HISTORY -->
             <div id="view-activities" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
                         <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> تاریخچه کامل اقدامات و وقایع ثبت‌شده
+                            <i class="fa-solid fa-list-check text-blue-600"></i> تاریخچه کامل اقدامات و وقایع ثبت‌شده
                         </h3>
                         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                             <input type="text" id="searchActivity" onkeyup="filterActivitiesTable()" placeholder="جستجو در شرح اقدامات..." class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 w-full sm:w-52 focus:ring-cyan-500 focus:border-cyan-500 font-medium">
@@ -426,7 +532,7 @@
                 </div>
             </div>
 
-            <!-- TAB 5: PMO APPROVAL INBOX -->
+            <!-- TAB 8: PMO APPROVAL INBOX -->
             <div id="view-approvals" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -465,7 +571,7 @@
         </footer>
     </div>
 
-    <!-- Modals -->
+    <!-- MODAL 1: ADD ACTIVITY -->
     <div id="addLogModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
             <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
@@ -517,7 +623,6 @@
                 <div id="progressInputContainer" class="hidden">
                     <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت پیشنهادی واقعی (%)</label>
                     <input type="number" id="modalNewProgress" min="0" max="100" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-black text-blue-700">
-                    <p class="text-[10px] text-amber-600 mt-1 font-medium">* در صورت تایید مدیر PMO، درصد پیشرفت پروژه اعمال خواهد شد.</p>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
@@ -528,12 +633,166 @@
         </div>
     </div>
 
-    <!-- MODAL 2: EDIT WBS ITEM & TIMELINE -->
+    <!-- MODAL 2: ADD / EDIT LETTER (CORRESPONDENCE) -->
+    <div id="letterModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
+            <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+                <h3 id="letterModalTitle" class="font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-envelope text-cyan-400"></i> ثبت و آرشیو نامه جدید
+                </h3>
+                <button onclick="closeLetterModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="letterForm" onsubmit="handleSaveLetter(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editLetterTargetId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">پروژه متناظر <span class="text-rose-500">*</span></label>
+                    <select id="letterProjectSelect" onchange="updateLetterWBSOptions()" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 font-bold">
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">شماره نامه <span class="text-rose-500">*</span></label>
+                        <input type="text" id="letterNumberInput" required placeholder="1405/MST/102" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ نامه <span class="text-rose-500">*</span></label>
+                        <input type="text" id="letterDateInput" required placeholder="1405/05/20" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">نوع نامه</label>
+                        <select id="letterTypeSelect" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
+                            <option value="incoming">نامه وارده (دریافتی)</option>
+                            <option value="outgoing">نامه صادره (ارسالی)</option>
+                            <option value="internal_memo">یادداشت داخلی</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">بخش شکست WBS</label>
+                        <select id="letterWbsSelect" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">فرستنده <span class="text-rose-500">*</span></label>
+                        <input type="text" id="letterSenderInput" required placeholder="نام شرکت یا شخص" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">گیرنده <span class="text-rose-500">*</span></label>
+                        <input type="text" id="letterReceiverInput" required placeholder="نام گیرنده" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">موضوع نامه <span class="text-rose-500">*</span></label>
+                    <input type="text" id="letterSubjectInput" required placeholder="موضوع اصلی نامه..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">فایل پیوست نامه (اختیاری)</label>
+                    <input type="file" id="letterFileInput" accept=".pdf,.png,.jpg,.jpeg,.zip" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2 block w-full">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeLetterModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">ذخیره نامه</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ADD / EDIT DELAY EVENT & CLAIM -->
+    <div id="delayModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
+            <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+                <h3 id="delayModalTitle" class="font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> ثبت رویداد مانع / تاخیر
+                </h3>
+                <button onclick="closeDelayModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="delayForm" onsubmit="handleSaveDelay(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editDelayTargetId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">پروژه مربوطه <span class="text-rose-500">*</span></label>
+                    <select id="delayProjectSelect" onchange="updateDelayWBSAndLetterOptions()" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 font-bold">
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">عنوان رویداد تاخیر <span class="text-rose-500">*</span></label>
+                    <input type="text" id="delayTitleInput" required placeholder="عنوان مانع یا تاخیر..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ شروع <span class="text-rose-500">*</span></label>
+                        <input type="text" id="delayStartDateInput" required placeholder="1405/05/10" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ خاتمه</label>
+                        <input type="text" id="delayEndDateInput" placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">میزان (روز)</label>
+                        <input type="number" id="delayDaysInput" placeholder="۱۵" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">منشأ اصلی تاخیر <span class="text-rose-500">*</span></label>
+                        <input type="text" id="delayOriginInput" required placeholder="مالی، گمرک، لایسنسور..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">مسئولیت و مقصر</label>
+                        <select id="delayResponsibilitySelect" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
+                            <option value="client">کارفرما (مجاز با جبران مالی)</option>
+                            <option value="contractor_tech_provider">تامین‌کننده / پیمانکار (غیرمجاز)</option>
+                            <option value="force_majeure">فورس‌ماژور (مجاز بدون جبران)</option>
+                            <option value="third_party">شخص ثالث / سازمان‌های دولتی</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">بخش WBS تحت تاثیر</label>
+                        <select id="delayWbsSelect" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">شماره نامه اخطار مرتبط</label>
+                        <select id="delayLetterSelect" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">شرح تفصیلی مانع <span class="text-rose-500">*</span></label>
+                    <textarea id="delayDescriptionInput" rows="3" required placeholder="توضیح علل بروز مانع..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeDelayModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">ذخیره رویداد تاخیر</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: EDIT WBS ITEM -->
     <div id="editWbsModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
             <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
                 <h3 class="font-black text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-cyan-400"></i> ویرایش مستقیم اطلاعات و پیشرفت WBS
+                    <i class="fa-solid fa-sliders text-cyan-400"></i> ویرایش مستقیم WBS
                 </h3>
                 <button onclick="closeEditWbsModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -548,24 +807,24 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">عنوان فعالیت / بخش WBS <span class="text-rose-500">*</span></label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">عنوان فعالیت <span class="text-rose-500">*</span></label>
                     <input type="text" id="editWbsTitle" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">وزن فعالیت</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">وزن</label>
                         <input type="number" id="editWbsWeight" min="1" max="100" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ شروع (شمسی) <span class="text-rose-500">*</span></label>
-                        <input type="text" id="editWbsStartDate" required placeholder="1405/05/04" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ شروع <span class="text-rose-500">*</span></label>
+                        <input type="text" id="editWbsStartDate" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان (شمسی) <span class="text-rose-500">*</span></label>
-                    <input type="text" id="editWbsEndDate" required placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان <span class="text-rose-500">*</span></label>
+                    <input type="text" id="editWbsEndDate" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
                 </div>
 
                 <div>
@@ -581,60 +840,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: ADD NEW WBS SUB-TASK -->
-    <div id="addWbsModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
-            <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
-                <h3 class="font-black text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-plus text-cyan-400"></i> افزودن زیرشاخه و فعالیت جدید به WBS
-                </h3>
-                <button onclick="closeAddWbsModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <form id="addWbsForm" onsubmit="handleSaveNewWbs(event)" class="p-6 space-y-4">
-                <input type="hidden" id="addWbsProjectId">
-                <input type="hidden" id="addWbsPhaseId">
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">کد WBS جدید <span class="text-rose-500">*</span></label>
-                    <input type="text" id="addWbsCode" required placeholder="مثلا 1.1.1.6" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">عنوان فعالیت <span class="text-rose-500">*</span></label>
-                    <input type="text" id="addWbsTitle" required placeholder="عنوان فعالیت..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-bold">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">وزن فعالیت</label>
-                        <input type="number" id="addWbsWeight" min="1" max="100" value="1" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ شروع</label>
-                        <input type="text" id="addWbsStartDate" placeholder="1405/05/04" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پایان</label>
-                    <input type="text" id="addWbsEndDate" placeholder="1405/05/25" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">درصد پیشرفت اولیه واقعی (%)</label>
-                    <input type="number" id="addWbsActual" min="0" max="100" value="0" required class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-mono font-bold">
-                </div>
-
-                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-                    <button type="button" onclick="closeAddWbsModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">افزودن به ساختار شکست</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 4: REJECT ACTIVITY MODAL -->
+    <!-- MODAL 5: REJECT ACTIVITY -->
     <div id="rejectActivityModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4 animate-fade-in">
             <div class="flex items-center gap-3 text-rose-600">
@@ -643,12 +849,12 @@
                 </div>
                 <div>
                     <h3 class="font-black text-sm text-slate-900">بازنگری / عدم تایید اقدام</h3>
-                    <p class="text-[11px] text-slate-500">علت بازنگری یا نقص مستندات را بنویسید</p>
+                    <p class="text-[11px] text-slate-500">علت بازنگری را بنویسید</p>
                 </div>
             </div>
             <input type="hidden" id="rejectTargetActivityId">
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">علت رد / توضیحات بازنگری <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">علت رد / توضیحات <span class="text-rose-500">*</span></label>
                 <textarea id="rejectionReasonText" rows="3" required placeholder="توضیحات لازم جهت اصلاح..." class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full"></textarea>
             </div>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -658,12 +864,12 @@
         </div>
     </div>
 
-    <!-- MODAL 5: EXECUTIVE PDF / PRINT REPORT PREVIEW -->
+    <!-- MODAL 6: EXECUTIVE PDF PREVIEW -->
     <div id="pdfReportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-2 sm:p-6 overflow-y-auto no-print">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden my-auto max-h-[92vh] flex flex-col">
             <div class="bg-slate-950 text-white p-4 flex items-center justify-between sticky top-0 z-10 border-b border-slate-800">
                 <h3 class="font-black text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-rose-400"></i> پیش‌نمایش گزارش مدیریتی پروژه‌های استراتژیک
+                    <i class="fa-solid fa-file-pdf text-rose-400"></i> پیش‌نمایش گزارش مدیریتی پروژه‌ها
                 </h3>
                 <div class="flex items-center gap-3">
                     <button onclick="triggerPrint()" class="px-4 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-1.5 shadow-sm">
@@ -677,30 +883,29 @@
         </div>
     </div>
 
-    <!-- MODAL 6: CUSTOM DELETE CONFIRM MODAL -->
+    <!-- MODAL 7: UNIVERSAL DELETE CONFIRM -->
     <div id="deleteConfirmModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden p-6 space-y-4 animate-fade-in">
             <div class="flex items-center gap-3 text-rose-600">
                 <div class="w-10 h-10 bg-rose-50 rounded-2xl flex items-center justify-center text-lg">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
-                <h3 class="font-black text-sm text-slate-900">تایید حذف اقدام</h3>
+                <h3 class="font-black text-sm text-slate-900">تایید حذف رکورد</h3>
             </div>
-            <p class="text-xs text-slate-600 leading-relaxed">آیا از حذف این اقدام مطمئن هستید؟ این عملیات قابل بازگشت نیست.</p>
+            <p class="text-xs text-slate-600 leading-relaxed">آیا از حذف این رکورد مطمئن هستید؟ این عملیات قابل بازگشت نیست.</p>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
                 <button onclick="closeDeleteConfirmModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                <button id="confirmDeleteBtn" class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">حذف اقدام</button>
+                <button id="confirmDeleteBtn" class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition">حذف قطعی</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
+    <!-- Toast Container -->
     <div id="toastContainer" class="fixed bottom-5 left-5 z-50 space-y-2 pointer-events-none"></div>
 
-    <!-- Unified Master Application Script -->
+    <!-- Application Script -->
     <script>
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'mstid-dashboard-app';
-        
         const SUPABASE_URL = 'https://juebikpjazsqbfeallqu.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_arJUJ2Xor-HtEO1TxnON5Q_-oZgtAB5';
 
@@ -739,38 +944,6 @@
                             { id: "1.1.1.4", title: "بررسی منابع مورد نیاز برای اجرای پروژه", weight: 2, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
                             { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/15" }
                         ]
-                    },
-                    {
-                        id: "1.1.2",
-                        title: "فاز دوم (امکان‌سنجی، مدل کسب و کار)",
-                        duration: "39 روز",
-                        children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/25" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/07/15" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/29" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 2, actualProgress: 0, startDate: "1405/07/29", endDate: "1405/08/05" }
-                        ]
-                    },
-                    {
-                        id: "1.1.3",
-                        title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
-                        duration: "93 روز",
-                        children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/26" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, actualProgress: 0, startDate: "1405/10/26", endDate: "1405/11/05" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 1, actualProgress: 0, startDate: "1405/11/05", endDate: "1405/11/20" },
-                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 2, actualProgress: 0, startDate: "1405/11/20", endDate: "1405/12/10" }
-                        ]
-                    },
-                    {
-                        id: "1.1.4",
-                        title: "فاز چهارم (اجرای پروژه تجاری‌سازی)",
-                        duration: "در حال برنامه‌ریزی",
-                        children: [
-                            { id: "1.1.4.1", title: "اجرای پروژه تجاری‌سازی صنعتی", weight: 10, actualProgress: 0, startDate: "1405/12/10", endDate: "1407/05/01" }
-                        ]
                     }
                 ]
             },
@@ -805,33 +978,7 @@
                             { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 1, actualProgress: 80, startDate: "1405/05/04", endDate: "1405/05/25" },
                             { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 1, actualProgress: 100, startDate: "1405/05/04", endDate: "1405/05/25" },
                             { id: "1.1.1.3", title: "مذاکرات و مکاتبات با گزینه‌های داخلی و خارجی", weight: 3, actualProgress: 80, startDate: "1405/05/10", endDate: "1405/05/31" },
-                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 1, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
-                            { id: "1.1.1.5", title: "بررسی و تخصیص منابع مورد نیاز", weight: 1, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/15" },
-                            { id: "1.1.1.6", title: "ارائه گزارش نهایی فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/21" }
-                        ]
-                    },
-                    {
-                        id: "1.1.2",
-                        title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
-                        duration: "31 روز",
-                        children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/31" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/07/15" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/07/26", endDate: "1405/07/29" }
-                        ]
-                    },
-                    {
-                        id: "1.1.3",
-                        title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
-                        duration: "73 روز",
-                        children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 2, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/25" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 3, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/05" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 1, actualProgress: 0, startDate: "1405/10/05", endDate: "1405/10/15" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 1, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/20" },
-                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 2, actualProgress: 0, startDate: "1405/10/20", endDate: "1405/11/10" }
+                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 1, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" }
                         ]
                     }
                 ]
@@ -854,9 +1001,7 @@
                 periodActual: 7.2,
                 periodRealization: "90%",
                 status: "پیشرو",
-                risks: [
-                    { title: "جذب منابع مالی مورد نیاز", level: "متوسط" }
-                ],
+                risks: [{ title: "جذب منابع مالی مورد نیاز", level: "متوسط" }],
                 wbs: [
                     {
                         id: "1.1.1",
@@ -864,34 +1009,7 @@
                         duration: "40 روز",
                         children: [
                             { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 5, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/20" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 3, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" },
-                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 2, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/10" },
-                            { id: "1.1.1.4", title: "بررسی و تخصیص منابع مورد نیاز برای اجرای پروژه", weight: 2, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/21" },
-                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/25" }
-                        ]
-                    },
-                    {
-                        id: "1.1.2",
-                        title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
-                        duration: "31 روز",
-                        children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/25", endDate: "1405/07/05" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, actualProgress: 0, startDate: "1405/06/25", endDate: "1405/07/20" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/20", endDate: "1405/07/29" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/07/29", endDate: "1405/08/05" }
-                        ]
-                    },
-                    {
-                        id: "1.1.3",
-                        title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
-                        duration: "79 روز",
-                        children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری خارج از کشور", weight: 3, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/08/25" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, actualProgress: 0, startDate: "1405/08/25", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/10/15" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/26" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 2, actualProgress: 0, startDate: "1405/10/15", endDate: "1405/10/30" },
-                            { id: "1.1.3.6", title: "تدوین قرارداد", weight: 3, actualProgress: 0, startDate: "1405/10/30", endDate: "1405/11/20" }
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 3, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" }
                         ]
                     }
                 ]
@@ -914,9 +1032,7 @@
                 periodActual: 4.8,
                 periodRealization: "96%",
                 status: "در حال اجرا",
-                risks: [
-                    { title: "جذب منابع مالی مورد نیاز", level: "متوسط" }
-                ],
+                risks: [{ title: "جذب منابع مالی مورد نیاز", level: "متوسط" }],
                 wbs: [
                     {
                         id: "1.1.1",
@@ -924,34 +1040,7 @@
                         duration: "68 روز",
                         children: [
                             { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 3, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/20" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 2, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" },
-                            { id: "1.1.1.3", title: "انجام تست‌های امکان‌سنجی", weight: 10, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/07/15" },
-                            { id: "1.1.1.4", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 5, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
-                            { id: "1.1.1.5", title: "بررسی و تخصیص منابع مورد نیاز", weight: 3, actualProgress: 0, startDate: "1405/07/15", endDate: "1405/07/25" },
-                            { id: "1.1.1.6", title: "ارائه گزارش نهایی فاز اول", weight: 1, actualProgress: 0, startDate: "1405/07/26", endDate: "1405/08/02" }
-                        ]
-                    },
-                    {
-                        id: "1.1.2",
-                        title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
-                        duration: "21 روز",
-                        children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/10" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, actualProgress: 0, startDate: "1405/08/02", endDate: "1405/08/16" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و پیشنهاد نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/08/16", endDate: "1405/08/26" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/08/26", endDate: "1405/08/30" }
-                        ]
-                    },
-                    {
-                        id: "1.1.3",
-                        title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
-                        duration: "72 روز",
-                        children: [
-                            { id: "1.1.3.1", title: "مکاتبه و مذاکره با تامین‌کنندگان فناوری", weight: 2, actualProgress: 0, startDate: "1405/08/30", endDate: "1405/09/01" },
-                            { id: "1.1.3.2", title: "تدوین اسناد مناقصه", weight: 4, actualProgress: 0, startDate: "1405/09/01", endDate: "1405/09/21" },
-                            { id: "1.1.3.3", title: "برگزاری مناقصه", weight: 3, actualProgress: 0, startDate: "1405/09/21", endDate: "1405/10/21" },
-                            { id: "1.1.3.4", title: "انتخاب پیمانکار", weight: 2, actualProgress: 0, startDate: "1405/10/21", endDate: "1405/10/30" },
-                            { id: "1.1.3.5", title: "تشکیل کنسرسیوم فناورانه", weight: 2, actualProgress: 0, startDate: "1405/10/30", endDate: "1405/11/20" }
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 2, actualProgress: 90, startDate: "1405/05/04", endDate: "1405/05/31" }
                         ]
                     }
                 ]
@@ -974,10 +1063,7 @@
                 periodActual: 8.5,
                 periodRealization: "85%",
                 status: "پیشرو",
-                risks: [
-                    { title: "جذب منابع مالی مورد نیاز", level: "متوسط" },
-                    { title: "نیروی متخصص", level: "متوسط" }
-                ],
+                risks: [{ title: "نیروی متخصص", level: "متوسط" }],
                 wbs: [
                     {
                         id: "1.1.1",
@@ -985,32 +1071,7 @@
                         duration: "46 روز",
                         children: [
                             { id: "1.1.1.1", title: "شناسایی وضع موجود", weight: 5, actualProgress: 100, startDate: "1405/05/04", endDate: "1405/05/20" },
-                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 5, actualProgress: 70, startDate: "1405/05/04", endDate: "1405/05/31" },
-                            { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 2, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/15" },
-                            { id: "1.1.1.4", title: "بررسی و تخصیص منابع مورد نیاز برای اجرای پروژه", weight: 3, actualProgress: 0, startDate: "1405/06/01", endDate: "1405/06/15" },
-                            { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/21" }
-                        ]
-                    },
-                    {
-                        id: "1.1.2",
-                        title: "فاز دوم (امکان‌سنجی و مدل کسب و کار)",
-                        duration: "31 روز",
-                        children: [
-                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 3, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/06/31" },
-                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 5, actualProgress: 0, startDate: "1405/06/21", endDate: "1405/07/20" },
-                            { id: "1.1.2.3", title: "تعیین مدل سرمایه‌گذاری و نحوه اجرا", weight: 2, actualProgress: 0, startDate: "1405/07/20", endDate: "1405/07/28" },
-                            { id: "1.1.2.4", title: "ارائه گزارش نهایی فاز دوم", weight: 1, actualProgress: 0, startDate: "1405/07/28", endDate: "1405/08/05" }
-                        ]
-                    },
-                    {
-                        id: "1.1.3",
-                        title: "فاز سوم (تدوین قرارداد انتقال تکنولوژی)",
-                        duration: "75 روز",
-                        children: [
-                            { id: "1.1.3.1", title: "مکاتبه با صاحبان فناوری در خارج از کشور", weight: 3, actualProgress: 0, startDate: "1405/08/05", endDate: "1405/09/04" },
-                            { id: "1.1.3.2", title: "ارزیابی ارائه‌دهندگان فناوری بر اساس شاخص‌ها", weight: 4, actualProgress: 0, startDate: "1405/09/04", endDate: "1405/09/25" },
-                            { id: "1.1.3.3", title: "انتخاب ارائه‌دهنده فناوری", weight: 2, actualProgress: 0, startDate: "1405/09/25", endDate: "1405/09/30" },
-                            { id: "1.1.3.4", title: "تدوین قرارداد بر اساس شاخص‌های جذب فناوری", weight: 3, actualProgress: 0, startDate: "1405/09/30", endDate: "1405/10/30" }
+                            { id: "1.1.1.2", title: "بررسی پتانسیل‌های داخلی و خارجی", weight: 5, actualProgress: 70, startDate: "1405/05/04", endDate: "1405/05/31" }
                         ]
                     }
                 ]
@@ -1021,19 +1082,22 @@
             { id: "ACT-01", projectId: "PRJ-01", wbsId: "1.1.1.1", date: "1405/05/10", hours: 12, author: "دکتر صفری", status: "approved", description: "بررسی امکان‌سنجی اولیه استفاده از ضایعات آهنی و تحلیل فرآیندهای RHF (خاتمه یافته)" },
             { id: "ACT-02", projectId: "PRJ-01", wbsId: "1.1.1.2", date: "1405/05/18", hours: 16, author: "دکتر صفری", status: "approved", description: "شناسایی صاحبان فناوری خارج از کشور و مذاکرات اولیه با هم‌سرمایه‌گذار داخلی" },
             { id: "ACT-03", projectId: "PRJ-02", wbsId: "1.1.1.1", date: "1405/05/12", hours: 14, author: "مهندس سلطانی", status: "approved", description: "تهیه گزارش فنی اولیه برای پرعیارسازی مغناطیسی بستر سیال (خاتمه یافته)" },
-            { id: "ACT-04", projectId: "PRJ-02", wbsId: "1.1.1.3", date: "1405/05/22", hours: 20, author: "مهندس سلطانی", status: "approved", description: "مکاتبات اولیه با گزینه‌های داخلی و بررسی صاحبان فناوری خارجی" },
-            { id: "ACT-05", projectId: "PRJ-03", wbsId: "1.1.1.1", date: "1405/05/15", hours: 10, author: "مهندس روشان", status: "approved", description: "جلسه و مذاکره با شرکت فناور داخلی جهت بازیافت غبارات (خاتمه یافته)" },
-            { id: "ACT-06", projectId: "PRJ-03", wbsId: "1.1.1.2", date: "1405/05/24", hours: 15, author: "مهندس روشان", status: "approved", description: "به‌روزرسانی گزارش مطالعات امکان‌سنجی و شناسایی پتانسیل‌های خارجی" },
-            { id: "ACT-07", projectId: "PRJ-04", wbsId: "1.1.1.1", date: "1405/05/14", hours: 18, author: "دکتر پریان", status: "approved", description: "انجام تست‌های اولیه آزمایشگاهی سلول‌های فلوتاسیون پنوماتیک (خاتمه یافته)" },
-            { id: "ACT-08", projectId: "PRJ-04", wbsId: "1.1.1.2", date: "1405/05/25", hours: 12, author: "دکتر پریان", status: "approved", description: "مذاکرات انجام تست پایلوت و رصد صاحبان فناوری خارجی" },
-            { id: "ACT-09", projectId: "PRJ-05", wbsId: "1.1.1.1", date: "1405/05/16", hours: 16, author: "دکتر شیبانی‌فر", status: "approved", description: "تهیه گزارش فنی اولیه تشخیص عیوب غیرتماسی با EMAT (خاتمه یافته)" },
-            { id: "ACT-10", projectId: "PRJ-05", wbsId: "1.1.1.2", date: "1405/05/28", hours: 14, author: "دکتر شیبانی‌فر", status: "approved", description: "شناسایی پتانسیل‌های داخلی و بررسی ارائه‌دهندگان خارجی فناوری EMAT" }
+            { id: "ACT-04", projectId: "PRJ-03", wbsId: "1.1.1.1", date: "1405/05/15", hours: 10, author: "مهندس روشان", status: "approved", description: "جلسه و مذاکره با شرکت فناور داخلی جهت بازیافت غبارات (خاتمه یافته)" },
+            { id: "ACT-05", projectId: "PRJ-04", wbsId: "1.1.1.1", date: "1405/05/14", hours: 18, author: "دکتر پریان", status: "approved", description: "انجام تست‌های اولیه آزمایشگاهی سلول‌های فلوتاسیون پنوماتیک (خاتمه یافته)" },
+            { id: "ACT-06", projectId: "PRJ-05", wbsId: "1.1.1.1", date: "1405/05/16", hours: 16, author: "دکتر شیبانی‌فر", status: "approved", description: "تهیه گزارش فنی اولیه تشخیص عیوب غیرتماسی با EMAT (خاتمه یافته)" }
         ];
 
-        const PERSIAN_MONTH_NAMES = [
-            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        const DEFAULT_CORRESPONDENCE = [
+            { id: "COR-01", projectId: "PRJ-01", letterNumber: "1405/MST/108", letterDate: "1405/05/08", letterType: "outgoing", sender: "MSTID", receiver: "تامین‌کننده فناوری اروپایی", subject: "استعلام قیمت و شرایط انتقال لایسنس RHF", relatedWbsId: "1.1.1.2", attachmentUrl: "" },
+            { id: "COR-02", projectId: "PRJ-01", letterNumber: "ENG-2026-04", letterDate: "1405/05/19", letterType: "incoming", sender: "مشاور فنی صنعتی", receiver: "دکتر صفری", subject: "گزارش آزمون مشخصات فنی نمونه ضایعات", relatedWbsId: "1.1.1.1", attachmentUrl: "" },
+            { id: "COR-03", projectId: "PRJ-02", letterNumber: "1405/SMR/44", letterDate: "1405/05/15", letterType: "outgoing", sender: "مهندس سلطانی", receiver: "معاونت سرمایه‌گذاری فولاد", subject: "درخواست تایید مدل مشارکت در طرح SMR", relatedWbsId: "1.1.1.4", attachmentUrl: "" }
         ];
+
+        const DEFAULT_DELAYS = [
+            { id: "DLY-01", projectId: "PRJ-01", title: "تاخیر در ارسال نتایج آنالیز شیمیایی ضایعات", startDate: "1405/05/12", endDate: "1405/05/20", delayDays: 8, originCause: "تراکم آزمایشگاه مرجع", responsibility: "third_party", impactedWbsIds: ["1.1.1.1"], relatedLetterNumbers: ["ENG-2026-04"], description: "به دلیل نقص فنی تجهیزات آزمایشگاه معتمد، ارسال نتایج آنالیز سرباره با ۸ روز تاخیر مواجه شد." }
+        ];
+
+        const PERSIAN_MONTH_NAMES = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
 
         let supabaseClient = null;
         let isSyncing = false;
@@ -1041,8 +1105,11 @@
         let currentUserProfile = null;
         window.projects = [];
         window.activities = [];
+        window.correspondence = [];
+        window.delays = [];
         let chartInstance = null;
         let radarChartInstance = null;
+        let deleteTargetType = null;
         let deleteTargetId = null;
 
         function gregorianToJalali(gy, gm, gd) {
@@ -1097,24 +1164,29 @@
         }
 
         function loadState() {
-            const savedProjects = localStorage.getItem('mstid_tech_projects');
-            const savedActivities = localStorage.getItem('mstid_tech_activities');
-            if (savedProjects) {
-                try { window.projects = JSON.parse(savedProjects); }
-                catch(e) { window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS)); }
-            } else { window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS)); }
+            try {
+                const savedProjects = localStorage.getItem('mstid_tech_projects');
+                const savedActivities = localStorage.getItem('mstid_tech_activities');
+                const savedCorrespondence = localStorage.getItem('mstid_tech_correspondence');
+                const savedDelays = localStorage.getItem('mstid_tech_delays');
 
-            if (savedActivities) {
-                try {
-                    window.activities = JSON.parse(savedActivities);
-                    window.activities.forEach(a => { if (!a.status) a.status = 'approved'; });
-                } catch(e) { window.activities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)); }
-            } else { window.activities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)); }
+                window.projects = savedProjects ? JSON.parse(savedProjects) : JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+                window.activities = savedActivities ? JSON.parse(savedActivities) : JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+                window.correspondence = savedCorrespondence ? JSON.parse(savedCorrespondence) : JSON.parse(JSON.stringify(DEFAULT_CORRESPONDENCE));
+                window.delays = savedDelays ? JSON.parse(savedDelays) : JSON.parse(JSON.stringify(DEFAULT_DELAYS));
+            } catch(e) {
+                window.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+                window.activities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+                window.correspondence = JSON.parse(JSON.stringify(DEFAULT_CORRESPONDENCE));
+                window.delays = JSON.parse(JSON.stringify(DEFAULT_DELAYS));
+            }
         }
 
         function saveState(pushCloud = true) {
             localStorage.setItem('mstid_tech_projects', JSON.stringify(window.projects));
             localStorage.setItem('mstid_tech_activities', JSON.stringify(window.activities));
+            localStorage.setItem('mstid_tech_correspondence', JSON.stringify(window.correspondence));
+            localStorage.setItem('mstid_tech_delays', JSON.stringify(window.delays));
             if (pushCloud && typeof window.pushStateToCloud === 'function') window.pushStateToCloud();
         }
 
@@ -1141,9 +1213,6 @@
 
             const radarBadge = document.getElementById('radarMonthBadge');
             if (radarBadge) radarBadge.innerText = today.monthName;
-
-            const ganttTodayText = document.getElementById('ganttTodayDateText');
-            if (ganttTodayText) ganttTodayText.innerText = today.dateStr;
 
             const todayDays = jalaliToDays(today.jy, today.jm, today.jd);
             const monthStartDays = jalaliToDays(today.jy, today.jm, 1);
@@ -1254,21 +1323,17 @@
                 currentUser = session.user;
                 
                 try {
-                    const { data: profile, error: profileErr } = await client
+                    const { data: profile } = await client
                         .from('profiles')
                         .select('*')
                         .eq('id', currentUser.id)
                         .single();
 
-                    if (profile && !profileErr) {
-                        currentUserProfile = profile;
-                    } else {
-                        currentUserProfile = {
-                            full_name: currentUser.email.split('@')[0],
-                            role: 'pmo',
-                            assigned_project: 'ALL'
-                        };
-                    }
+                    currentUserProfile = profile || {
+                        full_name: currentUser.email.split('@')[0],
+                        role: 'pmo',
+                        assigned_project: 'ALL'
+                    };
                 } catch(pe) {
                     currentUserProfile = {
                         full_name: currentUser.email.split('@')[0],
@@ -1359,14 +1424,28 @@
             }
         }
 
+        // =========================================================
+        // CENTRAL RBAC PERMISSION LOGIC
+        // =========================================================
         window.hasPermission = function(action, targetProjectId) {
             if (!currentUserProfile) return false;
+            
+            // ۱. مدیر ارشد PMO: دسترسی کامل به تمامی عملیات
             if (currentUserProfile.role === 'pmo') return true;
+            
+            // ۲. ناظر ارشد: فقط مشاهده (Read-only)
             if (currentUserProfile.role === 'executive') return false;
+            
+            // ۳. مسئول پروژه (Lead):
             if (currentUserProfile.role === 'lead') {
-                if (action === 'add_activity') {
-                    return currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
-                }
+                const isMyProject = currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
+                
+                // درج و ویرایش در پروژه خود
+                if (action === 'add_activity' || action === 'add_letter' || action === 'add_delay') return isMyProject;
+                if (action === 'edit_letter' || action === 'edit_delay') return isMyProject;
+                
+                // حذف به هیچ وجه مجاز نیست
+                if (action === 'delete_letter' || action === 'delete_delay' || action === 'delete_activity') return false;
                 if (action === 'edit_wbs' || action === 'add_wbs') return false;
             }
             return false;
@@ -1389,9 +1468,9 @@
             } else if (role === 'lead') {
                 if (btnRestore) btnRestore.classList.add('hidden');
                 if (btnBackup) btnBackup.classList.add('hidden');
-                if (noticeText) noticeText.innerText = `دسترسی شما: ثبت اقدام برای پروژه (${currentUserProfile.assigned_project}) و ارسال به کارتابل تایید`;
+                if (noticeText) noticeText.innerText = `دسترسی شما: ثبت و ویرایش مستندات پروژه (${currentUserProfile.assigned_project})`;
             } else {
-                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان پورتفولیو، ویرایش WBS و تایید اقدامات (PMO)";
+                if (noticeText) noticeText.innerText = "دسترسی شما: راهبری کلان پورتفولیو، ویرایش ساختارها و مدیریت کامل (PMO)";
             }
         }
 
@@ -1414,36 +1493,24 @@
             if (!client) return;
 
             try {
-                const { data, error } = await client
+                const { data } = await client
                     .from('mstid_state')
                     .select('*')
                     .eq('id', appId)
                     .single();
 
-                if (data && data.projects && data.activities) {
+                if (data && data.projects) {
                     window.projects = data.projects;
-                    window.activities = data.activities;
-                    localStorage.setItem('mstid_tech_projects', JSON.stringify(data.projects));
-                    localStorage.setItem('mstid_tech_activities', JSON.stringify(data.activities));
+                    window.activities = data.activities || window.activities;
+                    window.correspondence = data.correspondence || window.correspondence;
+                    window.delays = data.delays || window.delays;
+                    saveState(false);
                     renderAllViews();
-                } else if (error && error.code === 'PGRST116') {
+                } else {
                     await window.pushStateToCloud();
                 }
-
-                client.channel('mstid_realtime_changes')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'mstid_state', filter: `id=eq.${appId}` }, (payload) => {
-                        if (payload.new && payload.new.projects && payload.new.activities && !isSyncing) {
-                            window.projects = payload.new.projects;
-                            window.activities = payload.new.activities;
-                            localStorage.setItem('mstid_tech_projects', JSON.stringify(payload.new.projects));
-                            localStorage.setItem('mstid_tech_activities', JSON.stringify(payload.new.activities));
-                            renderAllViews();
-                        }
-                    })
-                    .subscribe();
-
             } catch (err) {
-                console.warn("Sync error:", err);
+                console.warn("Sync warning:", err);
             }
         }
 
@@ -1453,17 +1520,17 @@
 
             try {
                 isSyncing = true;
-                const { error } = await client
+                await client
                     .from('mstid_state')
                     .upsert({
                         id: appId,
                         projects: window.projects,
                         activities: window.activities,
+                        correspondence: window.correspondence,
+                        delays: window.delays,
                         last_modified_by: currentUser.id,
                         updated_at: new Date().toISOString()
                     });
-
-                if (error) throw error;
             } catch (e) {
                 console.warn("Cloud push error:", e);
             } finally {
@@ -1479,6 +1546,9 @@
             populateProjectDropdowns();
             renderSelectedProjectWBS();
             renderGanttChart();
+            renderUnifiedTimelineView();
+            renderCorrespondenceTable();
+            renderDelaysTable();
             renderActivitiesTable();
             renderApprovalInbox();
         };
@@ -1610,55 +1680,41 @@
         }
 
         function populateProjectDropdowns() {
-            const selector = document.getElementById('projectSelector');
-            const ganttSelector = document.getElementById('ganttProjectSelector');
-            const modalSelect = document.getElementById('modalProjectSelect');
-            const filterSelect = document.getElementById('filterProjectActivity');
-
-            if (!selector || !ganttSelector || !modalSelect || !filterSelect) return;
-
-            const currentSelected = selector.value;
-            selector.innerHTML = '';
-            ganttSelector.innerHTML = '<option value="ALL">نمایش تمام پروژه‌ها</option>';
-            modalSelect.innerHTML = '';
-            filterSelect.innerHTML = '<option value="ALL">همه پروژه‌ها</option>';
+            const selectors = [
+                document.getElementById('projectSelector'),
+                document.getElementById('ganttProjectSelector'),
+                document.getElementById('journalProjectSelector'),
+                document.getElementById('modalProjectSelect'),
+                document.getElementById('letterProjectSelect'),
+                document.getElementById('delayProjectSelect'),
+                document.getElementById('filterProjectActivity')
+            ];
 
             const visibleProjects = filterByAccess(window.projects, 'id');
 
-            visibleProjects.forEach(p => {
-                const opt1 = document.createElement('option');
-                opt1.value = p.id;
-                opt1.innerText = `${p.code} - ${p.name}`;
-                selector.appendChild(opt1);
+            selectors.forEach(sel => {
+                if (!sel) return;
+                const currentVal = sel.value;
+                sel.innerHTML = (sel.id === 'ganttProjectSelector' || sel.id === 'filterProjectActivity') ? '<option value="ALL">تمام پروژه‌ها</option>' : '';
+                
+                visibleProjects.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.innerText = `${p.code} - ${p.name}`;
+                    sel.appendChild(opt);
+                });
 
-                const optGantt = document.createElement('option');
-                optGantt.value = p.id;
-                optGantt.innerText = `${p.code} - ${p.name}`;
-                ganttSelector.appendChild(optGantt);
-
-                const opt2 = document.createElement('option');
-                opt2.value = p.id;
-                opt2.innerText = `${p.code} - ${p.name}`;
-                modalSelect.appendChild(opt2);
-
-                const opt3 = document.createElement('option');
-                opt3.value = p.id;
-                opt3.innerText = p.code;
-                filterSelect.appendChild(opt3);
+                if (currentUserProfile && currentUserProfile.role === 'lead' && currentUserProfile.assigned_project !== 'ALL') {
+                    sel.value = currentUserProfile.assigned_project;
+                    sel.disabled = true;
+                } else if (currentVal) {
+                    sel.value = currentVal;
+                }
             });
 
-            if (currentUserProfile && currentUserProfile.role === 'lead' && currentUserProfile.assigned_project !== 'ALL') {
-                selector.value = currentUserProfile.assigned_project;
-                selector.disabled = true;
-                ganttSelector.value = currentUserProfile.assigned_project;
-                ganttSelector.disabled = true;
-                filterSelect.value = currentUserProfile.assigned_project;
-                filterSelect.disabled = true;
-            } else if (currentSelected && visibleProjects.some(p => p.id === currentSelected)) {
-                selector.value = currentSelected;
-            }
-
             updateModalWBSOptions();
+            updateLetterWBSOptions();
+            updateDelayWBSAndLetterOptions();
         }
 
         function renderSelectedProjectWBS() {
@@ -1731,11 +1787,6 @@
                                     <div class="flex items-center gap-3 text-xs">
                                         <span class="text-slate-600 font-medium">پیشرفت واقعی فاز: <b class="text-blue-700">${phase.actualProgress}%</b></span>
                                         <span class="text-slate-400 font-mono">برنامه‌ای: ${phase.plannedProgress}%</span>
-                                        ${canDirectEdit ? `
-                                            <button onclick="openAddWbsModal('${project.id}', '${phase.id}')" class="px-3 py-1 bg-logo-gradient hover:opacity-95 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
-                                                <i class="fa-solid fa-plus text-[10px]"></i> افزودن فعالیت
-                                            </button>
-                                        ` : ''}
                                     </div>
                                 </div>
                                 <div class="divide-y divide-slate-200/60 p-2 sm:p-4 bg-white">
@@ -1777,82 +1828,509 @@
             `;
         }
 
-        window.openEditWbsModal = function(projectId, wbsItemId) {
-            if (!window.hasPermission('edit_wbs', projectId)) { showToast("شما مجوز ویرایش مستقیم ساختار این پروژه را ندارید.", "error"); return; }
-            const prj = window.projects.find(p => p.id === projectId);
-            if (!prj) return;
-            let targetItem = null;
-            prj.wbs.forEach(phase => { const found = phase.children.find(c => c.id === wbsItemId); if (found) targetItem = found; });
-            if (!targetItem) return;
-            document.getElementById('editWbsProjectId').value = projectId;
-            document.getElementById('editWbsItemId').value = targetItem.id;
-            document.getElementById('editWbsCodeDisplay').value = targetItem.id;
-            document.getElementById('editWbsTitle').value = targetItem.title;
-            document.getElementById('editWbsWeight').value = targetItem.weight || 1;
-            document.getElementById('editWbsStartDate').value = targetItem.startDate || '';
-            document.getElementById('editWbsEndDate').value = targetItem.endDate || '';
-            document.getElementById('editWbsActual').value = targetItem.actualProgress || 0;
-            document.getElementById('editWbsModal').classList.remove('hidden');
-        };
+        // ==========================================
+        // UNIFIED TIMELINE JOURNAL
+        // ==========================================
+        function renderUnifiedTimelineView() {
+            const selector = document.getElementById('journalProjectSelector');
+            const container = document.getElementById('journalStreamContainer');
+            if (!selector || !container) return;
 
-        window.closeEditWbsModal = function() { document.getElementById('editWbsModal').classList.add('hidden'); };
+            const selectedProjectId = selector.value || (window.projects[0] ? window.projects[0].id : null);
+            if (!selectedProjectId) return;
 
-        window.handleSaveWbsEdit = function(e) {
-            e.preventDefault();
-            const projectId = document.getElementById('editWbsProjectId').value;
-            const itemId = document.getElementById('editWbsItemId').value;
-            if (!window.hasPermission('edit_wbs', projectId)) { showToast("خطای دسترسی: ویرایش مجاز نیست.", "error"); return; }
-            const prj = window.projects.find(p => p.id === projectId);
-            if (!prj) return;
-            prj.wbs.forEach(phase => {
-                const item = phase.children.find(c => c.id === itemId);
-                if (item) {
-                    item.title = document.getElementById('editWbsTitle').value;
-                    item.weight = parseFloat(document.getElementById('editWbsWeight').value);
-                    item.startDate = document.getElementById('editWbsStartDate').value;
-                    item.endDate = document.getElementById('editWbsEndDate').value;
-                    item.actualProgress = parseFloat(document.getElementById('editWbsActual').value);
-                }
+            const projectActivities = (window.activities || []).filter(a => a.projectId === selectedProjectId && a.status === 'approved').map(a => ({
+                date: a.date,
+                type: 'activity',
+                title: `اقدام: ${a.author} (مدت: ${a.hours} ساعت)`,
+                desc: a.description,
+                tag: `WBS: ${a.wbsId}`,
+                icon: 'fa-solid fa-list-check',
+                color: 'from-blue-600 to-indigo-600',
+                badge: 'bg-blue-50 text-blue-800 border-blue-200'
+            }));
+
+            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectedProjectId).map(c => ({
+                date: c.letterDate,
+                type: 'letter',
+                title: `${c.letterType === 'incoming' ? '📥 نامه وارده' : '📤 نامه صادره'}: ${c.letterNumber}`,
+                desc: `<b>${c.subject}</b> — طرف مکاتبه: ${c.sender} به ${c.receiver}`,
+                tag: c.relatedWbsId ? `WBS: ${c.relatedWbsId}` : 'مکاتبه کلان',
+                icon: 'fa-solid fa-envelope',
+                color: 'from-cyan-500 to-blue-600',
+                badge: 'bg-cyan-50 text-cyan-800 border-cyan-200',
+                url: c.attachmentUrl
+            }));
+
+            const projectDelays = (window.delays || []).filter(d => d.projectId === selectedProjectId).map(d => ({
+                date: d.startDate,
+                type: 'delay',
+                title: `⚠️ رویداد تاخیر: ${d.title} (${d.delayDays || 0} روز)`,
+                desc: `${d.description} <br><span class="text-[11px] text-rose-600 font-bold">منشأ: ${d.originCause}</span>`,
+                tag: `مسئولیت: ${d.responsibility === 'client' ? 'کارفرما (مجاز)' : 'تامین‌کننده (غیرمجاز)'}`,
+                icon: 'fa-solid fa-triangle-exclamation',
+                color: 'from-rose-500 to-amber-600',
+                badge: 'bg-rose-50 text-rose-800 border-rose-200'
+            }));
+
+            const allEvents = [...projectActivities, ...projectLetters, ...projectDelays];
+            allEvents.sort((a, b) => {
+                const da = parseJalaliDateStr(a.date) || 0;
+                const db = parseJalaliDateStr(b.date) || 0;
+                return db - da;
             });
-            updateAllPlannedProgresses();
-            prj.actualProgress = calculateProjectProgress(prj);
-            saveState(true); renderAllViews(); closeEditWbsModal(); showToast("تغییرات ذخیره و پیشرفت برنامه‌ای بازمحاسبه شد.", "success");
-        };
 
-        window.openAddWbsModal = function(projectId, phaseId) {
-            if (!window.hasPermission('add_wbs', projectId)) { showToast("شما مجوز افزودن فعالیت به این پروژه را ندارید.", "error"); return; }
-            document.getElementById('addWbsProjectId').value = projectId;
-            document.getElementById('addWbsPhaseId').value = phaseId;
-            document.getElementById('addWbsCode').value = phaseId + "." + Math.floor(Math.random() * 90 + 10);
-            document.getElementById('addWbsModal').classList.remove('hidden');
-        };
+            container.innerHTML = '';
 
-        window.closeAddWbsModal = function() { document.getElementById('addWbsModal').classList.add('hidden'); };
-
-        window.handleSaveNewWbs = function(e) {
-            e.preventDefault();
-            const projectId = document.getElementById('addWbsProjectId').value;
-            const phaseId = document.getElementById('addWbsPhaseId').value;
-            if (!window.hasPermission('add_wbs', projectId)) { showToast("خطای دسترسی: عملیات مجاز نیست.", "error"); return; }
-            const newCode = document.getElementById('addWbsCode').value;
-            const newTitle = document.getElementById('addWbsTitle').value;
-            const newWeight = parseFloat(document.getElementById('addWbsWeight').value);
-            const newStart = document.getElementById('addWbsStartDate').value;
-            const newEnd = document.getElementById('addWbsEndDate').value;
-            const newActual = parseFloat(document.getElementById('addWbsActual').value);
-            const prj = window.projects.find(p => p.id === projectId);
-            if (prj) {
-                const phase = prj.wbs.find(ph => ph.id === phaseId);
-                if (phase) {
-                    phase.children.push({ id: newCode, title: newTitle, weight: newWeight, actualProgress: newActual, startDate: newStart, endDate: newEnd });
-                }
-                updateAllPlannedProgresses();
-                prj.actualProgress = calculateProjectProgress(prj);
-                saveState(true); renderAllViews(); showToast("فعالیت جدید افزوده و پیشرفت برنامه‌ای محاسبه شد.", "success");
+            if (allEvents.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <p class="text-xs text-slate-400 font-bold">هیچ رویداد یا نامه‌ای برای این پروژه ثبت نشده است.</p>
+                    </div>
+                `;
+                return;
             }
-            closeAddWbsModal();
+
+            allEvents.forEach(ev => {
+                const node = document.createElement('div');
+                node.className = "relative flex items-start gap-4 pr-6 pb-6";
+                node.innerHTML = `
+                    <div class="absolute -right-3 top-1 w-6 h-6 rounded-full bg-gradient-to-br ${ev.color} text-white flex items-center justify-center text-[10px] shadow-md z-10">
+                        <i class="${ev.icon}"></i>
+                    </div>
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 flex-1 shadow-sm hover:shadow-md transition">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2 mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold border ${ev.badge}">${ev.tag}</span>
+                                <h4 class="text-xs font-black text-slate-900">${ev.title}</h4>
+                            </div>
+                            <span class="text-[11px] font-mono font-bold text-slate-400">${ev.date}</span>
+                        </div>
+                        <div class="text-xs text-slate-600 leading-relaxed font-medium">
+                            ${ev.desc}
+                        </div>
+                        ${ev.url ? `
+                            <div class="mt-2 pt-2 border-t border-slate-100">
+                                <a href="${ev.url}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-cyan-600 font-bold hover:underline">
+                                    <i class="fa-solid fa-paperclip"></i> مشاهده پیوست نامه
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(node);
+            });
+        }
+
+        // ==========================================
+        // CORRESPONDENCE MODULE (WITH EDIT & DELETE)
+        // ==========================================
+        function renderCorrespondenceTable() {
+            const tbody = document.getElementById('correspondenceTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const letters = filterByAccess(window.correspondence || [], 'projectId');
+            if (letters.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400 font-bold">هیچ مکاتبه‌ای ثبت نشده است.</td></tr>`;
+                return;
+            }
+
+            letters.forEach(letItem => {
+                const prj = window.projects.find(p => p.id === letItem.projectId);
+                const canEdit = window.hasPermission('edit_letter', letItem.projectId);
+                const canDelete = window.hasPermission('delete_letter', letItem.projectId);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-mono font-bold text-blue-900">${letItem.letterNumber}</td>
+                    <td class="px-4 py-3 font-mono text-slate-500">${letItem.letterDate}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold ${letItem.letterType === 'incoming' ? 'bg-cyan-50 text-cyan-800 border border-cyan-200' : 'bg-purple-50 text-purple-800 border border-purple-200'}">
+                            ${letItem.letterType === 'incoming' ? 'وارده' : 'صادره'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 font-bold text-slate-800">${prj ? prj.code : letItem.projectId}</td>
+                    <td class="px-4 py-3 text-slate-700 font-medium">${letItem.subject}</td>
+                    <td class="px-4 py-3 text-slate-500">${letItem.sender} ⬅️ ${letItem.receiver}</td>
+                    <td class="px-4 py-3 font-mono text-slate-400">${letItem.relatedWbsId || '—'}</td>
+                    <td class="px-4 py-3 text-center">
+                        ${letItem.attachmentUrl ? `<a href="${letItem.attachmentUrl}" target="_blank" class="text-cyan-600 hover:text-cyan-800 p-1 font-bold"><i class="fa-solid fa-file-pdf text-sm"></i></a>` : `<span class="text-slate-300">—</span>`}
+                    </td>
+                    <td class="px-4 py-3 text-center whitespace-nowrap">
+                        ${canEdit ? `<button onclick="openEditLetterModal('${letItem.id}')" title="ویرایش نامه" class="text-cyan-600 hover:text-cyan-800 p-1 mx-0.5"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                        ${canDelete ? `<button onclick="confirmDeleteRecord('correspondence', '${letItem.id}')" title="حذف نامه" class="text-rose-500 hover:text-rose-700 p-1 mx-0.5"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        ${!canEdit && !canDelete ? `<span class="text-slate-300">—</span>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.openAddLetterModal = function() {
+            populateProjectDropdowns();
+            document.getElementById('editLetterTargetId').value = '';
+            document.getElementById('letterModalTitle').innerHTML = '<i class="fa-solid fa-envelope text-cyan-400"></i> ثبت و آرشیو نامه جدید';
+            document.getElementById('letterDateInput').value = getTodayJalali().dateStr;
+            document.getElementById('letterForm').reset();
+            document.getElementById('letterModal').classList.remove('hidden');
         };
 
+        window.openEditLetterModal = function(letterId) {
+            const letter = (window.correspondence || []).find(c => c.id === letterId);
+            if (!letter) return;
+            if (!window.hasPermission('edit_letter', letter.projectId)) {
+                showToast("شما مجوز ویرایش این نامه را ندارید.", "error");
+                return;
+            }
+            populateProjectDropdowns();
+            document.getElementById('editLetterTargetId').value = letter.id;
+            document.getElementById('letterModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-cyan-400"></i> ویرایش اطلاعات نامه';
+            document.getElementById('letterProjectSelect').value = letter.projectId;
+            updateLetterWBSOptions();
+            document.getElementById('letterNumberInput').value = letter.letterNumber;
+            document.getElementById('letterDateInput').value = letter.letterDate;
+            document.getElementById('letterTypeSelect').value = letter.letterType;
+            document.getElementById('letterWbsSelect').value = letter.relatedWbsId || '';
+            document.getElementById('letterSenderInput').value = letter.sender;
+            document.getElementById('letterReceiverInput').value = letter.receiver;
+            document.getElementById('letterSubjectInput').value = letter.subject;
+            document.getElementById('letterModal').classList.remove('hidden');
+        };
+
+        window.closeLetterModal = function() { document.getElementById('letterModal').classList.add('hidden'); };
+
+        window.updateLetterWBSOptions = function() {
+            const selectPrj = document.getElementById('letterProjectSelect');
+            const wbsSelect = document.getElementById('letterWbsSelect');
+            if (!selectPrj || !wbsSelect) return;
+            const prj = window.projects.find(p => p.id === selectPrj.value);
+            wbsSelect.innerHTML = '<option value="">مکاتبه کلی / فاقد تسک خاص</option>';
+            if (prj && prj.wbs) {
+                prj.wbs.forEach(ph => {
+                    (ph.children || []).forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.innerText = `${c.id} - ${c.title}`;
+                        wbsSelect.appendChild(opt);
+                    });
+                });
+            }
+        };
+
+        window.handleSaveLetter = async function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editLetterTargetId').value;
+            const prjId = document.getElementById('letterProjectSelect').value;
+            const letterNum = document.getElementById('letterNumberInput').value;
+            const letterDate = document.getElementById('letterDateInput').value;
+            const letterType = document.getElementById('letterTypeSelect').value;
+            const wbsId = document.getElementById('letterWbsSelect').value;
+            const sender = document.getElementById('letterSenderInput').value;
+            const receiver = document.getElementById('letterReceiverInput').value;
+            const subject = document.getElementById('letterSubjectInput').value;
+            const fileInput = document.getElementById('letterFileInput');
+
+            let attachmentUrl = '';
+            if (editId) {
+                const existing = (window.correspondence || []).find(c => c.id === editId);
+                if (existing) attachmentUrl = existing.attachmentUrl || '';
+            }
+
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                const client = getSupabaseClient();
+                if (client) {
+                    try {
+                        const fileName = `${prjId}/${Date.now()}_${file.name}`;
+                        const { data: uploadData, error } = await client.storage.from('project-documents').upload(fileName, file);
+                        if (!error && uploadData) {
+                            const { data: publicUrlData } = client.storage.from('project-documents').getPublicUrl(fileName);
+                            attachmentUrl = publicUrlData.publicUrl;
+                        }
+                    } catch(err) {
+                        console.warn("Storage upload warning:", err);
+                    }
+                }
+            }
+
+            if (editId) {
+                const letter = window.correspondence.find(c => c.id === editId);
+                if (letter) {
+                    letter.projectId = prjId;
+                    letter.letterNumber = letterNum;
+                    letter.letterDate = letterDate;
+                    letter.letterType = letterType;
+                    letter.relatedWbsId = wbsId;
+                    letter.sender = sender;
+                    letter.receiver = receiver;
+                    letter.subject = subject;
+                    letter.attachmentUrl = attachmentUrl;
+                }
+                showToast("تغییرات نامه با موفقیت ذخیره شد.", "success");
+            } else {
+                const newLetter = {
+                    id: "COR-" + Date.now().toString().slice(-4),
+                    projectId: prjId,
+                    letterNumber: letterNum,
+                    letterDate: letterDate,
+                    letterType: letterType,
+                    relatedWbsId: wbsId,
+                    sender: sender,
+                    receiver: receiver,
+                    subject: subject,
+                    attachmentUrl: attachmentUrl
+                };
+                window.correspondence = window.correspondence || [];
+                window.correspondence.unshift(newLetter);
+                showToast("نامه با موفقیت در سیستم ثبت و آرشیو شد.", "success");
+            }
+
+            saveState(true);
+            renderAllViews();
+            closeLetterModal();
+            document.getElementById('letterForm').reset();
+        };
+
+        // ==========================================
+        // DELAYS & CLAIMS (WITH EDIT & DELETE)
+        // ==========================================
+        function renderDelaysTable() {
+            const container = document.getElementById('delaysListContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const delays = filterByAccess(window.delays || [], 'projectId');
+            let compensableDays = 0;
+            let nonCompensableDays = 0;
+
+            delays.forEach(d => {
+                const days = parseInt(d.delayDays, 10) || 0;
+                if (d.responsibility === 'client' || d.responsibility === 'third_party') compensableDays += days;
+                else nonCompensableDays += days;
+            });
+
+            const kpiComp = document.getElementById('kpi-compensable-delays');
+            const kpiNonComp = document.getElementById('kpi-noncompensable-delays');
+            const kpiTotal = document.getElementById('kpi-total-delays-count');
+            if (kpiComp) kpiComp.innerText = `${compensableDays} روز`;
+            if (kpiNonComp) kpiNonComp.innerText = `${nonCompensableDays} روز`;
+            if (kpiTotal) kpiTotal.innerText = `${delays.length} مانع مستند`;
+
+            if (delays.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <p class="text-xs text-slate-400 font-bold">هیچ رویداد تاخیری ثبت نشده است.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            delays.forEach(del => {
+                const prj = window.projects.find(p => p.id === del.projectId);
+                const canEdit = window.hasPermission('edit_delay', del.projectId);
+                const canDelete = window.hasPermission('delete_delay', del.projectId);
+
+                const card = document.createElement('div');
+                card.className = "bg-white border-2 border-rose-100 rounded-3xl p-5 shadow-sm space-y-3";
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-rose-100 text-rose-900 text-[11px] font-black px-2.5 py-1 rounded-xl">رویداد تاخیر: ${del.delayDays || 0} روز</span>
+                            <span class="text-xs font-mono font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md">${prj ? prj.code : del.projectId}</span>
+                            <b class="text-xs text-slate-900">${del.title}</b>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[11px] text-slate-400 font-mono">بازه: <b>${del.startDate} تا ${del.endDate || 'در حال وقوع'}</b></span>
+                            <div class="flex items-center gap-1 border-r border-slate-200 pr-2">
+                                ${canEdit ? `<button onclick="openEditDelayModal('${del.id}')" title="ویرایش تاخیر" class="text-cyan-600 hover:text-cyan-800 p-1"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                                ${canDelete ? `<button onclick="confirmDeleteRecord('delays', '${del.id}')" title="حذف تاخیر" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="md:col-span-2 space-y-1.5">
+                            <span class="text-slate-400 text-[11px] font-bold">شرح واقعه و علل بروز مانع:</span>
+                            <p class="text-slate-700 leading-relaxed font-medium bg-slate-50 p-3 rounded-2xl border border-slate-100">${del.description}</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[11px] text-slate-500 block">سهم تقصیر و مسئولیت:</span>
+                                <b class="text-rose-700 text-xs block">${del.responsibility === 'client' ? 'کارفرما (مجاز با جبران مالی)' : 'تامین‌کننده / شخص ثالث'}</b>
+                                <div class="mt-2">
+                                    <span class="text-[11px] text-slate-500 block">استناد نامه‌ها و بخش WBS:</span>
+                                    <span class="font-mono text-slate-800 font-bold block">${(del.relatedLetterNumbers || []).join('، ') || 'بدون استناد نامه'}</span>
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-bold">منشأ: ${del.originCause}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.openAddDelayModal = function() {
+            populateProjectDropdowns();
+            document.getElementById('editDelayTargetId').value = '';
+            document.getElementById('delayModalTitle').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i> ثبت رویداد مانع / تاخیر';
+            document.getElementById('delayStartDateInput').value = getTodayJalali().dateStr;
+            document.getElementById('delayForm').reset();
+            document.getElementById('delayModal').classList.remove('hidden');
+        };
+
+        window.openEditDelayModal = function(delayId) {
+            const delay = (window.delays || []).find(d => d.id === delayId);
+            if (!delay) return;
+            if (!window.hasPermission('edit_delay', delay.projectId)) {
+                showToast("شما مجوز ویرایش این تاخیر را ندارید.", "error");
+                return;
+            }
+            populateProjectDropdowns();
+            document.getElementById('editDelayTargetId').value = delay.id;
+            document.getElementById('delayModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-rose-500"></i> ویرایش رویداد تاخیر';
+            document.getElementById('delayProjectSelect').value = delay.projectId;
+            updateDelayWBSAndLetterOptions();
+            document.getElementById('delayTitleInput').value = delay.title;
+            document.getElementById('delayStartDateInput').value = delay.startDate;
+            document.getElementById('delayEndDateInput').value = delay.endDate || '';
+            document.getElementById('delayDaysInput').value = delay.delayDays || 0;
+            document.getElementById('delayOriginInput').value = delay.originCause;
+            document.getElementById('delayResponsibilitySelect').value = delay.responsibility;
+            document.getElementById('delayWbsSelect').value = (delay.impactedWbsIds && delay.impactedWbsIds[0]) || '';
+            document.getElementById('delayLetterSelect').value = (delay.relatedLetterNumbers && delay.relatedLetterNumbers[0]) || '';
+            document.getElementById('delayDescriptionInput').value = delay.description;
+            document.getElementById('delayModal').classList.remove('hidden');
+        };
+
+        window.closeDelayModal = function() { document.getElementById('delayModal').classList.add('hidden'); };
+
+        window.updateDelayWBSAndLetterOptions = function() {
+            const selectPrj = document.getElementById('delayProjectSelect');
+            const wbsSelect = document.getElementById('delayWbsSelect');
+            const letterSelect = document.getElementById('delayLetterSelect');
+            if (!selectPrj || !wbsSelect || !letterSelect) return;
+
+            const prj = window.projects.find(p => p.id === selectPrj.value);
+            wbsSelect.innerHTML = '<option value="">تمام مسیر بحرانی پروژه</option>';
+            if (prj && prj.wbs) {
+                prj.wbs.forEach(ph => {
+                    (ph.children || []).forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.innerText = `${c.id} - ${c.title}`;
+                        wbsSelect.appendChild(opt);
+                    });
+                });
+            }
+
+            letterSelect.innerHTML = '<option value="">نامه اخطار مرتبط انتخاب کنید...</option>';
+            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectPrj.value);
+            projectLetters.forEach(letItem => {
+                const opt = document.createElement('option');
+                opt.value = letItem.letterNumber;
+                opt.innerText = `${letItem.letterNumber} (${letItem.subject.substring(0, 20)}...)`;
+                letterSelect.appendChild(opt);
+            });
+        };
+
+        window.handleSaveDelay = function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editDelayTargetId').value;
+            const prjId = document.getElementById('delayProjectSelect').value;
+            const title = document.getElementById('delayTitleInput').value;
+            const startDate = document.getElementById('delayStartDateInput').value;
+            const endDate = document.getElementById('delayEndDateInput').value;
+            const delayDays = parseInt(document.getElementById('delayDaysInput').value, 10) || 0;
+            const originCause = document.getElementById('delayOriginInput').value;
+            const resp = document.getElementById('delayResponsibilitySelect').value;
+            const wbsId = document.getElementById('delayWbsSelect').value;
+            const letterNum = document.getElementById('delayLetterSelect').value;
+            const desc = document.getElementById('delayDescriptionInput').value;
+
+            if (editId) {
+                const del = window.delays.find(d => d.id === editId);
+                if (del) {
+                    del.projectId = prjId;
+                    del.title = title;
+                    del.startDate = startDate;
+                    del.endDate = endDate;
+                    del.delayDays = delayDays;
+                    del.originCause = originCause;
+                    del.responsibility = resp;
+                    del.impactedWbsIds = wbsId ? [wbsId] : [];
+                    del.relatedLetterNumbers = letterNum ? [letterNum] : [];
+                    del.description = desc;
+                }
+                showToast("رویداد تاخیر با موفقیت ویرایش شد.", "success");
+            } else {
+                const newDelay = {
+                    id: "DLY-" + Date.now().toString().slice(-4),
+                    projectId: prjId,
+                    title: title,
+                    startDate: startDate,
+                    endDate: endDate,
+                    delayDays: delayDays,
+                    originCause: originCause,
+                    responsibility: resp,
+                    impactedWbsIds: wbsId ? [wbsId] : [],
+                    relatedLetterNumbers: letterNum ? [letterNum] : [],
+                    description: desc
+                };
+                window.delays = window.delays || [];
+                window.delays.unshift(newDelay);
+                showToast("رویداد تاخیر با موفقیت در پرونده کلیم اضافه شد.", "success");
+            }
+
+            saveState(true);
+            renderAllViews();
+            closeDelayModal();
+            document.getElementById('delayForm').reset();
+        };
+
+        // ==========================================
+        // UNIVERSAL DELETE RECORD (LETTERS & DELAYS)
+        // ==========================================
+        window.confirmDeleteRecord = function(type, id) {
+            const item = type === 'correspondence' 
+                ? (window.correspondence || []).find(c => c.id === id)
+                : (window.delays || []).find(d => d.id === id);
+
+            if (!item) return;
+
+            const actionName = type === 'correspondence' ? 'delete_letter' : 'delete_delay';
+            if (!window.hasPermission(actionName, item.projectId)) {
+                showToast("خطای دسترسی: شما مجوز حذف این مورد را ندارید.", "error");
+                return;
+            }
+
+            deleteTargetType = type;
+            deleteTargetId = id;
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+
+            document.getElementById('confirmDeleteBtn').onclick = function() {
+                if (deleteTargetType === 'correspondence') {
+                    window.correspondence = window.correspondence.filter(c => c.id !== deleteTargetId);
+                } else if (deleteTargetType === 'delays') {
+                    window.delays = window.delays.filter(d => d.id !== deleteTargetId);
+                }
+                saveState(true);
+                renderAllViews();
+                closeDeleteConfirmModal();
+                showToast("مورد با موفقیت حذف شد.", "success");
+            };
+        };
+
+        window.closeDeleteConfirmModal = function() {
+            deleteTargetType = null;
+            deleteTargetId = null;
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+        };
+
+        // ==========================================
+        // GANTT & ACTIVITIES LOGIC
+        // ==========================================
         function renderGanttChart() {
             const ganttContainer = document.getElementById('ganttViewContainer');
             const ganttSelect = document.getElementById('ganttProjectSelector');
@@ -1863,7 +2341,6 @@
 
             const accessibleProjects = filterByAccess(window.projects, 'id');
             const projectsToDisplay = selectedPrjFilter === 'ALL' ? accessibleProjects : accessibleProjects.filter(p => p.id === selectedPrjFilter);
-
             const months = [ "مرداد ۱۴۰۵", "شهریور ۱۴۰۵", "مهر ۱۴۰۵", "آبان ۱۴۰۵", "آذر ۱۴۰۵", "دی ۱۴۰۵", "بهمن ۱۴۰۵", "اسفند ۱۴۰۵", "فروردین ۱۴۰۶", "اردیبهشت ۱۴۰۶", "خرداد ۱۴۰۶", "۱۴۰۶+" ];
             const baseStartDays = jalaliToDays(1405, 5, 1);
             const totalTimelineDays = 186;
@@ -1899,7 +2376,7 @@
                         <div class="divide-y divide-slate-100 text-xs">
                 `;
 
-                p.wbs.forEach(phase => {
+                (p.wbs || []).forEach(phase => {
                     let childStartDaysList = [];
                     let childEndDaysList = [];
 
@@ -1921,12 +2398,12 @@
                         let barWidth = Math.max(5, Math.min(100 - offsetLeft, ((phaseEndDays - phaseStartDays + 1) / totalTimelineDays) * 100));
 
                         phaseBarHtml = `
-                            <div class="absolute h-4 bg-slate-800 rounded-md border border-slate-900 shadow-sm flex items-center overflow-hidden" style="right: ${offsetLeft}%; width: ${barWidth}%;" title="بازه فاز: ${phase.duration || ''}">
+                            <div class="absolute h-4 bg-slate-800 rounded-md border border-slate-900 shadow-sm flex items-center overflow-hidden" style="right: ${offsetLeft}%; width: ${barWidth}%;">
                                 <div class="h-full bg-logo-gradient-h transition-all duration-300" style="width: ${Math.min(phase.actualProgress, 100)}%;"></div>
                             </div>
                         `;
                     } else {
-                        phaseBarHtml = `<span class="text-[10px] text-slate-400 font-normal italic pr-2">در حال برنامه‌ریزی فازهای آتی</span>`;
+                        phaseBarHtml = `<span class="text-[10px] text-slate-400 font-normal italic pr-2">در حال برنامه‌ریزی</span>`;
                     }
 
                     html += `
@@ -1991,9 +2468,9 @@
 
         window.openLogModal = function() {
             if (currentUserProfile && currentUserProfile.role === 'executive') { showToast("ناظرین ارشد امکان ثبت اقدام ندارند.", "error"); return; }
-            populateProjectDropdowns(); document.getElementById('addLogModal').classList.remove('hidden');
+            populateProjectDropdowns();
+            document.getElementById('addLogModal').classList.remove('hidden');
         };
-
         window.closeLogModal = function() { document.getElementById('addLogModal').classList.add('hidden'); };
 
         window.updateModalWBSOptions = function() {
@@ -2007,7 +2484,7 @@
                 const authorInput = document.getElementById('modalAuthor');
                 if (authorInput) { authorInput.value = currentUserProfile ? (currentUserProfile.full_name || prj.lead) : prj.lead; }
                 prj.wbs.forEach(phase => {
-                    phase.children.forEach(c => {
+                    (phase.children || []).forEach(c => {
                         const opt = document.createElement('option');
                         opt.value = c.id; opt.innerText = `${c.id} - ${c.title}`;
                         modalWbsSelect.appendChild(opt);
@@ -2052,7 +2529,7 @@
             if (initialStatus === 'approved' && proposedProg !== null) { applyProgressUpdate(prjId, wbsId, proposedProg); }
             window.activities.unshift(newAct);
             saveState(true); renderAllViews(); closeLogModal(); document.getElementById('activityForm').reset(); toggleProgressInput();
-            if (initialStatus === 'pending') { showToast("اقدام با موفقیت ثبت و به کارتابل تایید PMO ارسال شد.", "info"); } 
+            if (initialStatus === 'pending') { showToast("اقدام ثبت و به کارتابل تایید PMO ارسال شد.", "info"); } 
             else { showToast("اقدام ثبت و پیشرفت فیزیکی اعمال شد.", "success"); }
         };
 
@@ -2060,7 +2537,7 @@
             const prj = window.projects.find(p => p.id === prjId);
             if (prj && prj.wbs) {
                 prj.wbs.forEach(phase => {
-                    const item = phase.children.find(c => c.id === wbsId);
+                    const item = (phase.children || []).find(c => c.id === wbsId);
                     if (item) item.actualProgress = newProg;
                 });
                 updateAllPlannedProgresses();
@@ -2159,7 +2636,6 @@
             document.getElementById('rejectionReasonText').value = '';
             document.getElementById('rejectActivityModal').classList.remove('hidden');
         };
-
         window.closeRejectModal = function() { document.getElementById('rejectActivityModal').classList.add('hidden'); };
 
         window.submitRejectActivity = function() {
@@ -2180,7 +2656,6 @@
             tbody.innerHTML = '';
 
             const accessibleActivities = filterByAccess(window.activities, 'projectId');
-
             if (accessibleActivities.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400 font-bold">هیچ اقدامی ثبت نشده است.</td></tr>`;
                 return;
@@ -2226,7 +2701,6 @@
             const searchVal = searchInput.value.toLowerCase();
             const filterPrj = filterPrjSelect.value;
             const rows = tbody.getElementsByTagName('tr');
-
             const accessibleActivities = filterByAccess(window.activities, 'projectId');
 
             for (let i = 0; i < rows.length; i++) {
@@ -2251,10 +2725,50 @@
             };
         };
 
-        window.closeDeleteConfirmModal = function() { deleteTargetId = null; document.getElementById('deleteConfirmModal').classList.add('hidden'); };
+        window.openEditWbsModal = function(projectId, wbsItemId) {
+            if (!window.hasPermission('edit_wbs', projectId)) { showToast("شما مجوز ویرایش مستقیم ساختار این پروژه را ندارید.", "error"); return; }
+            const prj = window.projects.find(p => p.id === projectId);
+            if (!prj) return;
+            let targetItem = null;
+            prj.wbs.forEach(phase => { const found = (phase.children || []).find(c => c.id === wbsItemId); if (found) targetItem = found; });
+            if (!targetItem) return;
+            document.getElementById('editWbsProjectId').value = projectId;
+            document.getElementById('editWbsItemId').value = targetItem.id;
+            document.getElementById('editWbsCodeDisplay').value = targetItem.id;
+            document.getElementById('editWbsTitle').value = targetItem.title;
+            document.getElementById('editWbsWeight').value = targetItem.weight || 1;
+            document.getElementById('editWbsStartDate').value = targetItem.startDate || '';
+            document.getElementById('editWbsEndDate').value = targetItem.endDate || '';
+            document.getElementById('editWbsActual').value = targetItem.actualProgress || 0;
+            document.getElementById('editWbsModal').classList.remove('hidden');
+        };
+
+        window.closeEditWbsModal = function() { document.getElementById('editWbsModal').classList.add('hidden'); };
+
+        window.handleSaveWbsEdit = function(e) {
+            e.preventDefault();
+            const projectId = document.getElementById('editWbsProjectId').value;
+            const itemId = document.getElementById('editWbsItemId').value;
+            if (!window.hasPermission('edit_wbs', projectId)) { showToast("خطای دسترسی: ویرایش مجاز نیست.", "error"); return; }
+            const prj = window.projects.find(p => p.id === projectId);
+            if (!prj) return;
+            prj.wbs.forEach(phase => {
+                const item = (phase.children || []).find(c => c.id === itemId);
+                if (item) {
+                    item.title = document.getElementById('editWbsTitle').value;
+                    item.weight = parseFloat(document.getElementById('editWbsWeight').value);
+                    item.startDate = document.getElementById('editWbsStartDate').value;
+                    item.endDate = document.getElementById('editWbsEndDate').value;
+                    item.actualProgress = parseFloat(document.getElementById('editWbsActual').value);
+                }
+            });
+            updateAllPlannedProgresses();
+            prj.actualProgress = calculateProjectProgress(prj);
+            saveState(true); renderAllViews(); closeEditWbsModal(); showToast("تغییرات ذخیره و پیشرفت برنامه‌ای بازمحاسبه شد.", "success");
+        };
 
         window.switchTab = function(tabName) {
-            const tabs = ['overview', 'projects', 'gantt', 'activities', 'approvals'];
+            const tabs = ['overview', 'projects', 'gantt', 'timeline_journal', 'correspondence', 'delays', 'activities', 'approvals'];
             tabs.forEach(t => {
                 const view = document.getElementById(`view-${t}`);
                 if (view) view.classList.add('hidden');
@@ -2266,10 +2780,19 @@
             });
             const targetView = document.getElementById(`view-${tabName}`);
             if (targetView) targetView.classList.remove('hidden');
+
+            if (tabName === 'timeline_journal') renderUnifiedTimelineView();
+            if (tabName === 'correspondence') renderCorrespondenceTable();
+            if (tabName === 'delays') renderDelaysTable();
         };
 
         window.exportData = function() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ projects: window.projects, activities: window.activities }, null, 2));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+                projects: window.projects,
+                activities: window.activities,
+                correspondence: window.correspondence,
+                delays: window.delays
+            }, null, 2));
             const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `mstid_tech_projects_backup_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
         };
@@ -2278,104 +2801,33 @@
             const container = document.getElementById('pdfReportContent');
             if (!container) return;
             const today = getTodayJalali();
-            
             const accessibleProjects = filterByAccess(window.projects, 'id');
 
             let totalActual = 0; let totalPlanned = 0;
             accessibleProjects.forEach(p => { totalActual += calculateProjectProgress(p); totalPlanned += (p.plannedProgress || 0); });
             const avgActual = accessibleProjects.length ? (totalActual / accessibleProjects.length).toFixed(2) : 0;
             const avgPlanned = accessibleProjects.length ? (totalPlanned / accessibleProjects.length).toFixed(2) : 0;
-            
-            const accessibleActivities = filterByAccess(window.activities, 'projectId');
 
             let html = `
                 <div class="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="border border-slate-300 rounded-2xl px-4 py-2.5 bg-slate-900 text-white flex items-center justify-center font-black text-sm">MSTID</div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و پایش آخرین وضعیت پروژه‌های استراتژیک</h2>
-                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ تنظیم: ${today.dateStr}</p>
+                            <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و کنترل پورتفولیوی پروژه‌های استراتژیک</h2>
+                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ پایش: ${today.dateStr}</p>
                         </div>
                     </div>
-                    <div class="text-left font-mono text-xs text-slate-500"><span>سند مدیریتی محرمانه</span><br><span>نسخه آنلاین ۱.۸</span></div>
                 </div>
-
-                <div class="grid grid-cols-4 gap-4 text-center">
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[11px] text-slate-500 block">تعداد پروژه‌ها</span>
-                        <b class="text-lg text-slate-900">${accessibleProjects.length} پروژه</b>
-                    </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[11px] text-slate-500 block">میانگین پیشرفت تاییدشده</span>
-                        <b class="text-lg text-blue-700">${avgActual}%</b>
-                    </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[11px] text-slate-500 block">میانگین پیشرفت برنامه‌ای</span>
-                        <b class="text-lg text-slate-600">${avgPlanned}%</b>
-                    </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <span class="text-[11px] text-slate-500 block">تعداد کل اقدامات</span>
-                        <b class="text-lg text-purple-700">${accessibleActivities.length} اقدام</b>
-                    </div>
+                <div class="grid grid-cols-4 gap-4 text-center mb-6">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">پروژه‌ها</span><b class="text-lg text-slate-900">${accessibleProjects.length} پروژه</b></div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">میانگین واقعی</span><b class="text-lg text-blue-700">${avgActual}%</b></div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">میانگین برنامه‌ای</span><b class="text-lg text-slate-600">${avgPlanned}%</b></div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">مکاتبات و اسناد</span><b class="text-lg text-purple-700">${(window.correspondence || []).length} سند</b></div>
                 </div>
-
-                <div class="space-y-3 pt-2">
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">جدول خلاصه وضعیت پروژه‌های استراتژیک</h3>
-                    <table class="w-full text-xs text-right border-collapse border border-slate-300">
-                        <thead class="bg-slate-100 font-bold text-slate-800 border-b border-slate-300">
-                            <tr>
-                                <th class="p-2 border border-slate-300">کد</th><th class="p-2 border border-slate-300">نام پروژه</th>
-                                <th class="p-2 border border-slate-300">مسئول پروژه</th><th class="p-2 border border-slate-300">بودجه</th>
-                                <th class="p-2 border border-slate-300 text-center">پیشرفت واقعی</th><th class="p-2 border border-slate-300 text-center">پیشرفت برنامه‌ای</th>
-                                <th class="p-2 border border-slate-300 text-center">تحقق دوره</th><th class="p-2 border border-slate-300 text-center">وضعیت</th>
-                            </tr>
-                        </thead>
-                        <tbody>
             `;
-
-            accessibleProjects.forEach(p => {
-                const actProg = calculateProjectProgress(p);
-                html += `
-                    <tr class="border-b border-slate-200">
-                        <td class="p-2 border border-slate-300 font-mono font-bold text-blue-800">${p.code}</td><td class="p-2 border border-slate-300 font-bold">${p.name}</td>
-                        <td class="p-2 border border-slate-300">${p.lead}</td><td class="p-2 border border-slate-300 font-mono">${p.budget}</td>
-                        <td class="p-2 border border-slate-300 text-center font-bold text-blue-700">${actProg}%</td><td class="p-2 border border-slate-300 text-center font-mono">${p.plannedProgress}%</td>
-                        <td class="p-2 border border-slate-300 text-center font-bold text-emerald-700">${p.periodRealization}</td><td class="p-2 border border-slate-300 text-center">${p.status}</td>
-                    </tr>
-                `;
-            });
-            html += `</tbody></table></div><div class="space-y-6 pt-4"><h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-300 pb-2">جزئیات شکست WBS و اقدامات هر پروژه</h3>`;
-
-            accessibleProjects.forEach(p => {
-                const actProg = calculateProjectProgress(p);
-                const projectActs = accessibleActivities.filter(a => a.projectId === p.id && a.status === 'approved');
-                html += `
-                    <div class="border border-slate-300 rounded-2xl p-4 space-y-3 bg-white print-card">
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                            <div><span class="font-mono text-xs font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded">${p.code}</span><b class="text-sm font-black text-slate-900 mr-2">${p.name}</b></div>
-                            <span class="text-xs text-slate-600 font-medium">مسئول: <b>${p.lead}</b> | پیشرفت واقعی: <b class="text-blue-700">${actProg}%</b></span>
-                        </div>
-                        <div class="text-xs space-y-1.5"><b class="text-slate-700 block text-[11px]">فازها و فعالیت‌های WBS:</b><div class="grid grid-cols-2 gap-2 text-[11px]">
-                `;
-                p.wbs.forEach(ph => {
-                    html += `
-                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                            <div class="flex justify-between font-bold text-slate-800 mb-1"><span>${ph.id} ${ph.title}</span><span class="text-blue-700">${ph.actualProgress}%</span></div>
-                            <div class="text-[10px] text-slate-500">${ph.children.map(c => `${c.id} (${c.actualProgress}%)`).join(' • ')}</div>
-                        </div>
-                    `;
-                });
-                html += `</div></div><div class="text-xs space-y-1 pt-1"><b class="text-slate-700 block text-[11px]">آخرین اقدامات تاییدشده (${projectActs.length} مورد):</b>`;
-                if (projectActs.length > 0) {
-                    html += `<ul class="list-disc list-inside space-y-0.5 text-[11px] text-slate-600 font-medium">${projectActs.slice(0, 3).map(a => `<li><b>${a.date} (${a.author}):</b> ${a.description}</li>`).join('')}</ul>`;
-                } else { html += `<p class="text-[10px] text-slate-400">اقدام تاییدشده‌ای ثبت نشده است.</p>`; }
-                html += `</div></div>`;
-            });
-            html += `</div>`;
             container.innerHTML = html;
             document.getElementById('pdfReportModal').classList.remove('hidden');
         };
-
         window.closePdfReportModal = function() { document.getElementById('pdfReportModal').classList.add('hidden'); };
         window.triggerPrint = function() { window.print(); };
 
@@ -2384,16 +2836,17 @@
             reader.onload = function(e) {
                 try {
                     const parsed = JSON.parse(e.target.result);
-                    if (parsed.projects && parsed.activities) {
-                        window.projects = parsed.projects; window.activities = parsed.activities;
-                        saveState(true); renderAllViews(); showToast("اطلاعات بازیابی و همگام شد.", "success");
-                    }
+                    if (parsed.projects) window.projects = parsed.projects;
+                    if (parsed.activities) window.activities = parsed.activities;
+                    if (parsed.correspondence) window.correspondence = parsed.correspondence;
+                    if (parsed.delays) window.delays = parsed.delays;
+                    saveState(true); renderAllViews(); showToast("اطلاعات بازیابی و همگام شد.", "success");
                 } catch (err) { showToast("خطا در خواندن فایل پشتیبان!", "error"); }
             };
             reader.readAsText(event.target.files[0]);
         };
 
-        // Initialize immediately on page load
+        // Initialization
         (function initApp() {
             loadState();
             getSupabaseClient();
