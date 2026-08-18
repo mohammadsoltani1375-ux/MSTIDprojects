@@ -94,10 +94,6 @@
                 page-break-inside: avoid !important;
                 margin-bottom: 12px !important;
             }
-            .page-break-before {
-                page-break-before: always !important;
-                break-before: page !important;
-            }
         }
     </style>
 </head>
@@ -428,20 +424,37 @@
                 </div>
             </div>
 
-            <!-- TAB 4: UNIFIED PROJECT TIMELINE & JOURNAL -->
+            <!-- TAB 4: UNIFIED PROJECT TIMELINE & JOURNAL (ENHANCED!) -->
             <div id="view-timeline_journal" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                         <div>
                             <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
-                                <i class="fa-solid fa-clock-rotate-left text-cyan-600"></i> لاگ‌بوک و تایم‌لاین یکپارچه رویدادهای پروژه
+                                <i class="fa-solid fa-clock-rotate-left text-cyan-600"></i> لاگ‌بوک و تایم‌لاین یکپارچه رویدادها، اقدامات و اسناد
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">مشاهده جریان پیوسته تمام وقایع (اقدامات، نامه‌ها و تاخیرات) به ترتیب تاریخ</p>
+                            <p class="text-xs text-slate-500 mt-0.5">مشاهده پیوسته فعالیت‌های ثبت‌شده مجریان، مکاتبات رسمی و موانع زمانی به ترتیب تاریخ</p>
                         </div>
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                             <select id="journalProjectSelector" onchange="renderUnifiedTimelineView()" class="bg-slate-50 border border-slate-300 text-xs rounded-xl p-2.5 focus:ring-cyan-500 focus:border-cyan-500 font-bold">
                             </select>
                         </div>
+                    </div>
+
+                    <!-- Quick Filter Chips for Timeline -->
+                    <div class="flex flex-wrap items-center gap-2 pb-1 text-xs">
+                        <span class="text-slate-400 font-bold ml-1">فیلتر نمایش:</span>
+                        <button onclick="filterTimelineEvents('all')" id="timeline-filter-all" class="px-3 py-1.5 rounded-xl font-bold bg-slate-900 text-white shadow-xs transition">
+                            همه وقایع (<span id="count-all-events">۰</span>)
+                        </button>
+                        <button onclick="filterTimelineEvents('activity')" id="timeline-filter-activity" class="px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            <i class="fa-solid fa-list-check text-blue-600 ml-1"></i> اقدامات و فعالیت‌ها (<span id="count-activity-events">۰</span>)
+                        </button>
+                        <button onclick="filterTimelineEvents('letter')" id="timeline-filter-letter" class="px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            <i class="fa-solid fa-envelope text-indigo-600 ml-1"></i> مکاتبات و اسناد (<span id="count-letter-events">۰</span>)
+                        </button>
+                        <button onclick="filterTimelineEvents('delay')" id="timeline-filter-delay" class="px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-600 ml-1"></i> تاخیرات و موانع (<span id="count-delay-events">۰</span>)
+                        </button>
                     </div>
 
                     <!-- Journal Stream Container -->
@@ -663,7 +676,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: ADD / EDIT LETTER (CORRESPONDENCE) -->
+    <!-- MODAL 2: ADD / EDIT LETTER -->
     <div id="letterModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
             <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
@@ -737,7 +750,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: ADD / EDIT DELAY EVENT & CLAIM -->
+    <!-- MODAL 3: ADD / EDIT DELAY EVENT -->
     <div id="delayModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden my-8 animate-fade-in">
             <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
@@ -1154,6 +1167,7 @@
         let radarChartInstance = null;
         let deleteTargetType = null;
         let deleteTargetId = null;
+        let currentTimelineFilter = 'all';
 
         function gregorianToJalali(gy, gm, gd) {
             var g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
@@ -1467,9 +1481,6 @@
             }
         }
 
-        // =========================================================
-        // CENTRAL RBAC PERMISSION LOGIC
-        // =========================================================
         window.hasPermission = function(action, targetProjectId) {
             if (!currentUserProfile) return false;
             
@@ -1865,9 +1876,38 @@
             `;
         }
 
-        // ==========================================
-        // UNIFIED TIMELINE JOURNAL
-        // ==========================================
+        // =========================================================
+        // ENHANCED UNIFIED TIMELINE & JOURNAL VIEW
+        // =========================================================
+        function findWbsTitle(projectId, wbsId) {
+            if (!wbsId) return '';
+            const prj = window.projects.find(p => p.id === projectId);
+            if (!prj || !prj.wbs) return wbsId;
+            for (let ph of prj.wbs) {
+                if (ph.id === wbsId) return `${ph.id} - ${ph.title}`;
+                if (ph.children) {
+                    const found = ph.children.find(c => c.id === wbsId);
+                    if (found) return `${found.id} - ${found.title}`;
+                }
+            }
+            return wbsId;
+        }
+
+        window.filterTimelineEvents = function(type) {
+            currentTimelineFilter = type;
+            const buttons = ['all', 'activity', 'letter', 'delay'];
+            buttons.forEach(b => {
+                const btn = document.getElementById(`timeline-filter-${b}`);
+                if (!btn) return;
+                if (b === type) {
+                    btn.className = "px-3 py-1.5 rounded-xl font-bold bg-slate-900 text-white shadow-xs transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+                }
+            });
+            renderUnifiedTimelineView();
+        };
+
         function renderUnifiedTimelineView() {
             const selector = document.getElementById('journalProjectSelector');
             const container = document.getElementById('journalStreamContainer');
@@ -1876,41 +1916,106 @@
             const selectedProjectId = selector.value || (window.projects[0] ? window.projects[0].id : null);
             if (!selectedProjectId) return;
 
-            const projectActivities = (window.activities || []).filter(a => a.projectId === selectedProjectId && a.status === 'approved').map(a => ({
-                date: a.date,
-                type: 'activity',
-                title: `اقدام: ${a.author} (مدت: ${a.hours} ساعت)`,
-                desc: a.description,
-                tag: `WBS: ${a.wbsId}`,
-                icon: 'fa-solid fa-list-check',
-                color: 'from-blue-600 to-indigo-600',
-                badge: 'bg-blue-50 text-blue-800 border-blue-200'
-            }));
+            // 1. Map Activities (both approved and pending)
+            const projectActivities = (window.activities || []).filter(a => a.projectId === selectedProjectId).map(a => {
+                const wbsText = findWbsTitle(a.projectId, a.wbsId);
+                const isApproved = a.status === 'approved';
+                const statusHtml = isApproved 
+                    ? `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-emerald-100 text-emerald-800">🟢 تایید نهایی PMO</span>`
+                    : `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-800 animate-pulse">🟡 در انتظار تایید PMO</span>`;
 
-            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectedProjectId).map(c => ({
-                date: c.letterDate,
-                type: 'letter',
-                title: `${c.letterType === 'incoming' ? '📥 نامه وارده' : '📤 نامه صادره'}: ${c.letterNumber}`,
-                desc: `<b>${c.subject}</b> — طرف مکاتبه: ${c.sender} به ${c.receiver}`,
-                tag: c.relatedWbsId ? `WBS: ${c.relatedWbsId}` : 'مکاتبه کلان',
-                icon: 'fa-solid fa-envelope',
-                color: 'from-cyan-500 to-blue-600',
-                badge: 'bg-cyan-50 text-cyan-800 border-cyan-200',
-                url: c.attachmentUrl
-            }));
+                return {
+                    id: a.id,
+                    date: a.date,
+                    type: 'activity',
+                    title: `اقدام اجرایی: ${a.author}`,
+                    tag: wbsText,
+                    badge: isApproved ? 'bg-blue-50 text-blue-800 border-blue-200' : 'bg-amber-50 text-amber-800 border-amber-200',
+                    icon: 'fa-solid fa-list-check',
+                    color: 'from-blue-600 to-indigo-600',
+                    desc: `
+                        <div class="space-y-1.5">
+                            <p class="text-slate-800 font-medium">${a.description}</p>
+                            <div class="flex flex-wrap items-center gap-3 text-[10px] text-slate-500 pt-1 border-t border-slate-100">
+                                <span><i class="fa-solid fa-clock text-blue-500 ml-1"></i>زمان صرف‌شده: <b>${a.hours} ساعت</b></span>
+                                <span><i class="fa-solid fa-user-check text-purple-500 ml-1"></i>ثبت‌کننده: <b>${a.author}</b></span>
+                                ${a.proposedProgress !== null && a.proposedProgress !== undefined ? `<span class="text-blue-700 font-bold"><i class="fa-solid fa-chart-line ml-1"></i>پیشنهاد پیشرفت: ${a.proposedProgress}%</span>` : ''}
+                                <div>${statusHtml}</div>
+                            </div>
+                        </div>
+                    `,
+                    url: null
+                };
+            });
 
+            // 2. Map Correspondence
+            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectedProjectId).map(c => {
+                const wbsText = findWbsTitle(c.projectId, c.relatedWbsId) || 'مکاتبه کلان پروژه';
+                return {
+                    id: c.id,
+                    date: c.letterDate,
+                    type: 'letter',
+                    title: `${c.letterType === 'incoming' ? '📥 نامه وارده' : '📤 نامه صادره'}: ${c.letterNumber}`,
+                    tag: wbsText,
+                    badge: c.letterType === 'incoming' ? 'bg-cyan-50 text-cyan-800 border-cyan-200' : 'bg-purple-50 text-purple-800 border-purple-200',
+                    icon: 'fa-solid fa-envelope',
+                    color: 'from-cyan-500 to-blue-600',
+                    desc: `
+                        <div class="space-y-1">
+                            <p class="font-bold text-slate-900">${c.subject}</p>
+                            <div class="text-[11px] text-slate-500 flex items-center gap-2">
+                                <span>فرستنده: <b>${c.sender}</b></span>
+                                <span>⬅️</span>
+                                <span>گیرنده: <b>${c.receiver}</b></span>
+                            </div>
+                        </div>
+                    `,
+                    url: c.attachmentUrl
+                };
+            });
+
+            // 3. Map Delays
             const projectDelays = (window.delays || []).filter(d => d.projectId === selectedProjectId).map(d => ({
+                id: d.id,
                 date: d.startDate,
                 type: 'delay',
                 title: `⚠️ رویداد تاخیر: ${d.title} (${d.delayDays || 0} روز)`,
-                desc: `${d.description} <br><span class="text-[11px] text-rose-600 font-bold">منشأ: ${d.originCause}</span>`,
                 tag: `مسئولیت: ${d.responsibility === 'client' ? 'کارفرما (مجاز)' : 'تامین‌کننده (غیرمجاز)'}`,
+                badge: 'bg-rose-50 text-rose-800 border-rose-200',
                 icon: 'fa-solid fa-triangle-exclamation',
                 color: 'from-rose-500 to-amber-600',
-                badge: 'bg-rose-50 text-rose-800 border-rose-200'
+                desc: `
+                    <div class="space-y-1">
+                        <p class="text-slate-800 font-medium">${d.description}</p>
+                        <div class="flex flex-wrap items-center gap-3 text-[10px] pt-1 border-t border-slate-100">
+                            <span class="text-rose-600 font-bold">منشأ مانع: ${d.originCause}</span>
+                            <span class="text-slate-400">بازه: ${d.startDate} تا ${d.endDate || 'در حال وقوع'}</span>
+                            ${d.relatedLetterNumbers && d.relatedLetterNumbers.length ? `<span class="font-mono text-blue-700">استناد نامه: ${d.relatedLetterNumbers.join('، ')}</span>` : ''}
+                        </div>
+                    </div>
+                `,
+                url: null
             }));
 
-            const allEvents = [...projectActivities, ...projectLetters, ...projectDelays];
+            // Update Counts on Filter Badges
+            const elCountAll = document.getElementById('count-all-events');
+            const elCountAct = document.getElementById('count-activity-events');
+            const elCountLet = document.getElementById('count-letter-events');
+            const elCountDly = document.getElementById('count-delay-events');
+
+            if (elCountAll) elCountAll.innerText = projectActivities.length + projectLetters.length + projectDelays.length;
+            if (elCountAct) elCountAct.innerText = projectActivities.length;
+            if (elCountLet) elCountLet.innerText = projectLetters.length;
+            if (elCountDly) elCountDly.innerText = projectDelays.length;
+
+            let allEvents = [...projectActivities, ...projectLetters, ...projectDelays];
+
+            // Apply Current Active Filter
+            if (currentTimelineFilter !== 'all') {
+                allEvents = allEvents.filter(e => e.type === currentTimelineFilter);
+            }
+
+            // Sort Events by Date Descending
             allEvents.sort((a, b) => {
                 const da = parseJalaliDateStr(a.date) || 0;
                 const db = parseJalaliDateStr(b.date) || 0;
@@ -1921,8 +2026,11 @@
 
             if (allEvents.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                        <p class="text-xs text-slate-400 font-bold">هیچ رویداد یا نامه‌ای برای این پروژه ثبت نشده است.</p>
+                    <div class="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                        <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center mx-auto mb-2 text-lg">
+                            <i class="fa-solid fa-inbox"></i>
+                        </div>
+                        <p class="text-xs text-slate-500 font-bold">هیچ رویدادی با فیلتر انتخابی برای این پروژه ثبت نشده است.</p>
                     </div>
                 `;
                 return;
@@ -1930,7 +2038,7 @@
 
             allEvents.forEach(ev => {
                 const node = document.createElement('div');
-                node.className = "relative flex items-start gap-4 pr-6 pb-6";
+                node.className = "relative flex items-start gap-4 pr-6 pb-5 animate-fade-in";
                 node.innerHTML = `
                     <div class="absolute -right-3 top-1 w-6 h-6 rounded-full bg-gradient-to-br ${ev.color} text-white flex items-center justify-center text-[10px] shadow-md z-10">
                         <i class="${ev.icon}"></i>
@@ -1941,15 +2049,15 @@
                                 <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold border ${ev.badge}">${ev.tag}</span>
                                 <h4 class="text-xs font-black text-slate-900">${ev.title}</h4>
                             </div>
-                            <span class="text-[11px] font-mono font-bold text-slate-400">${ev.date}</span>
+                            <span class="text-[11px] font-mono font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/70">${ev.date}</span>
                         </div>
-                        <div class="text-xs text-slate-600 leading-relaxed font-medium">
+                        <div class="text-xs leading-relaxed">
                             ${ev.desc}
                         </div>
                         ${ev.url ? `
-                            <div class="mt-2 pt-2 border-t border-slate-100">
+                            <div class="mt-2.5 pt-2 border-t border-slate-100">
                                 <a href="${ev.url}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-cyan-600 font-bold hover:underline">
-                                    <i class="fa-solid fa-paperclip"></i> مشاهده پیوست نامه
+                                    <i class="fa-solid fa-paperclip"></i> مشاهده و دانلود پیوست نامه
                                 </a>
                             </div>
                         ` : ''}
@@ -2834,9 +2942,6 @@
             document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
         };
 
-        // =========================================================
-        // HIGH-END EXECUTIVE PDF GENERATOR
-        // =========================================================
         window.exportExecutivePDF = function() {
             const container = document.getElementById('pdfReportContent');
             if (!container) return;
@@ -2856,13 +2961,10 @@
             const avgPlanned = accessibleProjects.length ? (totalPlanned / accessibleProjects.length).toFixed(2) : 0;
 
             let totalCompensableDelays = 0;
-            let totalNonCompensableDelays = 0;
             delays.forEach(d => {
                 const days = parseInt(d.delayDays, 10) || 0;
                 if (d.responsibility === 'client' || d.responsibility === 'third_party') {
                     totalCompensableDelays += days;
-                } else {
-                    totalNonCompensableDelays += days;
                 }
             });
 
