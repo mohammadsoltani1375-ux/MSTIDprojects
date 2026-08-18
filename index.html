@@ -61,13 +61,43 @@
         }
 
         @media print {
-            header, nav, #mainTabs, button, .no-print, input, select, #authSection {
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
+            header, nav, #mainTabs, button, .no-print, input, select, #authSection, #loginScreen {
                 display: none !important;
             }
-            body { background-color: #ffffff !important; color: #000000 !important; }
-            .print-container { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .page-break { page-break-before: always; }
-            .print-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; break-inside: avoid; }
+            body {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            #pdfReportModal {
+                position: static !important;
+                padding: 0 !important;
+                background: transparent !important;
+                display: block !important;
+            }
+            #pdfReportModal > div {
+                max-width: 100% !important;
+                max-height: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+            .print-card {
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                margin-bottom: 12px !important;
+            }
+            .page-break-before {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
         }
     </style>
 </head>
@@ -161,8 +191,8 @@
 
                     <div class="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
                         <div class="flex items-center space-x-1.5 space-x-reverse">
-                            <button onclick="exportExecutivePDF()" class="px-3 py-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 text-rose-200 border border-rose-400/30 rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                                <i class="fa-solid fa-file-pdf text-rose-300"></i> <span class="hidden sm:inline">گزارش PDF</span>
+                            <button onclick="exportExecutivePDF()" class="px-3.5 py-1.5 text-xs font-black bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-1.5 shadow-md shadow-rose-900/30">
+                                <i class="fa-solid fa-file-pdf"></i> <span>گزارش PDF مدیریتی</span>
                             </button>
                             
                             <button id="btnBackup" onclick="exportData()" class="px-3 py-1.5 text-xs font-medium bg-white/10 hover:bg-white/20 text-slate-200 rounded-xl transition flex items-center gap-1 border border-white/10">
@@ -241,7 +271,7 @@
                             <div>
                                 <p class="text-xs font-semibold text-slate-400">تعداد کل پروژه‌ها</p>
                                 <h3 class="text-2xl font-black text-slate-900 mt-1" id="kpi-total-projects">۵ پروژه</h3>
-                                <p class="text-[11px] text-cyan-600 font-bold mt-1.5"><i class="fa-solid fa-coins"></i> سرمایه‌گذاری: ۴ همت</p>
+                                <p class="text-[11px] text-cyan-600 font-bold mt-1.5"><i class="fa-solid fa-coins"></i> سرمایه‌گذاری: ۴۰ همت</p>
                             </div>
                             <div class="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-100 text-cyan-600 flex items-center justify-center text-xl shadow-inner">
                                 <i class="fa-solid fa-cubes-stacked"></i>
@@ -868,17 +898,21 @@
     <div id="pdfReportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-2 sm:p-6 overflow-y-auto no-print">
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-300 w-full max-w-5xl overflow-hidden my-auto max-h-[92vh] flex flex-col">
             <div class="bg-slate-950 text-white p-4 flex items-center justify-between sticky top-0 z-10 border-b border-slate-800">
-                <h3 class="font-black text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-rose-400"></i> پیش‌نمایش گزارش مدیریتی پروژه‌ها
-                </h3>
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center text-xs font-bold"><i class="fa-solid fa-file-pdf"></i></span>
+                    <div>
+                        <h3 class="font-black text-sm text-white">پیش‌نمایش سند گزارش مدیریتی و کنترل پورتفولیو</h3>
+                        <p class="text-[10px] text-slate-400">طراحی استاندارد قابل چاپ و ارائه به هیئت مدیره</p>
+                    </div>
+                </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="triggerPrint()" class="px-4 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-print"></i> <span>چاپ / ذخیره PDF</span>
+                    <button onclick="triggerPrint()" class="px-4 py-2 text-xs font-black bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-rose-900/40 active:scale-95">
+                        <i class="fa-solid fa-print"></i> <span>چاپ / دانلود نسخه PDF</span>
                     </button>
                     <button onclick="closePdfReportModal()" class="text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
-            <div class="p-6 overflow-y-auto flex-1 space-y-6 text-slate-800" id="pdfReportContent">
+            <div class="p-6 overflow-y-auto flex-1 space-y-6 text-slate-800 bg-slate-50/50" id="pdfReportContent">
             </div>
         </div>
     </div>
@@ -943,6 +977,15 @@
                             { id: "1.1.1.3", title: "پیشنهاد اولیه ظرفیت‌ها و مدل‌های سرمایه‌گذاری", weight: 4, actualProgress: 50, startDate: "1405/05/20", endDate: "1405/05/31" },
                             { id: "1.1.1.4", title: "بررسی منابع مورد نیاز برای اجرای پروژه", weight: 2, actualProgress: 0, startDate: "1405/05/31", endDate: "1405/06/10" },
                             { id: "1.1.1.5", title: "ارائه گزارش فاز اول", weight: 1, actualProgress: 0, startDate: "1405/06/10", endDate: "1405/06/15" }
+                        ]
+                    },
+                    {
+                        id: "1.1.2",
+                        title: "فاز دوم (امکان‌سنجی، مدل کسب و کار)",
+                        duration: "39 روز",
+                        children: [
+                            { id: "1.1.2.1", title: "تهیه Pre FS مطابق با گزارش فاز اول", weight: 2, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/06/25" },
+                            { id: "1.1.2.2", title: "تدوین طرح توجیهی و FS", weight: 4, actualProgress: 0, startDate: "1405/06/15", endDate: "1405/07/15" }
                         ]
                     }
                 ]
@@ -1430,21 +1473,15 @@
         window.hasPermission = function(action, targetProjectId) {
             if (!currentUserProfile) return false;
             
-            // ۱. مدیر ارشد PMO: دسترسی کامل به تمامی عملیات
             if (currentUserProfile.role === 'pmo') return true;
-            
-            // ۲. ناظر ارشد: فقط مشاهده (Read-only)
             if (currentUserProfile.role === 'executive') return false;
             
-            // ۳. مسئول پروژه (Lead):
             if (currentUserProfile.role === 'lead') {
                 const isMyProject = currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
                 
-                // درج و ویرایش در پروژه خود
                 if (action === 'add_activity' || action === 'add_letter' || action === 'add_delay') return isMyProject;
                 if (action === 'edit_letter' || action === 'edit_delay') return isMyProject;
                 
-                // حذف به هیچ وجه مجاز نیست
                 if (action === 'delete_letter' || action === 'delete_delay' || action === 'delete_activity') return false;
                 if (action === 'edit_wbs' || action === 'add_wbs') return false;
             }
@@ -2797,37 +2834,261 @@
             document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
         };
 
+        // =========================================================
+        // HIGH-END EXECUTIVE PDF GENERATOR
+        // =========================================================
         window.exportExecutivePDF = function() {
             const container = document.getElementById('pdfReportContent');
             if (!container) return;
             const today = getTodayJalali();
             const accessibleProjects = filterByAccess(window.projects, 'id');
+            const accessibleActivities = filterByAccess(window.activities || [], 'projectId');
+            const letters = window.correspondence || [];
+            const delays = window.delays || [];
 
-            let totalActual = 0; let totalPlanned = 0;
-            accessibleProjects.forEach(p => { totalActual += calculateProjectProgress(p); totalPlanned += (p.plannedProgress || 0); });
+            let totalActual = 0;
+            let totalPlanned = 0;
+            accessibleProjects.forEach(p => {
+                totalActual += calculateProjectProgress(p);
+                totalPlanned += (p.plannedProgress || 0);
+            });
             const avgActual = accessibleProjects.length ? (totalActual / accessibleProjects.length).toFixed(2) : 0;
             const avgPlanned = accessibleProjects.length ? (totalPlanned / accessibleProjects.length).toFixed(2) : 0;
 
+            let totalCompensableDelays = 0;
+            let totalNonCompensableDelays = 0;
+            delays.forEach(d => {
+                const days = parseInt(d.delayDays, 10) || 0;
+                if (d.responsibility === 'client' || d.responsibility === 'third_party') {
+                    totalCompensableDelays += days;
+                } else {
+                    totalNonCompensableDelays += days;
+                }
+            });
+
             let html = `
-                <div class="border-b-2 border-slate-900 pb-4 mb-6 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="border border-slate-300 rounded-2xl px-4 py-2.5 bg-slate-900 text-white flex items-center justify-center font-black text-sm">MSTID</div>
-                        <div>
-                            <h2 class="text-xl font-black text-slate-900">گزارش مدیریتی و کنترل پورتفولیوی پروژه‌های استراتژیک</h2>
-                            <p class="text-xs text-slate-500 mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه — تاریخ پایش: ${today.dateStr}</p>
+                <!-- EXECUTIVE DOCUMENT HEADER -->
+                <div class="border-b-2 border-slate-900 pb-5 mb-6 relative">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-950 via-indigo-950 to-blue-900 text-white flex flex-col items-center justify-center shadow-lg border border-slate-700">
+                                <span class="font-black text-sm tracking-wider">MSTID</span>
+                                <span class="text-[8px] text-cyan-300 font-mono">PORTFOLIO</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2.5">
+                                    <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">گزارش راهبری و کنترل پورتفولیوی پروژه‌های استراتژیک جذب فناوری</h2>
+                                    <span class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">نسخه مدیریتی</span>
+                                </div>
+                                <p class="text-xs text-slate-500 font-medium mt-1">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه • دفتر مدیریت استراتژیک پروژه (PMO)</p>
+                            </div>
+                        </div>
+                        <div class="text-left font-mono text-xs space-y-1 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
+                            <div>تاریخ پایش: <b class="text-blue-950 font-bold">${today.dateStr}</b></div>
+                            <div>سطح سند: <b class="text-rose-700 font-black">محرمانه سازمانی</b></div>
                         </div>
                     </div>
+                    <div class="absolute -bottom-0.5 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 rounded-full"></div>
                 </div>
-                <div class="grid grid-cols-4 gap-4 text-center mb-6">
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">پروژه‌ها</span><b class="text-lg text-slate-900">${accessibleProjects.length} پروژه</b></div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">میانگین واقعی</span><b class="text-lg text-blue-700">${avgActual}%</b></div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">میانگین برنامه‌ای</span><b class="text-lg text-slate-600">${avgPlanned}%</b></div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl"><span class="text-[11px] text-slate-500 block">مکاتبات و اسناد</span><b class="text-lg text-purple-700">${(window.correspondence || []).length} سند</b></div>
+
+                <!-- EXECUTIVE SCORECARD 4-TILES -->
+                <div class="grid grid-cols-4 gap-3.5 mb-6">
+                    <div class="bg-white border-2 border-slate-200/90 rounded-2xl p-4 text-center shadow-xs">
+                        <span class="text-[11px] text-slate-400 block font-bold">سبد فناوری‌های استراتژیک</span>
+                        <b class="text-2xl text-slate-900 font-black block mt-1">${accessibleProjects.length} طرح کلان</b>
+                        <span class="text-[10px] text-cyan-700 font-black mt-1.5 inline-block bg-cyan-50 px-2 py-0.5 rounded-md border border-cyan-200">سرمایه‌گذاری: ۴۰ همت</span>
+                    </div>
+
+                    <div class="bg-white border-2 border-blue-200 rounded-2xl p-4 text-center shadow-xs">
+                        <span class="text-[11px] text-blue-700 block font-bold">میانگین پیشرفت فیزیکی تاییدشده</span>
+                        <b class="text-2xl text-blue-800 font-black block mt-1">${avgActual}%</b>
+                        <div class="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
+                            <div class="bg-logo-gradient-h h-2 rounded-full" style="width: ${Math.min(avgActual * 6, 100)}%"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-400 mt-1 block">برنامه‌ای مصوب: <b class="text-slate-700 font-mono">${avgPlanned}%</b></span>
+                    </div>
+
+                    <div class="bg-white border-2 border-purple-200 rounded-2xl p-4 text-center shadow-xs">
+                        <span class="text-[11px] text-purple-700 block font-bold">لاگ‌بوک اسناد و اقدامات</span>
+                        <b class="text-2xl text-purple-900 font-black block mt-1">${letters.length} سند / ${accessibleActivities.length} اقدام</b>
+                        <span class="text-[10px] text-emerald-700 font-bold mt-1.5 inline-block bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">وضعیت پایش: زنده و برخط</span>
+                    </div>
+
+                    <div class="bg-white border-2 border-rose-200 rounded-2xl p-4 text-center shadow-xs">
+                        <span class="text-[11px] text-rose-700 block font-bold">تاخیرات قابل کلیم (مجاز)</span>
+                        <b class="text-2xl text-rose-950 font-black block mt-1">${totalCompensableDelays} روز</b>
+                        <span class="text-[10px] text-rose-600 font-bold mt-1.5 inline-block bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">${delays.length} رویداد تاخیر مستند</span>
+                    </div>
+                </div>
+
+                <!-- PORTFOLIO COMPARATIVE PERFORMANCE MATRIX -->
+                <div class="space-y-2 mb-6">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs font-black text-slate-900 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> جدول ماتریس عملکرد و پیشرفت مقایسه‌ای ۵ طرح جذب فناوری
+                        </h3>
+                        <span class="text-[10px] text-slate-400 font-medium">پایش برخط انحرافات زمانی و تحقق اهداف</span>
+                    </div>
+                    <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-xs">
+                        <table class="w-full text-xs text-right border-collapse">
+                            <thead class="bg-slate-900 text-white text-[11px]">
+                                <tr>
+                                    <th class="p-3">کد</th>
+                                    <th class="p-3">عنوان طرح و فناوری</th>
+                                    <th class="p-3">مسئول پروژه</th>
+                                    <th class="p-3 text-center">سطح TRL</th>
+                                    <th class="p-3 w-56 text-center">وضعیت پیشرفت (واقعی / برنامه‌ای)</th>
+                                    <th class="p-3 text-center">تحقق دوره</th>
+                                    <th class="p-3 text-center">وضعیت اجرایی</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 bg-white">
+            `;
+
+            accessibleProjects.forEach(p => {
+                const actProg = calculateProjectProgress(p);
+                let statusBadge = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                if (p.status && p.status.includes('تاخیر')) statusBadge = "bg-amber-50 text-amber-700 border-amber-200";
+
+                html += `
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="p-3 font-mono font-black text-blue-900 bg-slate-50/60">${p.code}</td>
+                        <td class="p-3 font-bold text-slate-800">${p.name}</td>
+                        <td class="p-3 text-slate-600 font-medium">${p.lead}</td>
+                        <td class="p-3 font-mono font-black text-purple-700 text-center">
+                            <span class="bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-md text-[10px]">${p.trlCurrent} ➔ ${p.trlTarget}</span>
+                        </td>
+                        <td class="p-3">
+                            <div class="flex justify-between items-center text-[10px] font-bold mb-1">
+                                <span class="text-blue-700">${actProg}% واقعی</span>
+                                <span class="text-slate-400 font-mono">${p.plannedProgress}% برنامه</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-cyan-500 to-blue-600 h-2 rounded-full" style="width: ${Math.min(actProg * 5, 100)}%"></div>
+                            </div>
+                        </td>
+                        <td class="p-3 text-center font-black text-emerald-700 font-mono">${p.periodRealization}</td>
+                        <td class="p-3 text-center">
+                            <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border ${statusBadge}">
+                                ${p.status || 'در حال اجرا'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- INDIVIDUAL PROJECT DEEP-DIVE CARDS -->
+                <div class="space-y-4 pt-2">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <h3 class="text-xs font-black text-slate-900 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span> شناسنامه تفصیلی، تحلیل شکست کار (WBS) و لاگ تاخیرات
+                        </h3>
+                        <span class="text-[10px] text-slate-400">ارزیابی ریسک‌ها و مستندات پشتیبان</span>
+                    </div>
+            `;
+
+            accessibleProjects.forEach(p => {
+                const actProg = calculateProjectProgress(p);
+                const projectActs = accessibleActivities.filter(a => a.projectId === p.id && a.status === 'approved');
+                const projectLetters = letters.filter(c => c.projectId === p.id);
+                const projectDelays = delays.filter(d => d.projectId === p.id);
+
+                html += `
+                    <div class="border border-slate-200 rounded-2xl p-4 space-y-3.5 bg-white print-card shadow-xs">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="font-mono text-xs font-black text-white bg-slate-900 px-2.5 py-1 rounded-lg">${p.code}</span>
+                                <h4 class="text-xs font-black text-slate-900">${p.name}</h4>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs">
+                                <span class="text-slate-500">مسئول: <b class="text-slate-800">${p.lead}</b></span>
+                                <span class="text-blue-700 font-bold bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-lg">پیشرفت واقعی: ${actProg}%</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 text-[11px] bg-slate-50/70 p-2.5 rounded-xl border border-slate-100">
+                            <div>سرمایه‌گذاری مصوب: <b class="text-slate-800 font-mono">${p.budget}</b></div>
+                            <div>بازه زمانی: <b class="text-slate-800 font-mono">${p.startDate} تا ${p.endDatePlanned} (${p.duration})</b></div>
+                        </div>
+
+                        <!-- WBS Visual Tiles -->
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-500 block mb-1.5">وضعیت پیشرفت فازهای WBS:</span>
+                            <div class="grid grid-cols-3 gap-2 text-xs">
+                `;
+
+                (p.wbs || []).forEach(ph => {
+                    html += `
+                        <div class="bg-white p-2.5 rounded-xl border border-slate-200 space-y-1">
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-800">
+                                <span class="truncate" title="${ph.title}">${ph.id} ${ph.title}</span>
+                                <span class="text-blue-700 font-mono">${ph.actualProgress}%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-logo-gradient-h h-1.5 rounded-full" style="width: ${Math.min(ph.actualProgress, 100)}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+
+                        <!-- Supporting Docs & Delay Matrix Tags -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-[10px]">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 font-medium">
+                                    <i class="fa-solid fa-envelope text-indigo-600 ml-1"></i> <b>${projectLetters.length}</b> سند و نامه
+                                </span>
+                                <span class="bg-rose-50 text-rose-800 px-2.5 py-1 rounded-lg border border-rose-200 font-medium">
+                                    <i class="fa-solid fa-triangle-exclamation text-rose-600 ml-1"></i> <b>${projectDelays.length}</b> رویداد تاخیر
+                                </span>
+                                <span class="bg-blue-50 text-blue-800 px-2.5 py-1 rounded-lg border border-blue-200 font-medium">
+                                    <i class="fa-solid fa-list-check text-blue-600 ml-1"></i> <b>${projectActs.length}</b> اقدام تاییدشده
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-slate-400 font-bold">ریسک‌های کلیدی:</span>
+                                ${(p.risks || []).map(r => `<span class="bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded font-medium">${r.title}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+
+                <!-- GOVERNANCE & FORMAL SIGN-OFF BLOCK -->
+                <div class="mt-8 pt-5 border-t-2 border-slate-300 grid grid-cols-2 gap-8 text-center text-xs text-slate-700 print-card bg-white p-5 rounded-2xl">
+                    <div class="space-y-10">
+                        <div>
+                            <p class="font-black text-slate-900 text-sm">تنظیم و تایید دفتر مدیریت پروژه (PMO)</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">بررسی دروازه‌ای و کنترل انطباق فیزیکی با زمان‌بندی</p>
+                        </div>
+                        <div class="text-[11px] text-slate-400 border-t border-dashed border-slate-200 pt-2 w-48 mx-auto">امضا و مهر دیجیتال سامانه</div>
+                    </div>
+                    <div class="space-y-10">
+                        <div>
+                            <p class="font-black text-slate-900 text-sm">تایید نهایی مدیریت ارشد پورتفولیو و سرمایه‌گذاری</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">صندوق سرمایه‌گذاری خطرپذیر فولاد مبارکه (MSTID)</p>
+                        </div>
+                        <div class="text-[11px] text-slate-400 border-t border-dashed border-slate-200 pt-2 w-48 mx-auto">امضا و ابلاغ سازمانی</div>
+                    </div>
                 </div>
             `;
+
             container.innerHTML = html;
             document.getElementById('pdfReportModal').classList.remove('hidden');
         };
+
         window.closePdfReportModal = function() { document.getElementById('pdfReportModal').classList.add('hidden'); };
         window.triggerPrint = function() { window.print(); };
 
