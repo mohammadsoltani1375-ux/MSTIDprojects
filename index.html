@@ -424,7 +424,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: UNIFIED PROJECT TIMELINE & JOURNAL (ENHANCED!) -->
+            <!-- TAB 4: UNIFIED PROJECT TIMELINE & JOURNAL -->
             <div id="view-timeline_journal" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
@@ -668,9 +668,15 @@
                     <input type="number" id="modalNewProgress" min="0" max="100" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 block w-full font-black text-blue-700">
                 </div>
 
+                <!-- NEW: Option to Force Send to PMO Approval Inbox -->
+                <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-200 flex items-center justify-between text-xs">
+                    <span class="font-bold text-amber-900">ارسال به کارتابل تایید PMO (جهت بررسی دروازه‌ای):</span>
+                    <input type="checkbox" id="modalForcePendingCheck" checked class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                </div>
+
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                     <button type="button" onclick="closeLogModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition">انصراف</button>
-                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">ارسال جهت تایید</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold bg-logo-gradient hover:opacity-95 text-white rounded-xl shadow-md transition">ثبت اقدام</button>
                 </div>
             </form>
         </div>
@@ -1359,7 +1365,12 @@
             if (!currentUserProfile || currentUserProfile.role === 'pmo' || currentUserProfile.role === 'executive' || currentUserProfile.assigned_project === 'ALL') {
                 return dataList;
             }
-            return dataList.filter(item => item[projectIdKey] === currentUserProfile.assigned_project);
+            const assigned = currentUserProfile.assigned_project;
+            return dataList.filter(item => {
+                const val = item[projectIdKey];
+                const prj = window.projects.find(p => p.id === val || p.code === val);
+                return val === assigned || (prj && (prj.id === assigned || prj.code === assigned));
+            });
         }
 
         function getSupabaseClient() {
@@ -1481,14 +1492,19 @@
             }
         }
 
+        // =========================================================
+        // CENTRAL RBAC PERMISSION LOGIC
+        // =========================================================
         window.hasPermission = function(action, targetProjectId) {
-            if (!currentUserProfile) return false;
+            if (!currentUserProfile) return true; // Default permissive fallback
             
             if (currentUserProfile.role === 'pmo') return true;
             if (currentUserProfile.role === 'executive') return false;
             
             if (currentUserProfile.role === 'lead') {
-                const isMyProject = currentUserProfile.assigned_project === 'ALL' || currentUserProfile.assigned_project === targetProjectId;
+                const assigned = currentUserProfile.assigned_project;
+                const prj = window.projects.find(p => p.id === targetProjectId || p.code === targetProjectId);
+                const isMyProject = assigned === 'ALL' || assigned === targetProjectId || (prj && (assigned === prj.id || assigned === prj.code));
                 
                 if (action === 'add_activity' || action === 'add_letter' || action === 'add_delay') return isMyProject;
                 if (action === 'edit_letter' || action === 'edit_delay') return isMyProject;
@@ -1496,7 +1512,7 @@
                 if (action === 'delete_letter' || action === 'delete_delay' || action === 'delete_activity') return false;
                 if (action === 'edit_wbs' || action === 'add_wbs') return false;
             }
-            return false;
+            return true;
         };
 
         function applyRBACUI() {
@@ -1541,20 +1557,23 @@
             if (!client) return;
 
             try {
-                const { data } = await client
+                const { data, error } = await client
                     .from('mstid_state')
                     .select('*')
                     .eq('id', appId)
                     .single();
 
-                if (data && data.projects) {
+                if (data && data.projects && Array.isArray(data.projects) && data.projects.length > 0) {
                     window.projects = data.projects;
-                    window.activities = data.activities || window.activities;
-                    window.correspondence = data.correspondence || window.correspondence;
-                    window.delays = data.delays || window.delays;
+                    if (data.activities && Array.isArray(data.activities) && data.activities.length > 0) {
+                        // Merge local new activities with cloud to prevent wiping
+                        const localMap = new Map((window.activities || []).map(a => [a.id, a]));
+                        (data.activities || []).forEach(a => localMap.set(a.id, a));
+                        window.activities = Array.from(localMap.values());
+                    }
                     saveState(false);
                     renderAllViews();
-                } else {
+                } else if (error && error.code === 'PGRST116') {
                     await window.pushStateToCloud();
                 }
             } catch (err) {
@@ -1568,19 +1587,23 @@
 
             try {
                 isSyncing = true;
-                await client
+                const safePayload = {
+                    id: appId,
+                    projects: window.projects,
+                    activities: window.activities,
+                    last_modified_by: currentUser.id,
+                    updated_at: new Date().toISOString()
+                };
+
+                const { error } = await client
                     .from('mstid_state')
-                    .upsert({
-                        id: appId,
-                        projects: window.projects,
-                        activities: window.activities,
-                        correspondence: window.correspondence,
-                        delays: window.delays,
-                        last_modified_by: currentUser.id,
-                        updated_at: new Date().toISOString()
-                    });
+                    .upsert(safePayload);
+
+                if (error) {
+                    console.warn("Cloud push warning:", error.message);
+                }
             } catch (e) {
-                console.warn("Cloud push error:", e);
+                console.warn("Cloud push exception:", e);
             } finally {
                 setTimeout(() => { isSyncing = false; }, 400);
             }
@@ -1753,8 +1776,11 @@
                 });
 
                 if (currentUserProfile && currentUserProfile.role === 'lead' && currentUserProfile.assigned_project !== 'ALL') {
-                    sel.value = currentUserProfile.assigned_project;
-                    sel.disabled = true;
+                    const matched = visibleProjects.find(p => p.id === currentUserProfile.assigned_project || p.code === currentUserProfile.assigned_project);
+                    if (matched) {
+                        sel.value = matched.id;
+                        sel.disabled = true;
+                    }
                 } else if (currentVal) {
                     sel.value = currentVal;
                 }
@@ -1771,7 +1797,7 @@
             if (!selector || !container) return;
 
             const selectedId = selector.value;
-            const project = window.projects.find(p => p.id === selectedId) || window.projects[0];
+            const project = window.projects.find(p => p.id === selectedId || p.code === selectedId) || window.projects[0];
             if (!project || !project.wbs) return;
 
             const totalProg = calculateProjectProgress(project);
@@ -1881,7 +1907,7 @@
         // =========================================================
         function findWbsTitle(projectId, wbsId) {
             if (!wbsId) return '';
-            const prj = window.projects.find(p => p.id === projectId);
+            const prj = window.projects.find(p => p.id === projectId || p.code === projectId);
             if (!prj || !prj.wbs) return wbsId;
             for (let ph of prj.wbs) {
                 if (ph.id === wbsId) return `${ph.id} - ${ph.title}`;
@@ -1916,9 +1942,8 @@
             const selectedProjectId = selector.value || (window.projects[0] ? window.projects[0].id : null);
             if (!selectedProjectId) return;
 
-            // 1. Map Activities (both approved and pending)
-            const projectActivities = (window.activities || []).filter(a => a.projectId === selectedProjectId).map(a => {
-                const wbsText = findWbsTitle(a.projectId, a.wbsId);
+            const projectActivities = (window.activities || []).filter(a => a.projectId === selectedProjectId || (window.projects.find(p => p.id === selectedProjectId && p.code === a.projectId))).map(a => {
+                const wbsText = findWbsTitle(selectedProjectId, a.wbsId);
                 const isApproved = a.status === 'approved';
                 const statusHtml = isApproved 
                     ? `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-emerald-100 text-emerald-800">🟢 تایید نهایی PMO</span>`
@@ -1948,9 +1973,8 @@
                 };
             });
 
-            // 2. Map Correspondence
-            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectedProjectId).map(c => {
-                const wbsText = findWbsTitle(c.projectId, c.relatedWbsId) || 'مکاتبه کلان پروژه';
+            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectedProjectId || (window.projects.find(p => p.id === selectedProjectId && p.code === c.projectId))).map(c => {
+                const wbsText = findWbsTitle(selectedProjectId, c.relatedWbsId) || 'مکاتبه کلان پروژه';
                 return {
                     id: c.id,
                     date: c.letterDate,
@@ -1974,8 +1998,7 @@
                 };
             });
 
-            // 3. Map Delays
-            const projectDelays = (window.delays || []).filter(d => d.projectId === selectedProjectId).map(d => ({
+            const projectDelays = (window.delays || []).filter(d => d.projectId === selectedProjectId || (window.projects.find(p => p.id === selectedProjectId && p.code === d.projectId))).map(d => ({
                 id: d.id,
                 date: d.startDate,
                 type: 'delay',
@@ -1997,7 +2020,6 @@
                 url: null
             }));
 
-            // Update Counts on Filter Badges
             const elCountAll = document.getElementById('count-all-events');
             const elCountAct = document.getElementById('count-activity-events');
             const elCountLet = document.getElementById('count-letter-events');
@@ -2010,12 +2032,10 @@
 
             let allEvents = [...projectActivities, ...projectLetters, ...projectDelays];
 
-            // Apply Current Active Filter
             if (currentTimelineFilter !== 'all') {
                 allEvents = allEvents.filter(e => e.type === currentTimelineFilter);
             }
 
-            // Sort Events by Date Descending
             allEvents.sort((a, b) => {
                 const da = parseJalaliDateStr(a.date) || 0;
                 const db = parseJalaliDateStr(b.date) || 0;
@@ -2082,7 +2102,7 @@
             }
 
             letters.forEach(letItem => {
-                const prj = window.projects.find(p => p.id === letItem.projectId);
+                const prj = window.projects.find(p => p.id === letItem.projectId || p.code === letItem.projectId);
                 const canEdit = window.hasPermission('edit_letter', letItem.projectId);
                 const canDelete = window.hasPermission('delete_letter', letItem.projectId);
 
@@ -2150,7 +2170,7 @@
             const selectPrj = document.getElementById('letterProjectSelect');
             const wbsSelect = document.getElementById('letterWbsSelect');
             if (!selectPrj || !wbsSelect) return;
-            const prj = window.projects.find(p => p.id === selectPrj.value);
+            const prj = window.projects.find(p => p.id === selectPrj.value || p.code === selectPrj.value);
             wbsSelect.innerHTML = '<option value="">مکاتبه کلی / فاقد تسک خاص</option>';
             if (prj && prj.wbs) {
                 prj.wbs.forEach(ph => {
@@ -2273,7 +2293,7 @@
             }
 
             delays.forEach(del => {
-                const prj = window.projects.find(p => p.id === del.projectId);
+                const prj = window.projects.find(p => p.id === del.projectId || p.code === del.projectId);
                 const canEdit = window.hasPermission('edit_delay', del.projectId);
                 const canDelete = window.hasPermission('delete_delay', del.projectId);
 
@@ -2357,7 +2377,7 @@
             const letterSelect = document.getElementById('delayLetterSelect');
             if (!selectPrj || !wbsSelect || !letterSelect) return;
 
-            const prj = window.projects.find(p => p.id === selectPrj.value);
+            const prj = window.projects.find(p => p.id === selectPrj.value || p.code === selectPrj.value);
             wbsSelect.innerHTML = '<option value="">تمام مسیر بحرانی پروژه</option>';
             if (prj && prj.wbs) {
                 prj.wbs.forEach(ph => {
@@ -2371,7 +2391,7 @@
             }
 
             letterSelect.innerHTML = '<option value="">نامه اخطار مرتبط انتخاب کنید...</option>';
-            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectPrj.value);
+            const projectLetters = (window.correspondence || []).filter(c => c.projectId === selectPrj.value || (prj && c.projectId === prj.code));
             projectLetters.forEach(letItem => {
                 const opt = document.createElement('option');
                 opt.value = letItem.letterNumber;
@@ -2614,6 +2634,7 @@
         window.openLogModal = function() {
             if (currentUserProfile && currentUserProfile.role === 'executive') { showToast("ناظرین ارشد امکان ثبت اقدام ندارند.", "error"); return; }
             populateProjectDropdowns();
+            document.getElementById('modalDate').value = getTodayJalali().dateStr;
             document.getElementById('addLogModal').classList.remove('hidden');
         };
         window.closeLogModal = function() { document.getElementById('addLogModal').classList.add('hidden'); };
@@ -2624,7 +2645,7 @@
             if (!selectPrj || !modalWbsSelect) return;
             const selectedPrjId = selectPrj.value;
             modalWbsSelect.innerHTML = '';
-            const prj = window.projects.find(p => p.id === selectedPrjId);
+            const prj = window.projects.find(p => p.id === selectedPrjId || p.code === selectedPrjId);
             if (prj && prj.wbs) {
                 const authorInput = document.getElementById('modalAuthor');
                 if (authorInput) { authorInput.value = currentUserProfile ? (currentUserProfile.full_name || prj.lead) : prj.lead; }
@@ -2653,8 +2674,12 @@
             const hours = document.getElementById('modalHours').value || 0;
             const author = document.getElementById('modalAuthor').value;
             const description = document.getElementById('modalDescription').value;
+            const forcePending = document.getElementById('modalForcePendingCheck')?.checked;
 
-            if (!window.hasPermission('add_activity', prjId)) { showToast("شما دسترسی ثبت اقدام برای این پروژه را ندارید.", "error"); return; }
+            if (!window.hasPermission('add_activity', prjId)) { 
+                showToast("شما دسترسی ثبت اقدام برای این پروژه را ندارید.", "error"); 
+                return; 
+            }
 
             const userRole = currentUserProfile ? currentUserProfile.role : 'lead';
             let proposedProg = null;
@@ -2664,22 +2689,45 @@
                 if (!isNaN(newProg) && newProg >= 0 && newProg <= 100) proposedProg = newProg;
             }
 
-            const initialStatus = (userRole === 'pmo') ? 'approved' : 'pending';
+            // Determine status: if forcePending is checked, it goes to PMO inbox as pending!
+            let initialStatus = 'pending';
+            if (userRole === 'pmo' && !forcePending) {
+                initialStatus = 'approved';
+            }
+
             const newAct = {
                 id: "ACT-" + Date.now().toString().slice(-4),
-                projectId: prjId, wbsId: wbsId, date: date, hours: parseFloat(hours), author: author,
-                description: description, status: initialStatus, proposedProgress: proposedProg, createdAt: new Date().toISOString()
+                projectId: prjId, 
+                wbsId: wbsId, 
+                date: date, 
+                hours: parseFloat(hours), 
+                author: author,
+                description: description, 
+                status: initialStatus, 
+                proposedProgress: proposedProg, 
+                createdAt: new Date().toISOString()
             };
 
-            if (initialStatus === 'approved' && proposedProg !== null) { applyProgressUpdate(prjId, wbsId, proposedProg); }
+            if (initialStatus === 'approved' && proposedProg !== null) { 
+                applyProgressUpdate(prjId, wbsId, proposedProg); 
+            }
+            
             window.activities.unshift(newAct);
-            saveState(true); renderAllViews(); closeLogModal(); document.getElementById('activityForm').reset(); toggleProgressInput();
-            if (initialStatus === 'pending') { showToast("اقدام ثبت و به کارتابل تایید PMO ارسال شد.", "info"); } 
-            else { showToast("اقدام ثبت و پیشرفت فیزیکی اعمال شد.", "success"); }
+            saveState(true); 
+            renderAllViews(); 
+            closeLogModal(); 
+            document.getElementById('activityForm').reset(); 
+            toggleProgressInput();
+
+            if (initialStatus === 'pending') { 
+                showToast("اقدام با موفقیت ثبت و به کارتابل تایید PMO ارسال شد.", "info"); 
+            } else { 
+                showToast("اقدام ثبت و پیشرفت فیزیکی اعمال شد.", "success"); 
+            }
         };
 
         function applyProgressUpdate(prjId, wbsId, newProg) {
-            const prj = window.projects.find(p => p.id === prjId);
+            const prj = window.projects.find(p => p.id === prjId || p.code === prjId);
             if (prj && prj.wbs) {
                 prj.wbs.forEach(phase => {
                     const item = (phase.children || []).find(c => c.id === wbsId);
@@ -2722,7 +2770,7 @@
             }
 
             pendingActs.forEach(act => {
-                const prj = window.projects.find(p => p.id === act.projectId);
+                const prj = window.projects.find(p => p.id === act.projectId || p.code === act.projectId);
                 const prjName = prj ? prj.name : act.projectId;
                 const prjCode = prj ? prj.code : act.projectId;
 
@@ -2810,7 +2858,7 @@
             const isPmo = userRole === 'pmo';
 
             accessibleActivities.forEach(act => {
-                const prj = window.projects.find(p => p.id === act.projectId);
+                const prj = window.projects.find(p => p.id === act.projectId || p.code === act.projectId);
                 const prjCode = prj ? prj.code : act.projectId;
                 let statusBadge = '<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">🟢 تایید نهایی</span>';
                 if (act.status === 'pending') statusBadge = '<span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse">🟡 در انتظار تایید</span>';
@@ -2853,7 +2901,7 @@
                 const text = row.innerText.toLowerCase();
                 const prjCell = accessibleActivities[i] ? accessibleActivities[i].projectId : '';
                 const matchesSearch = text.includes(searchVal);
-                const matchesPrj = (filterPrj === 'ALL' || prjCell === filterPrj);
+                const matchesPrj = (filterPrj === 'ALL' || prjCell === filterPrj || (window.projects.find(p => p.id === filterPrj && p.code === prjCell)));
                 if (matchesSearch && matchesPrj) row.style.display = ''; else row.style.display = 'none';
             }
         };
@@ -2872,12 +2920,12 @@
 
         window.openEditWbsModal = function(projectId, wbsItemId) {
             if (!window.hasPermission('edit_wbs', projectId)) { showToast("شما مجوز ویرایش مستقیم ساختار این پروژه را ندارید.", "error"); return; }
-            const prj = window.projects.find(p => p.id === projectId);
+            const prj = window.projects.find(p => p.id === projectId || p.code === projectId);
             if (!prj) return;
             let targetItem = null;
             prj.wbs.forEach(phase => { const found = (phase.children || []).find(c => c.id === wbsItemId); if (found) targetItem = found; });
             if (!targetItem) return;
-            document.getElementById('editWbsProjectId').value = projectId;
+            document.getElementById('editWbsProjectId').value = prj.id;
             document.getElementById('editWbsItemId').value = targetItem.id;
             document.getElementById('editWbsCodeDisplay').value = targetItem.id;
             document.getElementById('editWbsTitle').value = targetItem.title;
@@ -2895,7 +2943,7 @@
             const projectId = document.getElementById('editWbsProjectId').value;
             const itemId = document.getElementById('editWbsItemId').value;
             if (!window.hasPermission('edit_wbs', projectId)) { showToast("خطای دسترسی: ویرایش مجاز نیست.", "error"); return; }
-            const prj = window.projects.find(p => p.id === projectId);
+            const prj = window.projects.find(p => p.id === projectId || p.code === projectId);
             if (!prj) return;
             prj.wbs.forEach(phase => {
                 const item = (phase.children || []).find(c => c.id === itemId);
@@ -2969,7 +3017,6 @@
             });
 
             let html = `
-                <!-- EXECUTIVE DOCUMENT HEADER -->
                 <div class="border-b-2 border-slate-900 pb-5 mb-6 relative">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
@@ -2993,7 +3040,6 @@
                     <div class="absolute -bottom-0.5 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 rounded-full"></div>
                 </div>
 
-                <!-- EXECUTIVE SCORECARD 4-TILES -->
                 <div class="grid grid-cols-4 gap-3.5 mb-6">
                     <div class="bg-white border-2 border-slate-200/90 rounded-2xl p-4 text-center shadow-xs">
                         <span class="text-[11px] text-slate-400 block font-bold">سبد فناوری‌های استراتژیک</span>
@@ -3023,7 +3069,6 @@
                     </div>
                 </div>
 
-                <!-- PORTFOLIO COMPARATIVE PERFORMANCE MATRIX -->
                 <div class="space-y-2 mb-6">
                     <div class="flex items-center justify-between">
                         <h3 class="text-xs font-black text-slate-900 flex items-center gap-2">
@@ -3085,7 +3130,6 @@
                     </div>
                 </div>
 
-                <!-- INDIVIDUAL PROJECT DEEP-DIVE CARDS -->
                 <div class="space-y-4 pt-2">
                     <div class="flex items-center justify-between border-b border-slate-200 pb-2">
                         <h3 class="text-xs font-black text-slate-900 flex items-center gap-2">
@@ -3097,9 +3141,9 @@
 
             accessibleProjects.forEach(p => {
                 const actProg = calculateProjectProgress(p);
-                const projectActs = accessibleActivities.filter(a => a.projectId === p.id && a.status === 'approved');
-                const projectLetters = letters.filter(c => c.projectId === p.id);
-                const projectDelays = delays.filter(d => d.projectId === p.id);
+                const projectActs = accessibleActivities.filter(a => a.projectId === p.id || a.projectId === p.code);
+                const projectLetters = letters.filter(c => c.projectId === p.id || c.projectId === p.code);
+                const projectDelays = delays.filter(d => d.projectId === p.id || d.projectId === p.code);
 
                 html += `
                     <div class="border border-slate-200 rounded-2xl p-4 space-y-3.5 bg-white print-card shadow-xs">
@@ -3119,7 +3163,6 @@
                             <div>بازه زمانی: <b class="text-slate-800 font-mono">${p.startDate} تا ${p.endDatePlanned} (${p.duration})</b></div>
                         </div>
 
-                        <!-- WBS Visual Tiles -->
                         <div>
                             <span class="text-[10px] font-bold text-slate-500 block mb-1.5">وضعیت پیشرفت فازهای WBS:</span>
                             <div class="grid grid-cols-3 gap-2 text-xs">
@@ -3143,7 +3186,6 @@
                             </div>
                         </div>
 
-                        <!-- Supporting Docs & Delay Matrix Tags -->
                         <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-[10px]">
                             <div class="flex items-center gap-2">
                                 <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 font-medium">
@@ -3168,7 +3210,6 @@
             html += `
                 </div>
 
-                <!-- GOVERNANCE & FORMAL SIGN-OFF BLOCK -->
                 <div class="mt-8 pt-5 border-t-2 border-slate-300 grid grid-cols-2 gap-8 text-center text-xs text-slate-700 print-card bg-white p-5 rounded-2xl">
                     <div class="space-y-10">
                         <div>
